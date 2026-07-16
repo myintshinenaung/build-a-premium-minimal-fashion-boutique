@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  background: #ffffff;
+  color: #111111;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;
+  color: #111111;
+  font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: #111111;
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+[data-admin-theme="dark"] {
+  background: #111111;
+  color: #f6f3ef;
+  color-scheme: dark;
+}
+
+[data-admin-theme="dark"] .bg-white,
+[data-admin-theme="dark"] .bg-white\/95 {
+  background-color: #171717;
+}
+
+[data-admin-theme="dark"] .bg-mist {
+  background-color: #22201e;
+}
+
+[data-admin-theme="dark"] .bg-ink {
+  background-color: #f6f3ef;
+}
+
+[data-admin-theme="dark"] .text-ink {
+  color: #f6f3ef;
+}
+
+[data-admin-theme="dark"] .text-stone {
+  color: #b8afa6;
+}
+
+[data-admin-theme="dark"] .text-white {
+  color: #111111;
+}
+
+[data-admin-theme="dark"] .border-line {
+  border-color: #3a3632;
+}
+
+[data-admin-theme="dark"] input,
+[data-admin-theme="dark"] select,
+[data-admin-theme="dark"] textarea {
+  background-color: #171717;
+  color: #f6f3ef;
+}
+
+[data-admin-theme="dark"] input::placeholder,
+[data-admin-theme="dark"] textarea::placeholder {
+  color: #8b837c;
+}
+
+[data-admin-theme="dark"] .shadow-soft {
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.35);
+}
