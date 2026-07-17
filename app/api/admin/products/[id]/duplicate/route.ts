@@ -9,7 +9,7 @@ type ProductDuplicateRouteContext = {
 };
 
 export async function POST(request: NextRequest, { params }: ProductDuplicateRouteContext) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {

@@ -10,7 +10,7 @@ type ProductRouteContext = {
 };
 
 export async function PATCH(request: NextRequest, { params }: ProductRouteContext) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {
@@ -29,7 +29,7 @@ export async function PATCH(request: NextRequest, { params }: ProductRouteContex
 }
 
 export async function POST(request: NextRequest, { params }: ProductRouteContext) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest, { params }: ProductRouteContext
 }
 
 export async function DELETE(request: NextRequest, { params }: ProductRouteContext) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {

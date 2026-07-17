@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 import type { Database } from "./types";
 
 export type SupabaseConfig = {
@@ -24,5 +24,5 @@ export function getSupabaseConfig(): SupabaseConfig {
 export function createSupabaseBrowserClient() {
   const { url, anonKey } = getSupabaseConfig();
 
-  return createClient<Database>(url, anonKey);
+  return createBrowserClient<Database>(url, anonKey);
 }

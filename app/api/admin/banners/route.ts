@@ -4,7 +4,7 @@ import { bannerService } from "@/lib/services";
 import type { BannerCreateInput } from "@/lib/repositories/banner-repository";
 
 export async function GET(request: NextRequest) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {

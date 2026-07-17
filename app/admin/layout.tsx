@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { AdminShell } from "@/components/admin/layout/AdminShell";
+import { getAdminUser } from "@/lib/admin-session";
 
 export const metadata: Metadata = {
   title: {
@@ -14,6 +15,8 @@ export const metadata: Metadata = {
   }
 };
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
-  return <AdminShell>{children}</AdminShell>;
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  const user = await getAdminUser();
+
+  return <AdminShell user={user}>{children}</AdminShell>;
 }

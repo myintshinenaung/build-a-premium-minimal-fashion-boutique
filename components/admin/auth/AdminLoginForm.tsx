@@ -4,13 +4,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import {
-  ADMIN_SESSION_COOKIE,
-  ADMIN_SESSION_STORAGE_KEY,
-  DEFAULT_ADMIN_SESSION_MAX_AGE,
-  EXTENDED_ADMIN_SESSION_MAX_AGE,
-  MOCK_ADMIN_USER
-} from "@/lib/admin-auth";
 
 const inputClass =
   "mt-2 h-12 w-full border border-line bg-white px-4 text-sm outline-none transition-colors placeholder:text-stone/70 focus:border-ink";
@@ -19,30 +12,46 @@ export function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next") || "/admin";
-  const [email, setEmail] = useState(MOCK_ADMIN_USER.email);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!email.trim() || !password.trim()) {
-      setError("Enter an email and password to create a mock admin session.");
+      setError("Enter your admin email and password.");
       return;
     }
 
-    const maxAge = remember ? EXTENDED_ADMIN_SESSION_MAX_AGE : DEFAULT_ADMIN_SESSION_MAX_AGE;
-    const session = {
-      user: { ...MOCK_ADMIN_USER, email },
-      issuedAt: new Date().toISOString(),
-      expiresIn: maxAge,
-      provider: "mock"
-    };
+    setIsSubmitting(true);
+    setError("");
 
-    document.cookie = `${ADMIN_SESSION_COOKIE}=mock-session; Max-Age=${maxAge}; Path=/; SameSite=Lax`;
-    window.localStorage.setItem(ADMIN_SESSION_STORAGE_KEY, JSON.stringify(session));
-    router.replace(nextPath.startsWith("/admin") ? nextPath : "/admin");
+    try {
+      const response = await fetch("/api/admin/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password, remember })
+      });
+
+      const payload = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        setError(payload.message ?? "Unable to sign in.");
+        return;
+      }
+
+      router.replace(nextPath.startsWith("/admin") ? nextPath : "/admin");
+      router.refresh();
+    } catch {
+      setError("Unable to sign in. Check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -54,6 +63,7 @@ export function AdminLoginForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="admin@atelierlune.example"
+          autoComplete="email"
           className={inputClass}
         />
       </label>
@@ -63,7 +73,8 @@ export function AdminLoginForm() {
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="Use any password for mock login"
+          placeholder="Enter your admin password"
+          autoComplete="current-password"
           className={inputClass}
         />
       </label>
@@ -79,14 +90,13 @@ export function AdminLoginForm() {
       {error ? <p className="border border-line bg-mist px-4 py-3 text-sm text-ink">{error}</p> : null}
       <button
         type="submit"
-        className="inline-flex h-12 w-full items-center justify-center gap-2 bg-ink px-5 text-sm font-medium text-white transition-colors hover:bg-stone"
+        disabled={isSubmitting}
+        className="inline-flex h-12 w-full items-center justify-center gap-2 bg-ink px-5 text-sm font-medium text-white transition-colors hover:bg-stone disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Enter Dashboard
+        {isSubmitting ? "Signing in..." : "Enter Dashboard"}
         <ArrowRight size={17} strokeWidth={1.7} />
       </button>
-      <p className="text-xs leading-5 text-stone">
-        Mock authentication only. This session architecture is ready to be swapped for Supabase Auth later.
-      </p>
+      <p className="text-xs leading-5 text-stone">Admin access is protected by Supabase Auth.</p>
     </form>
   );
 }

@@ -10,7 +10,7 @@ type CategoryRouteContext = {
 };
 
 export async function PATCH(request: NextRequest, { params }: CategoryRouteContext) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {
@@ -29,7 +29,7 @@ export async function PATCH(request: NextRequest, { params }: CategoryRouteConte
 }
 
 export async function DELETE(request: NextRequest, { params }: CategoryRouteContext) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {

@@ -7,7 +7,7 @@ type CategoryReorderBody = {
 };
 
 export async function PATCH(request: NextRequest) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {

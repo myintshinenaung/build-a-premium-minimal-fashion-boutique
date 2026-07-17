@@ -24,14 +24,20 @@ Open `http://localhost:3000`.
 
 ## Environment Variables
 
-Create a local `.env` file from `.env.example` when connecting Supabase later:
+Create a local `.env` file from `.env.example`:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-The current build still uses local mock data. Supabase client helpers and repository boundaries are prepared for future integration, but no live database connection is required.
+## Admin Authentication
+
+Admin routes use Supabase Auth with cookie-based sessions. Create at least one admin user in your Supabase project, then sign in at `/admin/login`.
+
+Password reset emails use `NEXT_PUBLIC_SITE_URL` as the redirect base. Apply the RLS migration in `supabase/migrations/20260717000000_enable_admin_rls.sql` when hardening database access for anon and authenticated roles.
 
 ## Quality Checks
 

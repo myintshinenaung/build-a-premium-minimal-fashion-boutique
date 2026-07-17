@@ -1,8 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { ADMIN_SESSION_COOKIE } from "@/lib/admin-auth";
+import { createSupabaseAuthRouteClient } from "@/lib/supabase/auth-server";
 
-export function requireAdminApiSession(request: NextRequest) {
-  if (request.cookies.get(ADMIN_SESSION_COOKIE)?.value) {
+export async function requireAdminApiSession(request: NextRequest) {
+  const response = NextResponse.next();
+  const supabase = createSupabaseAuthRouteClient(request, response);
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (user) {
     return null;
   }
 

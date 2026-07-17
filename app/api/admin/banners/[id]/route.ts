@@ -10,7 +10,7 @@ type BannerRouteContext = {
 };
 
 export async function PATCH(request: NextRequest, { params }: BannerRouteContext) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {
@@ -29,7 +29,7 @@ export async function PATCH(request: NextRequest, { params }: BannerRouteContext
 }
 
 export async function DELETE(request: NextRequest, { params }: BannerRouteContext) {
-  const unauthorized = requireAdminApiSession(request);
+  const unauthorized = await requireAdminApiSession(request);
   if (unauthorized) return unauthorized;
 
   try {

@@ -22,7 +22,8 @@ import {
   X
 } from "lucide-react";
 import { useState, type ComponentType, type ReactNode } from "react";
-import { ADMIN_SHELLLESS_PATHS, ADMIN_THEME_STORAGE_KEY, MOCK_ADMIN_USER } from "@/lib/admin-auth";
+import { ADMIN_SHELLLESS_PATHS, ADMIN_THEME_STORAGE_KEY } from "@/lib/admin-auth";
+import type { AdminUser } from "@/lib/admin-session";
 import { cn } from "@/lib/utils";
 
 type AdminNavItem = {
@@ -55,9 +56,10 @@ const pageTitles: Record<string, string> = {
 
 type AdminShellProps = {
   children: ReactNode;
+  user: AdminUser | null;
 };
 
-export function AdminShell({ children }: AdminShellProps) {
+export function AdminShell({ children, user }: AdminShellProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -71,6 +73,9 @@ export function AdminShell({ children }: AdminShellProps) {
   }
 
   const currentTitle = pageTitles[pathname] ?? "Admin";
+  const displayName = user?.name ?? "Admin";
+  const displayEmail = user?.email ?? "";
+  const displayRole = user?.role ?? "Store Manager";
 
   function setAdminTheme(nextTheme: "light" | "dark") {
     setTheme(nextTheme);
@@ -138,7 +143,7 @@ export function AdminShell({ children }: AdminShellProps) {
                   aria-label="Open user menu"
                   aria-expanded={isUserMenuOpen}
                 >
-                  <span className="hidden text-sm md:inline">{MOCK_ADMIN_USER.name}</span>
+                  <span className="hidden text-sm md:inline">{displayName}</span>
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ink text-white">
                     <UserCircle size={16} strokeWidth={1.7} />
                   </span>
@@ -152,9 +157,9 @@ export function AdminShell({ children }: AdminShellProps) {
                   )}
                 >
                   <div className="border-b border-line pb-4">
-                    <p className="text-sm font-medium text-ink">{MOCK_ADMIN_USER.name}</p>
-                    <p className="mt-1 text-xs text-stone">{MOCK_ADMIN_USER.email}</p>
-                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone">{MOCK_ADMIN_USER.role}</p>
+                    <p className="text-sm font-medium text-ink">{displayName}</p>
+                    <p className="mt-1 text-xs text-stone">{displayEmail}</p>
+                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone">{displayRole}</p>
                   </div>
                   <div className="grid gap-2 border-b border-line py-4">
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-stone">Theme</p>
