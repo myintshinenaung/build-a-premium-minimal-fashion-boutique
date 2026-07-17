@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { categories } from "@/lib/products";
+import { getCategories } from "@/lib/storefront/catalog";
 
-export function Footer() {
+export async function Footer() {
+  const categories = await getCategories();
+
   return (
     <footer className="border-t border-line bg-white">
       <div className="mx-auto grid max-w-[1440px] gap-12 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">

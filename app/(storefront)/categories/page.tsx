@@ -3,14 +3,17 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { categories } from "@/lib/products";
+import { getCategories } from "@/lib/storefront/catalog";
 
 export const metadata: Metadata = {
   title: "Categories",
   description: "Explore Atelier Lune dresses, tops, pants, jeans, shoes, bags, and accessories."
 };
 
-export default function CategoriesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function CategoriesPage() {
+  const categories = await getCategories();
   return (
     <section className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8">
       <SectionHeader

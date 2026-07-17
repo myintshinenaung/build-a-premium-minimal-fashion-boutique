@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import { ProductListing } from "@/components/product/ProductListing";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { categories, getCategoryBySlug, getProductsByCategory } from "@/lib/products";
+import { getCategories, getCategoryBySlug, getProductsByCategory } from "@/lib/storefront/catalog";
+
+export const dynamic = "force-dynamic";
 
 type CategoryPageProps = {
   params: Promise<{
@@ -12,13 +14,9 @@ type CategoryPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return categories.map((category) => ({ slug: category.slug }));
-}
-
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
 
   if (!category) {
     return {
@@ -39,10 +37,13 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) notFound();
 
-  const categoryProducts = getProductsByCategory(category.name);
+  const [categoryProducts, categories] = await Promise.all([
+    getProductsByCategory(category.name),
+    getCategories()
+  ]);
 
   return (
     <>
@@ -63,7 +64,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </section>
 
       <section className="mx-auto max-w-[1440px] px-4 pb-20 sm:px-6 lg:px-8">
-        <ProductListing products={categoryProducts} initialCategory={category.name} />
+        <ProductListing products={categoryProducts} categories={categories} initialCategory={category.name} />
       </section>
     </>
   );

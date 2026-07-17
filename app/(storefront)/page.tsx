@@ -3,11 +3,9 @@ import { ArrowRight } from "lucide-react";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { bestSellers, categories, newArrivals } from "@/lib/products";
+import { getBestSellers, getCategories, getNewArrivals } from "@/lib/storefront/catalog";
 
-const featuredCategories = categories.filter((category) =>
-  ["Dresses", "Tops", "Pants", "Bags"].includes(category.name)
-);
+export const dynamic = "force-dynamic";
 
 const galleryImages = [
   { src: "/images/ivory-dress.png", alt: "Ivory midi dress editorial" },
@@ -18,7 +16,17 @@ const galleryImages = [
   { src: "/images/new-collection.png", alt: "Neutral tailored collection editorial" }
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [categories, bestSellers, newArrivals] = await Promise.all([
+    getCategories(),
+    getBestSellers(),
+    getNewArrivals()
+  ]);
+
+  const featuredCategories = categories.filter((category) =>
+    ["Dresses", "Tops", "Pants", "Bags"].includes(category.name)
+  );
+
   return (
     <>
       <section className="relative min-h-[78svh] overflow-hidden">

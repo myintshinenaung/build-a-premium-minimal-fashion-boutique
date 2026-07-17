@@ -48,17 +48,18 @@ app/                  App Router pages and SEO routes
 components/layout/    Header and footer
 components/product/   Product cards, listing filters, gallery, share and order controls
 components/ui/        Shared image and section primitives
+lib/storefront/     Storefront catalog service backed by Supabase
 lib/repositories/     Admin product, category, banner, and settings data boundaries
 lib/services/         Admin service layer for future business rules
 lib/supabase/         Supabase client, server, and generated type placeholders
-lib/                  Product data and helpers
+lib/                  Helpers and admin utilities
 types/                Product TypeScript models
 public/images/        Local boutique and product imagery
 ```
 
 ## Product Data
 
-Example product data lives in `lib/products.ts`. Replace or connect this file to a CMS, database, or commerce backend when moving from demo data to production inventory.
+The public storefront reads published products and categories from Supabase through `lib/storefront/catalog.ts`. Admin changes to published inventory appear on the live site after refresh.
 
 ## Notes
 

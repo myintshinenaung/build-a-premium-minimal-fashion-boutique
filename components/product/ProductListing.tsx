@@ -2,23 +2,21 @@
 
 import { ChevronLeft, ChevronRight, Search, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
-import type { Product, ProductCategory } from "@/types/product";
-import { categories } from "@/lib/products";
+import type { Category, Product } from "@/types/product";
 import { cn } from "@/lib/utils";
 import { ProductGrid } from "./ProductGrid";
 
 type ProductListingProps = {
   products: Product[];
-  initialCategory?: ProductCategory;
+  categories: Category[];
+  initialCategory?: string;
 };
 
 const pageSize = 8;
 
-export function ProductListing({ products, initialCategory }: ProductListingProps) {
+export function ProductListing({ products, categories, initialCategory }: ProductListingProps) {
   const [search, setSearch] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<ProductCategory[]>(
-    initialCategory ? [initialCategory] : []
-  );
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategory ? [initialCategory] : []);
   const [selectedColor, setSelectedColor] = useState("All");
   const [sort, setSort] = useState("featured");
   const [inStockOnly, setInStockOnly] = useState(false);
@@ -61,7 +59,7 @@ export function ProductListing({ products, initialCategory }: ProductListingProp
   const currentPage = Math.min(page, totalPages);
   const pageProducts = filteredProducts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-  function toggleCategory(category: ProductCategory) {
+  function toggleCategory(category: string) {
     setPage(1);
     setSelectedCategories((current) =>
       current.includes(category) ? current.filter((item) => item !== category) : [...current, category]

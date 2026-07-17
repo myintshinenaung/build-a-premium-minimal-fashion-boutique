@@ -5,7 +5,7 @@ export function cn(...classes: Array<string | false | null | undefined>) {
 export function formatPrice(value: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: "MMK",
     maximumFractionDigits: 0
   }).format(value);
 }

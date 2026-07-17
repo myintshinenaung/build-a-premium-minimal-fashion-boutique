@@ -6,8 +6,10 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ShareProduct } from "@/components/product/ShareProduct";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { formatPrice } from "@/lib/utils";
-import { getProductBySlug, getRelatedProducts, products } from "@/lib/products";
+import { getCategoryBySlug, getProductBySlug, getRelatedProducts } from "@/lib/storefront/catalog";
+import { formatPrice, slugify } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
 
 type ProductPageProps = {
   params: Promise<{
@@ -15,13 +17,9 @@ type ProductPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return products.map((product) => ({ slug: product.slug }));
-}
-
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     return {
@@ -42,10 +40,14 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const relatedProducts = getRelatedProducts(product);
+  const [relatedProducts, category] = await Promise.all([
+    getRelatedProducts(product),
+    getCategoryBySlug(slugify(product.category))
+  ]);
+  const categoryHref = category ? `/categories/${category.slug}` : `/categories/${slugify(product.category)}`;
 
   return (
     <>
@@ -58,7 +60,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               Shop
             </Link>
             <span>/</span>
-            <Link href={`/categories/${product.category.toLowerCase()}`} className="underline underline-offset-8">
+            <Link href={categoryHref} className="underline underline-offset-8">
               {product.category}
             </Link>
           </div>

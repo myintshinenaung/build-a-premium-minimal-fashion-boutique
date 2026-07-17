@@ -1,11 +1,4 @@
-export type ProductCategory =
-  | "Dresses"
-  | "Tops"
-  | "Pants"
-  | "Jeans"
-  | "Shoes"
-  | "Bags"
-  | "Accessories";
+export type ProductCategory = string;
 
 export type StockStatus = "In stock" | "Low stock" | "Made to order" | "Sold out";
 
