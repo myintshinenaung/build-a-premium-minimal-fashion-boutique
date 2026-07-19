@@ -26,8 +26,6 @@ export const productRepository = {
     try {
       const supabase = createSupabaseServerClient();
       const { data, error } = await supabase.from("products").select("*").order("updated_at", { ascending: false });
-      console.log("DATA =", data);
-      console.log("ERROR =", error);
       if (error) {
         throw error;
       }

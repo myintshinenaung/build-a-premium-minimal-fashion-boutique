@@ -29,5 +29,5 @@ export async function getAdminProxySession(request: NextRequest) {
     data: { user }
   } = await supabase.auth.getUser();
 
-  return { response, user: user as User | null };
+  return { response, user: user as User | null, supabase };
 }

@@ -1,4 +1,5 @@
 import type { User } from "@supabase/supabase-js";
+import { isAuthorizedAdmin } from "@/lib/admin-authorization";
 import { createSupabaseAuthServerClient } from "@/lib/supabase/auth-server";
 
 export type AdminUser = {
@@ -23,5 +24,9 @@ export async function getAdminUser() {
     data: { user }
   } = await supabase.auth.getUser();
 
-  return user ? mapSupabaseUserToAdminUser(user) : null;
+  if (!user || !isAuthorizedAdmin(user)) {
+    return null;
+  }
+
+  return mapSupabaseUserToAdminUser(user);
 }

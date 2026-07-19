@@ -19,8 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Email is required." }, { status: 400 });
     }
 
-    const response = NextResponse.json({ ok: true });
-    const supabase = createSupabaseAuthRouteClient(request, response);
+    const { supabase, withSessionCookies } = createSupabaseAuthRouteClient(request);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${getSiteUrl()}/admin/login`
     });
@@ -29,7 +28,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: error.message }, { status: 400 });
     }
 
-    return response;
+    return withSessionCookies(NextResponse.json({ ok: true }));
   } catch (error) {
     return jsonError(error);
   }

@@ -16,16 +16,7 @@ export const categoryRepository = {
   async list() {
     try {
       const supabase = createSupabaseServerClient();
-      console.log("URL =", process.env.NEXT_PUBLIC_SUPABASE_URL);
-
-  const { count } = await supabase
-  .from("categories")
-  .select("*", { count: "exact", head: true });
-
-      console.log("COUNT =", count);
       const { data, error } = await supabase.from("categories").select("*").order("sort_order", { ascending: true });
-      console.log("CATEGORY DATA =", data);
-      console.log("CATEGORY ERROR =", error);
 
       if (error) {
         throw error;

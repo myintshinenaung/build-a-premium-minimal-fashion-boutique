@@ -37,7 +37,18 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 Admin routes use Supabase Auth with cookie-based sessions. Create at least one admin user in your Supabase project, then sign in at `/admin/login`.
 
-Password reset emails use `NEXT_PUBLIC_SITE_URL` as the redirect base. Apply the RLS migration in `supabase/migrations/20260717000000_enable_admin_rls.sql` when hardening database access for anon and authenticated roles.
+Password reset emails use `NEXT_PUBLIC_SITE_URL` as the redirect base.
+
+### Row Level Security (RLS)
+
+Apply database policies once per Supabase project:
+
+1. Open **Supabase Dashboard → SQL Editor**.
+2. Paste and run the full contents of `supabase/migrations/20260717000000_enable_admin_rls.sql`.
+3. Confirm policies with `supabase/verify-rls.sql` in the SQL Editor (single result set; all rows should show `result = PASS`).
+4. From the project root, run `npm run verify:rls` to confirm anon-key access is restricted (published catalog only).
+
+The migration is idempotent and safe to re-run. App server routes continue to use the service role after auth checks; RLS protects direct anon/authenticated Supabase API access.
 
 ## Quality Checks
 

@@ -19,7 +19,8 @@ export default function AdminLoginPage() {
           <p className="mt-10 text-xs font-medium uppercase tracking-[0.24em] text-stone">Secure admin area</p>
           <h1 className="mt-4 text-4xl font-medium leading-tight text-ink md:text-5xl">Admin login</h1>
           <p className="mt-5 text-sm leading-6 text-stone">
-            UI-only authentication screen prepared for future Supabase Auth or private staff access.
+            Sign in with your authorized staff account. Access is validated through Supabase Auth and restricted to
+            allowlisted emails or admin roles.
           </p>
 
           <Suspense fallback={<div className="mt-10 h-64 border border-line bg-mist" />}>
@@ -33,11 +34,11 @@ export default function AdminLoginPage() {
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-ink text-white">
             <LockKeyhole size={24} strokeWidth={1.6} />
           </div>
-          <p className="mt-8 text-xs font-medium uppercase tracking-[0.24em] text-stone">Prepared for production auth</p>
+          <p className="mt-8 text-xs font-medium uppercase tracking-[0.24em] text-stone">Production admin access</p>
           <h2 className="mt-4 max-w-lg text-4xl font-medium leading-tight text-ink">A private workspace for product, media, banner, and store operations.</h2>
           <div className="mt-10 grid gap-4 text-sm text-stone">
-            <p className="border-t border-line pt-4">Role-ready layout for future Supabase policies.</p>
-            <p className="border-t border-line pt-4">No database connection or live credential handling yet.</p>
+            <p className="border-t border-line pt-4">Supabase Auth sessions protect admin routes and API endpoints.</p>
+            <p className="border-t border-line pt-4">Only allowlisted emails or accounts with an admin role can sign in.</p>
             <p className="border-t border-line pt-4">Public boutique pages remain separate from admin operations.</p>
           </div>
         </div>
