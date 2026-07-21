@@ -6,6 +6,7 @@ type BoutiqueImageProps = {
   alt: string;
   className?: string;
   imageClassName?: string;
+  imageStyle?: React.CSSProperties;
   priority?: boolean;
   sizes?: string;
   quality?: number;
@@ -16,6 +17,7 @@ export function BoutiqueImage({
   alt,
   className,
   imageClassName,
+  imageStyle,
   priority = false,
   sizes = "100vw",
   quality = 86
@@ -30,6 +32,7 @@ export function BoutiqueImage({
         loading={priority ? undefined : "lazy"}
         sizes={sizes}
         quality={quality}
+        style={imageStyle}
         className={cn("object-cover object-center", imageClassName)}
       />
     </div>

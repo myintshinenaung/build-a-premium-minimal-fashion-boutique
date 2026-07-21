@@ -6,18 +6,30 @@ import type { Product } from "@/types/product";
 
 type OrderButtonsProps = {
   product: Product;
+  messengerUrl: string;
+  siteUrl: string;
 };
 
-export function OrderButtons({ product }: OrderButtonsProps) {
+function buildMessengerHref(messengerUrl: string, message: string) {
+  if (!messengerUrl.trim()) {
+    return "#";
+  }
+
+  const separator = messengerUrl.includes("?") ? "&" : "?";
+  return `${messengerUrl}${separator}text=${message}`;
+}
+
+export function OrderButtons({ product, messengerUrl, siteUrl }: OrderButtonsProps) {
   const { messengerHref, viberHref } = useMemo(() => {
-    const url = typeof window !== "undefined" ? window.location.href : `https://atelier-lune.example/product/${product.slug}`;
+    const url =
+      typeof window !== "undefined" ? window.location.href : `${siteUrl.replace(/\/$/, "")}/product/${product.slug}`;
     const message = encodeURIComponent(`Hello, I would like to order ${product.name}. ${url}`);
 
     return {
-      messengerHref: `https://m.me/atelierlune?text=${message}`,
+      messengerHref: buildMessengerHref(messengerUrl, message),
       viberHref: `viber://forward?text=${message}`
     };
-  }, [product.name, product.slug]);
+  }, [messengerUrl, product.name, product.slug, siteUrl]);
 
   return (
     <div className="grid gap-3 sm:grid-cols-2">
