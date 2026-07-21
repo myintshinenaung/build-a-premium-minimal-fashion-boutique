@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Search, SlidersHorizontal } from "lucide-rea
 import { useMemo, useState } from "react";
 import type { Category, Product } from "@/types/product";
 import { cn } from "@/lib/utils";
+import { useTranslator } from "@/lib/i18n/use-translator";
 import { ProductGrid } from "./ProductGrid";
 
 type ProductListingProps = {
@@ -15,6 +16,7 @@ type ProductListingProps = {
 const pageSize = 8;
 
 export function ProductListing({ products, categories, initialCategory }: ProductListingProps) {
+  const { t } = useTranslator();
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategory ? [initialCategory] : []);
   const [selectedColor, setSelectedColor] = useState("All");
@@ -36,7 +38,10 @@ export function ProductListing({ products, categories, initialCategory }: Produc
         !query ||
         product.name.toLowerCase().includes(query) ||
         product.category.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query);
+        product.description.toLowerCase().includes(query) ||
+        product.sku.toLowerCase().includes(query) ||
+        product.tags.some((tag) => tag.toLowerCase().includes(query)) ||
+        product.colors.some((color) => color.name.toLowerCase().includes(query));
       const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
       const matchesColor = selectedColor === "All" || product.colors.some((color) => color.name === selectedColor);
       const matchesStock = !inStockOnly || product.stockStatus !== "Sold out";
@@ -72,11 +77,11 @@ export function ProductListing({ products, categories, initialCategory }: Produc
         <div className="border border-line bg-white p-5">
           <div className="flex items-center gap-2 border-b border-line pb-4">
             <SlidersHorizontal size={18} strokeWidth={1.6} />
-            <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-ink">Filters</h2>
+            <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-ink">{t("shop.filters")}</h2>
           </div>
 
           <div className="border-b border-line py-5">
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-stone">Category</p>
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-stone">{t("shop.category")}</p>
             <div className="mt-4 space-y-3">
               {categories.map((category) => (
                 <label key={category.slug} className="flex cursor-pointer items-center justify-between gap-3 text-sm">
@@ -94,7 +99,7 @@ export function ProductListing({ products, categories, initialCategory }: Produc
 
           <div className="border-b border-line py-5">
             <label htmlFor="color" className="text-xs font-medium uppercase tracking-[0.18em] text-stone">
-              Color
+              {t("shop.color")}
             </label>
             <select
               id="color"
@@ -105,7 +110,7 @@ export function ProductListing({ products, categories, initialCategory }: Produc
               }}
               className="mt-3 w-full border border-line bg-white px-3 py-3 text-sm outline-none transition-colors focus:border-ink"
             >
-              <option>All</option>
+              <option>{t("shop.allColors")}</option>
               {colors.map((color) => (
                 <option key={color}>{color}</option>
               ))}
@@ -114,9 +119,9 @@ export function ProductListing({ products, categories, initialCategory }: Produc
 
           <div className="space-y-4 py-5">
             {[
-              ["In stock", inStockOnly, setInStockOnly],
-              ["New arrivals", newOnly, setNewOnly],
-              ["Best sellers", bestOnly, setBestOnly]
+              [t("shop.inStockOnly"), inStockOnly, setInStockOnly],
+              [t("shop.newArrivalsOnly"), newOnly, setNewOnly],
+              [t("shop.bestSellersOnly"), bestOnly, setBestOnly]
             ].map(([label, checked, setter]) => (
               <label key={label as string} className="flex cursor-pointer items-center justify-between gap-3 text-sm">
                 <span>{label as string}</span>
@@ -147,7 +152,7 @@ export function ProductListing({ products, categories, initialCategory }: Produc
             }}
             className="w-full border border-line px-4 py-3 text-sm text-ink transition-colors hover:border-ink"
           >
-            Reset
+            {t("shop.reset")}
           </button>
         </div>
       </aside>
@@ -155,7 +160,7 @@ export function ProductListing({ products, categories, initialCategory }: Produc
       <section aria-label="Product results">
         <div className="mb-8 grid gap-4 border-b border-line pb-6 md:grid-cols-[1fr_220px]">
           <label className="relative block">
-            <span className="sr-only">Search products</span>
+            <span className="sr-only">{t("shop.searchPlaceholder")}</span>
             <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-stone" size={18} />
             <input
               type="search"
@@ -164,13 +169,13 @@ export function ProductListing({ products, categories, initialCategory }: Produc
                 setSearch(event.target.value);
                 setPage(1);
               }}
-              placeholder="Search dresses, denim, bags"
+              placeholder={t("shop.searchPlaceholder")}
               className="h-12 w-full border border-line bg-white pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-stone/70 focus:border-ink"
             />
           </label>
 
           <label>
-            <span className="sr-only">Sort products</span>
+            <span className="sr-only">{t("shop.sortBy")}</span>
             <select
               value={sort}
               onChange={(event) => {
@@ -179,18 +184,18 @@ export function ProductListing({ products, categories, initialCategory }: Produc
               }}
               className="h-12 w-full border border-line bg-white px-4 text-sm outline-none transition-colors focus:border-ink"
             >
-              <option value="featured">Featured</option>
-              <option value="new">Newest</option>
-              <option value="best">Best sellers</option>
-              <option value="price-asc">Price: low to high</option>
-              <option value="price-desc">Price: high to low</option>
+              <option value="featured">{t("shop.featured")}</option>
+              <option value="new">{t("shop.newest")}</option>
+              <option value="best">{t("shop.bestSellers")}</option>
+              <option value="price-asc">{t("shop.priceLowHigh")}</option>
+              <option value="price-desc">{t("shop.priceHighLow")}</option>
             </select>
           </label>
         </div>
 
         <div className="mb-6 flex items-center justify-between gap-4 text-sm text-stone">
           <p>
-            {filteredProducts.length} {filteredProducts.length === 1 ? "piece" : "pieces"}
+            {t("shop.showing", { count: filteredProducts.length })}
           </p>
           {selectedCategories.length > 0 ? (
             <button
@@ -201,12 +206,12 @@ export function ProductListing({ products, categories, initialCategory }: Produc
               }}
               className="text-ink underline underline-offset-4"
             >
-              Clear categories
+              {t("shop.clearCategories")}
             </button>
           ) : null}
         </div>
 
-        <ProductGrid products={pageProducts} emptyMessage="No pieces match these filters." />
+        <ProductGrid products={pageProducts} emptyMessage={t("shop.noProducts")} />
 
         <div className="mt-12 flex items-center justify-center gap-3">
           <button
@@ -214,19 +219,19 @@ export function ProductListing({ products, categories, initialCategory }: Produc
             className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink disabled:cursor-not-allowed disabled:opacity-40"
             disabled={currentPage === 1}
             onClick={() => setPage((value) => Math.max(1, value - 1))}
-            aria-label="Previous page"
+            aria-label={t("shop.previous")}
           >
             <ChevronLeft size={18} strokeWidth={1.6} />
           </button>
           <span className="min-w-24 text-center text-sm text-stone">
-            Page {currentPage} of {totalPages}
+            {t("shop.page", { current: currentPage, total: totalPages })}
           </span>
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink disabled:cursor-not-allowed disabled:opacity-40"
             disabled={currentPage === totalPages}
             onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
-            aria-label="Next page"
+            aria-label={t("shop.next")}
           >
             <ChevronRight size={18} strokeWidth={1.6} />
           </button>
@@ -238,7 +243,7 @@ export function ProductListing({ products, categories, initialCategory }: Produc
             filteredProducts.length <= pageSize ? "hidden" : ""
           )}
         >
-          Pagination
+          {t("shop.pagination")}
         </div>
       </section>
     </div>
