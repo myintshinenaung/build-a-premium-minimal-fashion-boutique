@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
 import { getCategories, getProducts } from "@/lib/storefront/catalog";
-
-const baseUrl = "https://atelier-lune.example";
+import { getSiteUrl } from "@/lib/storefront/site-url";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = getSiteUrl().replace(/\/$/, "");
   const [categories, products] = await Promise.all([getCategories(), getProducts()]);
 
   const staticRoutes = ["", "/shop", "/categories", "/about", "/contact"].map((route) => ({

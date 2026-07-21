@@ -70,6 +70,19 @@ export type SettingsRow = {
   google_map: string;
   currency: string;
   timezone: string;
+  hero_title_en?: string;
+  hero_title_my?: string;
+  hero_subtitle_en?: string;
+  hero_subtitle_my?: string;
+  hero_marketing_headline_en?: string;
+  hero_marketing_headline_my?: string;
+  hero_cta_label_en?: string;
+  hero_cta_label_my?: string;
+  hero_secondary_cta_label_en?: string;
+  hero_secondary_cta_label_my?: string;
+  hero_primary_cta_href?: string;
+  hero_secondary_cta_href?: string;
+  hero_background_image?: string;
   updated_at: string;
 };
 

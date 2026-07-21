@@ -92,4 +92,17 @@ export type StoreSettings = {
   googleMap: string;
   currency: string;
   timezone: string;
+  heroTitleEn: string;
+  heroTitleMy: string;
+  heroSubtitleEn: string;
+  heroSubtitleMy: string;
+  heroMarketingHeadlineEn: string;
+  heroMarketingHeadlineMy: string;
+  heroCtaLabelEn: string;
+  heroCtaLabelMy: string;
+  heroSecondaryCtaLabelEn: string;
+  heroSecondaryCtaLabelMy: string;
+  heroPrimaryCtaHref: string;
+  heroSecondaryCtaHref: string;
+  heroBackgroundImage: string;
 };

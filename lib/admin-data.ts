@@ -7,6 +7,7 @@ import type {
   AdminProduct,
   StoreSettings
 } from "@/types/admin";
+import { defaultAdminHeroSettings } from "@/lib/storefront/defaults";
 
 export const adminCategories: AdminCategory[] = [
   {
@@ -321,7 +322,8 @@ export const storeSettings: StoreSettings = {
   address: "24 Garosu-gil, Gangnam-gu, Seoul",
   googleMap: "https://www.google.com/maps?q=Garosu-gil%2C%20Gangnam-gu%2C%20Seoul",
   currency: "MMK",
-  timezone: "Asia/Yangon"
+  timezone: "Asia/Yangon",
+  ...defaultAdminHeroSettings
 };
 
 export function formatMmk(value: number) {

@@ -5,6 +5,8 @@ import { ProductListing } from "@/components/product/ProductListing";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getCategories, getCategoryBySlug, getProductsByCategory } from "@/lib/storefront/catalog";
+import { buildPageMetadata } from "@/lib/storefront/metadata";
+import { getStoreSettings } from "@/lib/storefront/settings";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +18,7 @@ type CategoryPageProps = {
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const category = await getCategoryBySlug(slug);
+  const [category, settings] = await Promise.all([getCategoryBySlug(slug), getStoreSettings()]);
 
   if (!category) {
     return {
@@ -24,15 +26,11 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     };
   }
 
-  return {
+  return buildPageMetadata(settings, {
     title: category.name,
     description: category.description,
-    openGraph: {
-      title: `${category.name} | Atelier Lune`,
-      description: category.description,
-      images: [category.image]
-    }
-  };
+    openGraphImage: category.image
+  });
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {

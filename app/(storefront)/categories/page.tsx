@@ -4,13 +4,19 @@ import { ArrowRight } from "lucide-react";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getCategories } from "@/lib/storefront/catalog";
-
-export const metadata: Metadata = {
-  title: "Categories",
-  description: "Explore Atelier Lune dresses, tops, pants, jeans, shoes, bags, and accessories."
-};
+import { buildPageMetadata } from "@/lib/storefront/metadata";
+import { getStoreSettings } from "@/lib/storefront/settings";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getStoreSettings();
+
+  return buildPageMetadata(settings, {
+    title: "Categories",
+    description: `Explore ${settings.storeName} dresses, tops, pants, jeans, shoes, bags, and accessories.`
+  });
+}
 
 export default async function CategoriesPage() {
   const categories = await getCategories();

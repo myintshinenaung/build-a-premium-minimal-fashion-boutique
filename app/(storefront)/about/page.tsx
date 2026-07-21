@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { buildPageMetadata } from "@/lib/storefront/metadata";
+import { getStoreSettings } from "@/lib/storefront/settings";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: "Learn about Atelier Lune, a premium minimal fashion boutique built around a quiet, edited wardrobe."
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getStoreSettings();
 
-export default function AboutPage() {
+  return buildPageMetadata(settings, {
+    title: "About",
+    description: `Learn about ${settings.storeName}, a premium minimal fashion boutique built around a quiet, edited wardrobe.`
+  });
+}
+
+export default async function AboutPage() {
+  const settings = await getStoreSettings();
+
   return (
     <>
       <section className="mx-auto grid max-w-[1440px] gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-end lg:px-8">
@@ -15,13 +23,14 @@ export default function AboutPage() {
           <p className="text-xs font-medium uppercase tracking-[0.24em] text-stone">Brand story</p>
           <h1 className="mt-4 text-4xl font-medium leading-tight text-ink md:text-6xl">Quiet pieces. Precise intent.</h1>
           <p className="mt-6 text-sm leading-7 text-stone md:text-base">
-            Atelier Lune began as a small boutique for women who wanted fewer decisions and better proportions. Each
-            collection is built around calm neutrals, disciplined silhouettes, and fabrics that feel considered up close.
+            {settings.storeName} began as a small boutique for women who wanted fewer decisions and better proportions.
+            Each collection is built around calm neutrals, disciplined silhouettes, and fabrics that feel considered up
+            close.
           </p>
         </div>
         <BoutiqueImage
           src="/images/store-interior.png"
-          alt="Atelier Lune boutique interior"
+          alt={`${settings.storeName} boutique interior`}
           className="aspect-[16/9] rounded-[2px]"
           priority
           sizes="(min-width: 1024px) 60vw, 100vw"
@@ -53,7 +62,7 @@ export default function AboutPage() {
         <div className="mt-10 grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
           <BoutiqueImage
             src="/images/new-collection.png"
-            alt="Atelier Lune tailored collection"
+            alt={`${settings.storeName} tailored collection`}
             className="aspect-[16/10] rounded-[2px]"
             sizes="(min-width: 768px) 56vw, 100vw"
           />

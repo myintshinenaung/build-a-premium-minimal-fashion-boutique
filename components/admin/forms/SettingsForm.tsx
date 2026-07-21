@@ -14,6 +14,22 @@ const identityFields: Array<keyof StoreSettings> = ["storeName", "logo", "storeD
 const socialFields: Array<keyof StoreSettings> = ["facebook", "messenger", "viber", "telegram", "tiktok", "instagram"];
 const contactFields: Array<keyof StoreSettings> = ["email", "phone", "address", "googleMap", "currency", "timezone"];
 
+const heroFields: Array<keyof StoreSettings> = [
+  "heroTitleEn",
+  "heroTitleMy",
+  "heroSubtitleEn",
+  "heroSubtitleMy",
+  "heroMarketingHeadlineEn",
+  "heroMarketingHeadlineMy",
+  "heroCtaLabelEn",
+  "heroCtaLabelMy",
+  "heroSecondaryCtaLabelEn",
+  "heroSecondaryCtaLabelMy",
+  "heroPrimaryCtaHref",
+  "heroSecondaryCtaHref",
+  "heroBackgroundImage"
+];
+
 export function SettingsForm({ initialSettings }: { initialSettings: StoreSettings }) {
   const [settings, setSettings] = useState(initialSettings);
   const [saved, setSaved] = useState(false);
@@ -41,7 +57,7 @@ export function SettingsForm({ initialSettings }: { initialSettings: StoreSettin
     <section className="space-y-8">
       <AdminPageHeader
         title="Settings"
-        description="Version 2 store settings for Supabase-backed brand, contact, social, localization, and map configuration."
+        description="Version 2 store settings for Supabase-backed brand, contact, social, localization, homepage hero, and map configuration."
       />
 
       <div className="grid gap-6 xl:grid-cols-[320px_1fr]">
@@ -59,6 +75,13 @@ export function SettingsForm({ initialSettings }: { initialSettings: StoreSettin
 
         <div className="space-y-6">
           <SettingsSection title="Brand" fields={identityFields} settings={settings} onChange={updateField} />
+          <SettingsSection
+            title="Homepage hero"
+            description="Controls the storefront hero background, marketing headline, subtitles, and CTA labels in English and Myanmar."
+            fields={heroFields}
+            settings={settings}
+            onChange={updateField}
+          />
           <SettingsSection title="Social channels" fields={socialFields} settings={settings} onChange={updateField} />
           <SettingsSection title="Contact and localization" fields={contactFields} settings={settings} onChange={updateField} />
           <button
@@ -77,11 +100,13 @@ export function SettingsForm({ initialSettings }: { initialSettings: StoreSettin
 
 function SettingsSection({
   title,
+  description,
   fields,
   settings,
   onChange
 }: {
   title: string;
+  description?: string;
   fields: Array<keyof StoreSettings>;
   settings: StoreSettings;
   onChange: (field: keyof StoreSettings, value: string) => void;
@@ -90,13 +115,30 @@ function SettingsSection({
     <section className="border border-line bg-white p-5">
       <div className="border-b border-line pb-5">
         <p className={labelClass}>{title}</p>
-        <h2 className="mt-2 text-xl font-medium text-ink">{title} placeholders</h2>
+        <h2 className="mt-2 text-xl font-medium text-ink">{title}</h2>
+        {description ? <p className="mt-3 text-sm leading-6 text-stone">{description}</p> : null}
       </div>
       <div className="mt-5 grid gap-5 md:grid-cols-2">
         {fields.map((field) => (
-          <label key={field} className={field === "storeDescription" || field === "address" || field === "googleMap" ? "md:col-span-2" : ""}>
+          <label
+            key={field}
+            className={
+              field === "storeDescription" ||
+              field === "address" ||
+              field === "googleMap" ||
+              field === "heroBackgroundImage" ||
+              field.includes("Subtitle") ||
+              field.includes("Headline")
+                ? "md:col-span-2"
+                : ""
+            }
+          >
             <span className={labelClass}>{labelFor(field)}</span>
-            {field === "storeDescription" || field === "address" || field === "googleMap" ? (
+            {field === "storeDescription" ||
+            field === "address" ||
+            field === "googleMap" ||
+            field.includes("Subtitle") ||
+            field.includes("Headline") ? (
               <textarea
                 value={settings[field]}
                 onChange={(event) => onChange(field, event.target.value)}
