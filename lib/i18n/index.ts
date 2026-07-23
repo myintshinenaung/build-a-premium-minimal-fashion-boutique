@@ -1,5 +1,3 @@
-export { createTranslator, type Translator } from "@/lib/i18n/get-translator";
-export { getTranslator } from "@/lib/i18n/server-translator";
-export { getRequestLocale } from "@/lib/i18n/server-locale";
-export { resolveCmsContent } from "@/lib/i18n/cms-content";
-export { defaultLocale, isLocale, locales, type Locale } from "@/lib/i18n/config";
+/** @deprecated Import from `@/features/i18n/client` or `@/features/i18n/server` (Phase 2 shim). */
+export * from "@/features/i18n/client";
+export * from "@/features/i18n/server";
