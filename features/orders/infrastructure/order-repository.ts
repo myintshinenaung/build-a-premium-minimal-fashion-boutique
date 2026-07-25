@@ -1,6 +1,6 @@
 import { createRepositoryError, isRecoverableReadError } from "@/lib/repositories/supabase-errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import type { OrderItemRow, OrderRow, PaymentProvider, PaymentStatus } from "@/lib/supabase/types";
+import type { OrderItemRow, OrderRow, PaymentProvider, PaymentStatus, ShippingStatus } from "@/lib/supabase/types";
 import type { AdminOrder } from "@/types/admin";
 import type { StorefrontOrder, StorefrontOrderItem } from "@/types/order";
 
@@ -38,6 +38,14 @@ export type OrderPaymentUpdateInput = {
   paymentProvider?: PaymentProvider | null;
   paymentStatus: PaymentStatus;
   paidAt?: string | null;
+  status?: AdminOrder["status"];
+};
+
+export type OrderShippingUpdateInput = {
+  orderId: string;
+  shippingStatus: ShippingStatus;
+  carrier: string;
+  trackingNumber: string;
   status?: AdminOrder["status"];
 };
 
@@ -115,6 +123,9 @@ export const orderRepository = {
           payment_provider: null,
           payment_status: "pending",
           paid_at: null,
+          shipping_status: "pending",
+          tracking_number: null,
+          carrier: null,
           created_at: createdAt
         })
         .select("*")
@@ -210,6 +221,55 @@ export const orderRepository = {
     } catch (error) {
       throw createRepositoryError("Unable to update order payment", error);
     }
+  },
+
+  async updateShipping(input: OrderShippingUpdateInput): Promise<StorefrontOrder | null> {
+    try {
+      const supabase = createSupabaseServerClient();
+      const updatePayload: {
+        shipping_status: ShippingStatus;
+        carrier: string;
+        tracking_number: string;
+        status?: AdminOrder["status"];
+      } = {
+        shipping_status: input.shippingStatus,
+        carrier: input.carrier,
+        tracking_number: input.trackingNumber
+      };
+
+      if (input.status) {
+        updatePayload.status = input.status;
+      }
+
+      const { data: order, error: orderError } = await supabase
+        .from("orders")
+        .update(updatePayload)
+        .eq("id", input.orderId)
+        .select("*")
+        .maybeSingle();
+
+      if (orderError) {
+        throw orderError;
+      }
+
+      if (!order) {
+        return null;
+      }
+
+      const { data: items, error: itemsError } = await supabase
+        .from("order_items")
+        .select("*")
+        .eq("order_id", input.orderId)
+        .order("product_name", { ascending: true });
+
+      if (itemsError) {
+        throw itemsError;
+      }
+
+      return storefrontOrderFromRow(order, items ?? []);
+    } catch (error) {
+      throw createRepositoryError("Unable to update order shipping", error);
+    }
   }
 };
 
@@ -220,6 +280,9 @@ function orderFromRow(row: OrderRow): AdminOrder {
     totalMmk: row.total_mmk,
     status: row.status,
     channel: row.channel,
+    shippingStatus: row.shipping_status,
+    carrier: row.carrier,
+    trackingNumber: row.tracking_number,
     createdAt: row.created_at
   };
 }
@@ -259,6 +322,9 @@ function storefrontOrderFromRow(row: OrderRow, items: OrderItemRow[]): Storefron
     paymentProvider: row.payment_provider,
     paymentStatus: row.payment_status,
     paidAt: row.paid_at,
+    shippingStatus: row.shipping_status,
+    trackingNumber: row.tracking_number,
+    carrier: row.carrier,
     createdAt: row.created_at,
     items: items.map(orderItemFromRow)
   };

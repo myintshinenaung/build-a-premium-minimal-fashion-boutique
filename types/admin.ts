@@ -64,6 +64,9 @@ export type AdminOrder = {
   totalMmk: number;
   status: "Pending" | "Confirmed" | "Packed" | "Completed";
   channel: "Messenger" | "Viber" | "Phone" | "Web";
+  shippingStatus: "pending" | "shipped";
+  carrier: string | null;
+  trackingNumber: string | null;
   createdAt: string;
 };
 
@@ -105,4 +108,5 @@ export type StoreSettings = {
   heroPrimaryCtaHref: string;
   heroSecondaryCtaHref: string;
   heroBackgroundImage: string;
+  flatRateShippingMmk: number;
 };

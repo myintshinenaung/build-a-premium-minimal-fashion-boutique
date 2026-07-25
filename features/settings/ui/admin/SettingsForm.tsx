@@ -34,7 +34,7 @@ export function SettingsForm({ initialSettings }: { initialSettings: StoreSettin
   const [settings, setSettings] = useState(initialSettings);
   const [saved, setSaved] = useState(false);
 
-  function updateField(field: keyof StoreSettings, value: string) {
+  function updateField(field: keyof StoreSettings, value: string | number) {
     setSettings((current) => ({ ...current, [field]: value }));
     setSaved(false);
   }
@@ -84,6 +84,24 @@ export function SettingsForm({ initialSettings }: { initialSettings: StoreSettin
           />
           <SettingsSection title="Social channels" fields={socialFields} settings={settings} onChange={updateField} />
           <SettingsSection title="Contact and localization" fields={contactFields} settings={settings} onChange={updateField} />
+          <section className="border border-line bg-white p-5">
+            <div className="border-b border-line pb-5">
+              <p className={labelClass}>Shipping</p>
+              <h2 className="mt-2 text-xl font-medium text-ink">Shipping</h2>
+              <p className="mt-3 text-sm leading-6 text-stone">Configure the flat-rate shipping fee applied at checkout.</p>
+            </div>
+            <label className="mt-5 block max-w-sm">
+              <span className={labelClass}>Flat rate shipping (MMK)</span>
+              <input
+                type="number"
+                min={0}
+                step={100}
+                value={settings.flatRateShippingMmk}
+                onChange={(event) => updateField("flatRateShippingMmk", Number(event.target.value) || 0)}
+                className={`${inputClass} mt-2`}
+              />
+            </label>
+          </section>
           <button
             type="button"
             onClick={saveSettings}
@@ -109,7 +127,7 @@ function SettingsSection({
   description?: string;
   fields: Array<keyof StoreSettings>;
   settings: StoreSettings;
-  onChange: (field: keyof StoreSettings, value: string) => void;
+  onChange: (field: keyof StoreSettings, value: string | number) => void;
 }) {
   return (
     <section className="border border-line bg-white p-5">

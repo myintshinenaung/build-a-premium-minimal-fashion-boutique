@@ -141,6 +141,11 @@ export const enMessages = {
     paymentStatusProcessing: "Processing payment",
     paymentStatusPaid: "Paid",
     paymentStatusFailed: "Payment failed",
+    shippingStatus: "Shipping status",
+    shippingStatusPending: "Preparing shipment",
+    shippingStatusShipped: "Shipped",
+    carrier: "Carrier",
+    trackingNumber: "Tracking number",
     continueShopping: "Continue Shopping",
     backHome: "Back to Home"
   },

@@ -7,6 +7,7 @@ export type OrderStatus = "Pending" | "Confirmed" | "Packed" | "Completed";
 export type OrderChannel = "Messenger" | "Viber" | "Phone" | "Web";
 export type PaymentStatus = "pending" | "processing" | "paid" | "failed";
 export type PaymentProvider = "stripe";
+export type ShippingStatus = "pending" | "shipped";
 
 export type ProductRow = {
   id: string;
@@ -85,6 +86,7 @@ export type SettingsRow = {
   hero_primary_cta_href?: string;
   hero_secondary_cta_href?: string;
   hero_background_image?: string;
+  flat_rate_shipping_mmk: number;
   updated_at: string;
 };
 
@@ -114,6 +116,9 @@ export type OrderRow = {
   payment_provider: PaymentProvider | null;
   payment_status: PaymentStatus;
   paid_at: string | null;
+  shipping_status: ShippingStatus;
+  tracking_number: string | null;
+  carrier: string | null;
   created_at: string;
 };
 

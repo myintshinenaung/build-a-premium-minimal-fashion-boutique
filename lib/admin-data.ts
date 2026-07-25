@@ -296,9 +296,39 @@ export const adminMedia: AdminMedia[] = [
 ];
 
 export const adminOrders: AdminOrder[] = [
-  { id: "ORD-1042", customer: "May Thiri", totalMmk: 877000, status: "Pending", channel: "Messenger", createdAt: "2026-07-10" },
-  { id: "ORD-1041", customer: "Nandar Lin", totalMmk: 392000, status: "Confirmed", channel: "Viber", createdAt: "2026-07-09" },
-  { id: "ORD-1040", customer: "Hnin Wai", totalMmk: 658000, status: "Packed", channel: "Phone", createdAt: "2026-07-08" }
+  {
+    id: "ORD-1042",
+    customer: "May Thiri",
+    totalMmk: 877000,
+    status: "Pending",
+    channel: "Messenger",
+    shippingStatus: "pending",
+    carrier: null,
+    trackingNumber: null,
+    createdAt: "2026-07-10"
+  },
+  {
+    id: "ORD-1041",
+    customer: "Nandar Lin",
+    totalMmk: 392000,
+    status: "Confirmed",
+    channel: "Viber",
+    shippingStatus: "pending",
+    carrier: null,
+    trackingNumber: null,
+    createdAt: "2026-07-09"
+  },
+  {
+    id: "ORD-1040",
+    customer: "Hnin Wai",
+    totalMmk: 658000,
+    status: "Packed",
+    channel: "Phone",
+    shippingStatus: "shipped",
+    carrier: "Ninja Van",
+    trackingNumber: "NV-1040-MM",
+    createdAt: "2026-07-08"
+  }
 ];
 
 export const adminCustomers: AdminCustomer[] = [
@@ -323,6 +353,7 @@ export const storeSettings: StoreSettings = {
   googleMap: "https://www.google.com/maps?q=Garosu-gil%2C%20Gangnam-gu%2C%20Seoul",
   currency: "MMK",
   timezone: "Asia/Yangon",
+  flatRateShippingMmk: 5000,
   ...defaultAdminHeroSettings
 };
 

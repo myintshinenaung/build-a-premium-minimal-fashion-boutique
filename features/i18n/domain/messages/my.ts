@@ -143,6 +143,11 @@ export const myMessages: Messages = {
     paymentStatusProcessing: "ငွေချေမှု လုပ်ဆောင်နေသည်",
     paymentStatusPaid: "ငွေချေပြီး",
     paymentStatusFailed: "ငွေချေမှု မအောင်မြင်",
+    shippingStatus: "ပို့ဆောင်မှု အခြေအနေ",
+    shippingStatusPending: "ပို့ဆောင်ရန် ပြင်ဆင်နေသည်",
+    shippingStatusShipped: "ပို့ဆောင်ပြီး",
+    carrier: "ပို့ဆောင်သူ",
+    trackingNumber: "Tracking နံပါတ်",
     continueShopping: "ဆက်လက်ဝယ်ယူရန်",
     backHome: "ပင်မစာမျက်နှာသို့"
   },

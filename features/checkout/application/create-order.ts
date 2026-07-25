@@ -2,11 +2,11 @@ import {
   createOrderInputSchema,
   type CreateOrderInput
 } from "@/features/checkout/domain/checkout-schemas";
-import { getShippingFee } from "@/features/checkout/domain/shipping";
 import {
   CheckoutValidationError,
   validateCheckoutCart
 } from "@/features/checkout/application/validate-cart";
+import { getShippingFee } from "@/features/shipping/server";
 import { orderRepository } from "@/features/orders/infrastructure/order-repository";
 import type { StorefrontOrder } from "@/types/order";
 import { ZodError } from "zod";
@@ -34,7 +34,7 @@ export async function createOrder(input: unknown): Promise<StorefrontOrder> {
   }
 
   const validatedCart = await validateCheckoutCart(parsed.items);
-  const shippingMmk = getShippingFee(parsed.shippingMethod);
+  const shippingMmk = await getShippingFee(parsed.shippingMethod);
   const totalMmk = validatedCart.subtotalMmk + shippingMmk;
   const email = parsed.customer.email?.trim() ?? "";
   const orderId = createOrderId();

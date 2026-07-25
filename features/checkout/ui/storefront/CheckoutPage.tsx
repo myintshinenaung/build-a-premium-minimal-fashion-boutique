@@ -2,11 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { CheckoutForm } from "@/features/checkout/ui/storefront/CheckoutForm";
-import { FLAT_RATE_SHIPPING_MMK } from "@/features/checkout/domain/shipping";
+import { getFlatRateShippingMmk } from "@/features/shipping/server";
 import { getTranslator } from "@/features/i18n/server";
 import type { MessageKey } from "@/features/i18n/domain/message-keys";
 import { orderRepository } from "@/features/orders/infrastructure/order-repository";
-import type { PaymentStatus } from "@/lib/supabase/types";
+import type { PaymentStatus, ShippingStatus } from "@/lib/supabase/types";
 import { formatPrice } from "@/lib/utils";
 
 const labelClass = "text-xs font-medium uppercase tracking-[0.18em] text-stone";
@@ -18,13 +18,18 @@ const paymentStatusKeys: Record<PaymentStatus, MessageKey> = {
   failed: "checkout.paymentStatusFailed"
 };
 
+const shippingStatusKeys: Record<ShippingStatus, MessageKey> = {
+  pending: "checkout.shippingStatusPending",
+  shipped: "checkout.shippingStatusShipped"
+};
+
 export async function CheckoutPage() {
-  const { t } = await getTranslator();
+  const [{ t }, flatRateShippingMmk] = await Promise.all([getTranslator(), getFlatRateShippingMmk()]);
 
   return (
     <section className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 lg:px-8">
       <SectionHeader eyebrow={t("checkout.eyebrow")} title={t("checkout.title")} description={t("checkout.description")} />
-      <CheckoutForm flatRateShippingMmk={FLAT_RATE_SHIPPING_MMK} />
+      <CheckoutForm flatRateShippingMmk={flatRateShippingMmk} />
     </section>
   );
 }
@@ -62,6 +67,22 @@ export async function OrderConfirmationPage({ params }: { params: Promise<{ orde
               <dt className={labelClass}>{t("checkout.paymentStatus")}</dt>
               <dd className="mt-1 text-ink">{t(paymentStatusKeys[order.paymentStatus])}</dd>
             </div>
+            <div>
+              <dt className={labelClass}>{t("checkout.shippingStatus")}</dt>
+              <dd className="mt-1 text-ink">{t(shippingStatusKeys[order.shippingStatus])}</dd>
+            </div>
+            {order.carrier ? (
+              <div>
+                <dt className={labelClass}>{t("checkout.carrier")}</dt>
+                <dd className="mt-1 text-ink">{order.carrier}</dd>
+              </div>
+            ) : null}
+            {order.trackingNumber ? (
+              <div>
+                <dt className={labelClass}>{t("checkout.trackingNumber")}</dt>
+                <dd className="mt-1 text-ink">{order.trackingNumber}</dd>
+              </div>
+            ) : null}
             <div>
               <dt className={labelClass}>{t("checkout.shippingAddress")}</dt>
               <dd className="mt-1 text-ink">

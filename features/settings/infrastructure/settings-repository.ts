@@ -2,6 +2,7 @@ import { createRepositoryError, isRecoverableReadError } from "@/lib/repositorie
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Database, SettingsRow } from "@/lib/supabase/types";
 import { defaultAdminHeroSettings } from "@/features/settings/domain/defaults";
+import { DEFAULT_FLAT_RATE_SHIPPING_MMK } from "@/features/shipping/domain/shipping-method";
 import type { StoreSettings } from "@/types/admin";
 
 type SettingsInsert = Database["public"]["Tables"]["settings"]["Insert"];
@@ -24,6 +25,7 @@ const defaultSettings: StoreSettings = {
   googleMap: "",
   currency: "MMK",
   timezone: "Asia/Yangon",
+  flatRateShippingMmk: DEFAULT_FLAT_RATE_SHIPPING_MMK,
   ...defaultAdminHeroSettings
 };
 
@@ -97,7 +99,8 @@ function settingsFromRow(row: SettingsRow): StoreSettings {
     heroSecondaryCtaLabelMy: row.hero_secondary_cta_label_my || defaultAdminHeroSettings.heroSecondaryCtaLabelMy,
     heroPrimaryCtaHref: row.hero_primary_cta_href || defaultAdminHeroSettings.heroPrimaryCtaHref,
     heroSecondaryCtaHref: row.hero_secondary_cta_href || defaultAdminHeroSettings.heroSecondaryCtaHref,
-    heroBackgroundImage: row.hero_background_image || defaultAdminHeroSettings.heroBackgroundImage
+    heroBackgroundImage: row.hero_background_image || defaultAdminHeroSettings.heroBackgroundImage,
+    flatRateShippingMmk: row.flat_rate_shipping_mmk ?? DEFAULT_FLAT_RATE_SHIPPING_MMK
   };
 }
 
@@ -132,6 +135,7 @@ function settingsToInsert(settings: StoreSettings): SettingsInsert {
     hero_primary_cta_href: settings.heroPrimaryCtaHref,
     hero_secondary_cta_href: settings.heroSecondaryCtaHref,
     hero_background_image: settings.heroBackgroundImage,
+    flat_rate_shipping_mmk: settings.flatRateShippingMmk,
     updated_at: currentDateStamp()
   };
 }
