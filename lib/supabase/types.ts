@@ -4,7 +4,7 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 
 export type BannerPlacement = "Homepage Hero" | "New Collection" | "Announcement";
 export type OrderStatus = "Pending" | "Confirmed" | "Packed" | "Completed";
-export type OrderChannel = "Messenger" | "Viber" | "Phone";
+export type OrderChannel = "Messenger" | "Viber" | "Phone" | "Web";
 
 export type ProductRow = {
   id: string;
@@ -98,10 +98,32 @@ export type CustomerRow = {
 export type OrderRow = {
   id: string;
   customer: string;
+  customer_phone: string;
+  customer_email: string;
+  shipping_address: string;
+  township: string;
+  notes: string;
+  subtotal_mmk: number;
+  shipping_mmk: number;
   total_mmk: number;
   status: OrderStatus;
   channel: OrderChannel;
   created_at: string;
+};
+
+export type OrderItemRow = {
+  id: string;
+  order_id: string;
+  product_id: string;
+  variant_id: string;
+  product_name: string;
+  product_slug: string;
+  image: string;
+  size: string;
+  color: string;
+  unit_price_mmk: number;
+  quantity: number;
+  line_total_mmk: number;
 };
 
 export type Database = {
@@ -141,6 +163,12 @@ export type Database = {
         Row: OrderRow;
         Insert: Omit<OrderRow, "id" | "created_at"> & Partial<Pick<OrderRow, "id" | "created_at">>;
         Update: Partial<Omit<OrderRow, "id">>;
+        Relationships: [];
+      };
+      order_items: {
+        Row: OrderItemRow;
+        Insert: Omit<OrderItemRow, "id"> & Partial<Pick<OrderItemRow, "id">>;
+        Update: Partial<Omit<OrderItemRow, "id">>;
         Relationships: [];
       };
     };

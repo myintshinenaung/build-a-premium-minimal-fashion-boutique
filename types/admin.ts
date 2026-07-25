@@ -63,7 +63,7 @@ export type AdminOrder = {
   customer: string;
   totalMmk: number;
   status: "Pending" | "Confirmed" | "Packed" | "Completed";
-  channel: "Messenger" | "Viber" | "Phone";
+  channel: "Messenger" | "Viber" | "Phone" | "Web";
   createdAt: string;
 };
 
