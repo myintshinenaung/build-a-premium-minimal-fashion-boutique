@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { jsonError, requireAdminApiSession } from "@/lib/admin-api";
-import { settingsService } from "@/lib/services";
-import type { SettingsUpdateInput } from "@/lib/repositories/settings-repository";
+import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { settingsService, type SettingsUpdateInput } from "@/features/settings/server";
 
 export async function GET(request: NextRequest) {
   const unauthorized = await requireAdminApiSession(request);

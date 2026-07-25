@@ -1,15 +1,21 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { HomeHeroBanner } from "@/components/storefront/HomeHeroBanner";
-import { NewCollectionBanner } from "@/components/storefront/NewCollectionBanner";
-import { ProductGrid } from "@/components/product/ProductGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
-import { getTranslator } from "@/lib/i18n/server-translator";
-import { getStorefrontBannerByPlacement } from "@/lib/storefront/banners";
-import { getBestSellers, getCategories, getNewArrivals } from "@/lib/storefront/catalog";
+import {
+  getStorefrontBannerByPlacement,
+  HomeHeroBanner,
+  NewCollectionBanner
+} from "@/features/content/server";
+import {
+  getBestSellers,
+  getCategories,
+  getNewArrivals,
+  ProductGrid
+} from "@/features/catalog/server";
+import { getTranslator } from "@/features/i18n/server";
+import { getStoreSettings } from "@/features/settings/server";
 import { getInstagramHandle } from "@/lib/storefront/social";
-import { getStoreSettings } from "@/lib/storefront/settings";
 
 export const dynamic = "force-dynamic";
 

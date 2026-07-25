@@ -7,7 +7,7 @@ import type {
   AdminProduct,
   StoreSettings
 } from "@/types/admin";
-import { defaultAdminHeroSettings } from "@/lib/storefront/defaults";
+import { defaultAdminHeroSettings } from "@/features/settings/domain/defaults";
 
 export const adminCategories: AdminCategory[] = [
   {

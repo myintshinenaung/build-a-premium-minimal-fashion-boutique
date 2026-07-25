@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { jsonError, requireAdminApiSession } from "@/lib/admin-api";
-import { productService } from "@/lib/services";
+import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { productService } from "@/features/catalog/server";
 
 type ProductDuplicateRouteContext = {
   params: Promise<{

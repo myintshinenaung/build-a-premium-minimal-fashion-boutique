@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { CategoryManager } from "@/components/admin/forms/CategoryManager";
-import { categoryService } from "@/lib/services";
+import { CategoryManager } from "@/features/catalog/client";
+import { categoryService } from "@/features/catalog/server";
 
 export const metadata: Metadata = {
   title: "Categories"

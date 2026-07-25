@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { buildPageMetadata } from "@/lib/storefront/metadata";
-import { getStoreSettings } from "@/lib/storefront/settings";
+import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getStoreSettings();

@@ -1,11 +1,13 @@
 import { notFound } from "next/navigation";
-import { ProductGallery } from "@/components/product/ProductGallery";
-import { ProductGrid } from "@/components/product/ProductGrid";
-import { ProductPurchasePanel } from "@/components/product/ProductPurchasePanel";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { getCategoryBySlug, getProductBySlug, getRelatedProducts } from "@/lib/storefront/catalog";
-import { buildPageMetadata } from "@/lib/storefront/metadata";
-import { getStoreSettings } from "@/lib/storefront/settings";
+import { ProductGallery, ProductPurchasePanel } from "@/features/catalog/client";
+import {
+  getCategoryBySlug,
+  getProductBySlug,
+  getRelatedProducts,
+  ProductGrid
+} from "@/features/catalog/server";
+import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 import { slugify } from "@/lib/utils";
 import type { Metadata } from "next";
 

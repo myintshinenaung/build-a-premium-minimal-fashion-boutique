@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { StorefrontCartShell } from "@/components/cart/StorefrontCartShell";
+import { StorefrontCartShell } from "@/features/cart/client";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { StorefrontProviders } from "@/components/storefront/StorefrontProviders";
-import { getRequestLocale } from "@/lib/i18n/server-locale";
-import { buildRootStorefrontMetadata } from "@/lib/storefront/metadata";
-import { getSearchIndex } from "@/lib/storefront/search";
-import { getStoreSettings } from "@/lib/storefront/settings";
+import { getSearchIndex } from "@/features/search/server";
+import { getRequestLocale } from "@/features/i18n/server";
+import { buildRootStorefrontMetadata, getStoreSettings } from "@/features/settings/server";
 
 export const dynamic = "force-dynamic";
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { BannerManager } from "@/components/admin/forms/BannerManager";
-import { bannerService } from "@/lib/services";
+import { BannerManager } from "@/features/content/client";
+import { bannerService } from "@/features/content/server";
 
 export const metadata: Metadata = {
   title: "Banner Manager"

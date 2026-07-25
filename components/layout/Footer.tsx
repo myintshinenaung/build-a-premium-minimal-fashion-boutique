@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { getTranslator } from "@/lib/i18n/server-translator";
-import { getCategories } from "@/lib/storefront/catalog";
+import { getCategories } from "@/features/catalog/server";
+import { getTranslator } from "@/features/i18n/server";
+import { getStoreSettings } from "@/features/settings/server";
 import { formatStoreAddress } from "@/lib/storefront/contact-links";
-import { getStoreSettings } from "@/lib/storefront/settings";
 
 export async function Footer() {
   const { t } = await getTranslator();

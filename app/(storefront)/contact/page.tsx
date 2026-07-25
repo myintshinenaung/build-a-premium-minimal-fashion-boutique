@@ -3,8 +3,7 @@ import { ExternalLink, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-r
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { buildStorefrontContactLinks, formatStoreAddress, getGoogleMapEmbedUrl } from "@/lib/storefront/contact-links";
-import { buildPageMetadata } from "@/lib/storefront/metadata";
-import { getStoreSettings } from "@/lib/storefront/settings";
+import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 
 const contactIcons = {
   phone: Phone,

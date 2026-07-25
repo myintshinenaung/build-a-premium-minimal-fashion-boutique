@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ProductListing } from "@/components/product/ProductListing";
+import { ProductListing } from "@/features/catalog/client";
+import { getCategories, getCategoryBySlug, getProductsByCategory } from "@/features/catalog/server";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { getCategories, getCategoryBySlug, getProductsByCategory } from "@/lib/storefront/catalog";
-import { buildPageMetadata } from "@/lib/storefront/metadata";
-import { getStoreSettings } from "@/lib/storefront/settings";
+import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 
 export const dynamic = "force-dynamic";
 

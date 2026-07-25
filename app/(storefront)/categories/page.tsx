@@ -3,9 +3,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { getCategories } from "@/lib/storefront/catalog";
-import { buildPageMetadata } from "@/lib/storefront/metadata";
-import { getStoreSettings } from "@/lib/storefront/settings";
+import { getCategories } from "@/features/catalog/server";
+import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 
 export const dynamic = "force-dynamic";
 

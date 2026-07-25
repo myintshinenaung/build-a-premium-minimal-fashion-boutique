@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { jsonError, requireAdminApiSession } from "@/lib/admin-api";
-import { bannerService } from "@/lib/services";
-import type { BannerUpdateInput } from "@/lib/repositories/banner-repository";
+import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { bannerService, type BannerUpdateInput } from "@/features/content/server";
 
 type BannerRouteContext = {
   params: Promise<{

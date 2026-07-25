@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { jsonError, requireAdminApiSession } from "@/lib/admin-api";
-import { categoryService } from "@/lib/services";
-import type { CategoryUpdateInput } from "@/lib/repositories/category-repository";
+import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { categoryService, type CategoryUpdateInput } from "@/features/catalog/server";
 
 type CategoryRouteContext = {
   params: Promise<{

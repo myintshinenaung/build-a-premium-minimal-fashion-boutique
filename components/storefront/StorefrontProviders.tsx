@@ -7,8 +7,7 @@ import {
   TranslatorProvider,
   type Locale
 } from "@/features/i18n/client";
-import { ProductSearchModal, SearchKeyboardShortcut } from "@/components/search/ProductSearchModal";
-import { SearchProvider } from "@/components/search/SearchProvider";
+import { ProductSearchModal, SearchKeyboardShortcut, SearchProvider } from "@/features/search/client";
 import type { SearchProductIndex } from "@/types/search";
 
 type StorefrontProvidersProps = {

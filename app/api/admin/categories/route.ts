@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { jsonError, requireAdminApiSession } from "@/lib/admin-api";
-import { categoryService } from "@/lib/services";
-import type { CategoryCreateInput } from "@/lib/repositories/category-repository";
+import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { categoryService, type CategoryCreateInput } from "@/features/catalog/server";
 
 export async function GET(request: NextRequest) {
   const unauthorized = await requireAdminApiSession(request);

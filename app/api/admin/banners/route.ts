@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { jsonError, requireAdminApiSession } from "@/lib/admin-api";
-import { bannerService } from "@/lib/services";
-import type { BannerCreateInput } from "@/lib/repositories/banner-repository";
+import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { bannerService, type BannerCreateInput } from "@/features/content/server";
 
 export async function GET(request: NextRequest) {
   const unauthorized = await requireAdminApiSession(request);

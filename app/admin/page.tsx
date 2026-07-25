@@ -5,7 +5,8 @@ import { AdminMetricCard } from "@/components/admin/AdminMetricCard";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
 import { formatMmk } from "@/lib/admin-data";
-import { categoryService, orderService, productService } from "@/lib/services";
+import { categoryService, productService } from "@/features/catalog/server";
+import { orderService } from "@/features/orders/server";
 
 export const metadata: Metadata = {
   title: "Dashboard Overview"

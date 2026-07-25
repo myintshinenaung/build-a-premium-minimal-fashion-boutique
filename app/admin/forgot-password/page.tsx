@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Mail } from "lucide-react";
-import { AdminForgotPasswordForm } from "@/components/admin/auth/AdminForgotPasswordForm";
+import { AdminForgotPasswordForm } from "@/features/identity/client";
 
 export const metadata: Metadata = {
   title: "Forgot Password"

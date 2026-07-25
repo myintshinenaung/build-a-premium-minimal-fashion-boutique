@@ -22,8 +22,7 @@ import {
   X
 } from "lucide-react";
 import { useState, type ComponentType, type ReactNode } from "react";
-import { ADMIN_SHELLLESS_PATHS, ADMIN_THEME_STORAGE_KEY } from "@/lib/admin-auth";
-import type { AdminUser } from "@/lib/admin-session";
+import { ADMIN_SHELLLESS_PATHS, ADMIN_THEME_STORAGE_KEY, type AdminUser } from "@/features/identity/client";
 import { cn } from "@/lib/utils";
 
 type AdminNavItem = {

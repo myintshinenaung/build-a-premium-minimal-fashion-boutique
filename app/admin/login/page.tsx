@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LockKeyhole } from "lucide-react";
 import { Suspense } from "react";
-import { AdminLoginForm } from "@/components/admin/auth/AdminLoginForm";
+import { AdminLoginForm } from "@/features/identity/client";
 
 export const metadata: Metadata = {
   title: "Login"

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { ProductManager } from "@/components/admin/forms/ProductManager";
-import { categoryService, productService } from "@/lib/services";
+import { ProductManager } from "@/features/catalog/client";
+import { categoryService, productService } from "@/features/catalog/server";
 
 export const metadata: Metadata = {
   title: "Products",

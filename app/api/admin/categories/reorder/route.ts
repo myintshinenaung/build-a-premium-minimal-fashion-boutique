@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { jsonError, requireAdminApiSession } from "@/lib/admin-api";
-import { categoryService } from "@/lib/services";
+import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { categoryService } from "@/features/catalog/server";
 
 type CategoryReorderBody = {
   ids: string[];

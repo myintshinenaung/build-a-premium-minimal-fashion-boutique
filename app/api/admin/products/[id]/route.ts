@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { jsonError, requireAdminApiSession } from "@/lib/admin-api";
-import { productService } from "@/lib/services";
-import type { ProductUpdateInput } from "@/lib/repositories/product-repository";
+import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { productService, type ProductUpdateInput } from "@/features/catalog/server";
 
 type ProductRouteContext = {
   params: Promise<{

@@ -1,6 +1,4 @@
-export { bannerService } from "./banner-service";
-export { categoryService } from "./category-service";
-export { customerService } from "./customer-service";
-export { orderService } from "./order-service";
-export { productService } from "./product-service";
-export { settingsService } from "./settings-service";
+export { bannerService } from "@/features/content/server";
+export { categoryService, productService } from "@/features/catalog/server";
+export { customerService, orderService } from "@/features/orders/server";
+export { settingsService } from "@/features/settings/server";

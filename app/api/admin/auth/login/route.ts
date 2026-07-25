@@ -1,7 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getAdminAuthorizationErrorMessage, isAuthorizedAdmin } from "@/lib/admin-authorization";
-import { createSupabaseAuthRouteClient } from "@/lib/supabase/auth-server";
-import { jsonError } from "@/lib/admin-api";
+import {
+  createSupabaseAuthRouteClient,
+  getAdminAuthorizationErrorMessage,
+  isAuthorizedAdmin,
+  jsonError
+} from "@/features/identity/server";
 
 type LoginBody = {
   email?: string;

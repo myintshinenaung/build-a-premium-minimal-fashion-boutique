@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { ProductListing } from "@/components/product/ProductListing";
+import { ProductListing } from "@/features/catalog/client";
+import { getCategories, getProducts } from "@/features/catalog/server";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { getCategories, getProducts } from "@/lib/storefront/catalog";
-import { buildPageMetadata } from "@/lib/storefront/metadata";
-import { getStoreSettings } from "@/lib/storefront/settings";
+import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 
 export const dynamic = "force-dynamic";
 

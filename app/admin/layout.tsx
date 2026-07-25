@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { AdminShell } from "@/components/admin/layout/AdminShell";
-import { getAdminUser } from "@/lib/admin-session";
+import { getAdminUser } from "@/features/identity/server";
 
 export const metadata: Metadata = {
   title: {

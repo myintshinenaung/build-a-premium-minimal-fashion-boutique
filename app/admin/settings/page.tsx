@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { SettingsForm } from "@/components/admin/forms/SettingsForm";
-import { settingsService } from "@/lib/services";
+import { SettingsForm } from "@/features/settings/client";
+import { settingsService } from "@/features/settings/server";
 
 export const metadata: Metadata = {
   title: "Settings"

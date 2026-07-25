@@ -4,10 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Search, ShoppingBag, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
-import { useSearch } from "@/components/search/SearchProvider";
-import { selectCartCount, useCartStore } from "@/lib/storefront/cart/store";
-import { useTranslator } from "@/lib/i18n/use-translator";
+import { selectCartCount, useCartStore } from "@/features/cart/client";
+import { LanguageSwitcher, useTranslator } from "@/features/i18n/client";
+import { useSearch } from "@/features/search/client";
 import { cn } from "@/lib/utils";
 
 const navItems = [

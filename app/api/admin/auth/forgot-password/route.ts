@@ -1,6 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createSupabaseAuthRouteClient } from "@/lib/supabase/auth-server";
-import { jsonError } from "@/lib/admin-api";
+import { createSupabaseAuthRouteClient, jsonError } from "@/features/identity/server";
 
 type ForgotPasswordBody = {
   email?: string;
