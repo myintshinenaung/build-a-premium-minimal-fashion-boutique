@@ -1,6 +1,7 @@
 import { shipOrderInputSchema } from "@/features/shipping/domain/shipping-schemas";
 import { canMarkOrderShipped } from "@/features/shipping/domain/shipping-status";
 import { ShippingConflictError, ShippingValidationError } from "@/features/shipping/application/shipping-errors";
+import { sendShippingNotification } from "@/features/email/server";
 import { orderRepository } from "@/features/orders/infrastructure/order-repository";
 import type { StorefrontOrder } from "@/types/order";
 import { ZodError } from "zod";
@@ -43,6 +44,8 @@ export async function shipOrder(orderId: string, input: unknown): Promise<Storef
   if (!updatedOrder) {
     throw new ShippingValidationError("Order not found.");
   }
+
+  await sendShippingNotification(updatedOrder);
 
   return updatedOrder;
 }

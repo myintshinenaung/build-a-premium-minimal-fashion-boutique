@@ -149,6 +149,43 @@ export const enMessages = {
     continueShopping: "Continue Shopping",
     backHome: "Back to Home"
   },
+  email: {
+    orderConfirmation: {
+      subject: "Your {storeName} order {orderId} is confirmed",
+      preview: "Your order {orderId} is confirmed.",
+      title: "Order confirmed",
+      greeting: "Hello {name},",
+      body: "Thank you for your order. We received your purchase and are preparing it for delivery.",
+      orderNumber: "Order number",
+      shippingAddress: "Shipping address",
+      subtotal: "Subtotal",
+      shippingLabel: "Shipping",
+      total: "Total",
+      viewOrder: "View order"
+    },
+    paymentSuccess: {
+      subject: "Payment received for order {orderId} — {storeName}",
+      preview: "Payment received for order {orderId}.",
+      title: "Payment successful",
+      greeting: "Hello {name},",
+      body: "Your payment was processed successfully. We will notify you when your order ships.",
+      orderNumber: "Order number",
+      amountPaid: "Amount paid",
+      paymentStatus: "Payment status",
+      viewOrder: "View order"
+    },
+    shipping: {
+      subject: "Your {storeName} order {orderId} has shipped",
+      preview: "Order {orderId} is on its way.",
+      title: "Your order has shipped",
+      greeting: "Hello {name},",
+      body: "Your order is on its way. Use the carrier and tracking details below to follow delivery.",
+      orderNumber: "Order number",
+      carrier: "Carrier",
+      trackingNumber: "Tracking number",
+      viewOrder: "View order"
+    }
+  },
   contact: {
     eyebrow: "Contact",
     title: "Visit the boutique",

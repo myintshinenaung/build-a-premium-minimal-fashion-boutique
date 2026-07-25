@@ -2,6 +2,7 @@ import { PaymentValidationError } from "@/features/payment/application/payment-e
 import { DEFAULT_PAYMENT_PROVIDER } from "@/features/payment/domain/payment-provider";
 import { getPaymentAdapter } from "@/features/payment/infrastructure/payment-adapter-registry";
 import { paymentEventRepository } from "@/features/payment/infrastructure/payment-event-repository";
+import { sendPaymentSuccessNotifications } from "@/features/email/server";
 import { orderRepository } from "@/features/orders/infrastructure/order-repository";
 
 export type HandlePaymentWebhookResult = {
@@ -41,6 +42,8 @@ export async function handlePaymentWebhook(payload: string, signature: string | 
       paidAt: event.paidAt ?? new Date().toISOString(),
       status: "Confirmed"
     });
+
+    await sendPaymentSuccessNotifications(event.orderId);
   }
 
   if (event.type === "checkout.session.expired" && event.orderId) {

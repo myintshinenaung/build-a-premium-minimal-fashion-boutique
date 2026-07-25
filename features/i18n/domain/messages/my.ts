@@ -151,6 +151,43 @@ export const myMessages: Messages = {
     continueShopping: "ဆက်လက်ဝယ်ယူရန်",
     backHome: "ပင်မစာမျက်နှာသို့"
   },
+  email: {
+    orderConfirmation: {
+      subject: "သင့် {storeName} အော်ဒါ {orderId} အတည်ပြုပြီး",
+      preview: "အော်ဒါ {orderId} အတည်ပြုပြီး။",
+      title: "အော်ဒါ အတည်ပြုပြီး",
+      greeting: "မင်္ဂလာပါ {name}၊",
+      body: "အော်ဒါတင်သည့်အတွက် ကျေးဇူးတင်ပါသည်။ ပို့ဆောင်ရန် ပြင်ဆင်နေပါသည်။",
+      orderNumber: "အော်ဒါနံပါတ်",
+      shippingAddress: "ပို့ဆောင်ရမည့် လိပ်စာ",
+      subtotal: "စုစုပေါင်း",
+      shippingLabel: "ပို့ဆောင်ခ",
+      total: "စုစုပေါင်း ကျသင့်ငွေ",
+      viewOrder: "အော်ဒါကြည့်ရန်"
+    },
+    paymentSuccess: {
+      subject: "အော်ဒါ {orderId} အတွက် ငွေချေမှု လက်ခံရရှိ — {storeName}",
+      preview: "အော်ဒါ {orderId} အတွက် ငွေချေမှု လက်ခံရရှိပြီး။",
+      title: "ငွေချေမှု အောင်မြင်",
+      greeting: "မင်္ဂလာပါ {name}၊",
+      body: "သင့်ငွေချေမှု အောင်မြင်ပါသည်။ အော်ဒါပို့ဆောင်သောအခါ အကြောင်းကြားပါမည်။",
+      orderNumber: "အော်ဒါနံပါတ်",
+      amountPaid: "ငွေချေပမာဏ",
+      paymentStatus: "ငွေချေမှု အခြေအနေ",
+      viewOrder: "အော်ဒါကြည့်ရန်"
+    },
+    shipping: {
+      subject: "သင့် {storeName} အော်ဒါ {orderId} ပို့ဆောင်ပြီး",
+      preview: "အော်ဒါ {orderId} လမ်းတွင် ရှိနေပါသည်။",
+      title: "သင့်အော်ဒါ ပို့ဆောင်ပြီး",
+      greeting: "မင်္ဂလာပါ {name}၊",
+      body: "သင့်အော်ဒါ လမ်းတွင် ရှိနေပါသည်။ အောက်ပါ carrier နှင့် tracking အချက်အလက်ဖြင့် ခြေရာခံနိုင်ပါသည်။",
+      orderNumber: "အော်ဒါနံပါတ်",
+      carrier: "ပို့ဆောင်သူ",
+      trackingNumber: "Tracking နံပါတ်",
+      viewOrder: "အော်ဒါကြည့်ရန်"
+    }
+  },
   contact: {
     eyebrow: "ဆက်သွယ်ရန်",
     title: "ဆိုင်သို့ လာရောက်ပါ",
