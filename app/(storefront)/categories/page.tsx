@@ -4,27 +4,28 @@ import { ArrowRight } from "lucide-react";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getCategories } from "@/features/catalog/server";
+import { getTranslator } from "@/features/i18n/server";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getStoreSettings();
+  const [settings, { t }] = await Promise.all([getStoreSettings(), getTranslator()]);
 
   return buildPageMetadata(settings, {
-    title: "Categories",
-    description: `Explore ${settings.storeName} dresses, tops, pants, jeans, shoes, bags, and accessories.`
+    title: t("categories.eyebrow"),
+    description: t("categories.description")
   });
 }
 
 export default async function CategoriesPage() {
-  const categories = await getCategories();
+  const [{ t }, categories] = await Promise.all([getTranslator(), getCategories()]);
   return (
     <section className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8">
       <SectionHeader
-        eyebrow="Categories"
-        title="Shop the boutique edit"
-        description="Every category is intentionally narrow, giving each piece space to work with the rest of the wardrobe."
+        eyebrow={t("categories.eyebrow")}
+        title={t("categories.title")}
+        description={t("categories.description")}
       />
 
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

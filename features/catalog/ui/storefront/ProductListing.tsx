@@ -14,12 +14,13 @@ type ProductListingProps = {
 };
 
 const pageSize = 8;
+const ALL_COLORS = "all";
 
 export function ProductListing({ products, categories, initialCategory }: ProductListingProps) {
   const { t } = useTranslator();
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategory ? [initialCategory] : []);
-  const [selectedColor, setSelectedColor] = useState("All");
+  const [selectedColor, setSelectedColor] = useState(ALL_COLORS);
   const [sort, setSort] = useState("featured");
   const [inStockOnly, setInStockOnly] = useState(false);
   const [newOnly, setNewOnly] = useState(false);
@@ -43,7 +44,7 @@ export function ProductListing({ products, categories, initialCategory }: Produc
         product.tags.some((tag) => tag.toLowerCase().includes(query)) ||
         product.colors.some((color) => color.name.toLowerCase().includes(query));
       const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
-      const matchesColor = selectedColor === "All" || product.colors.some((color) => color.name === selectedColor);
+      const matchesColor = selectedColor === ALL_COLORS || product.colors.some((color) => color.name === selectedColor);
       const matchesStock = !inStockOnly || product.stockStatus !== "Sold out";
       const matchesNew = !newOnly || product.newArrival;
       const matchesBest = !bestOnly || product.bestSeller;
@@ -110,7 +111,7 @@ export function ProductListing({ products, categories, initialCategory }: Produc
               }}
               className="mt-3 w-full border border-line bg-white px-3 py-3 text-sm outline-none transition-colors focus:border-ink"
             >
-              <option>{t("shop.allColors")}</option>
+              <option value={ALL_COLORS}>{t("shop.allColors")}</option>
               {colors.map((color) => (
                 <option key={color}>{color}</option>
               ))}
@@ -143,7 +144,7 @@ export function ProductListing({ products, categories, initialCategory }: Produc
             onClick={() => {
               setSearch("");
               setSelectedCategories(initialCategory ? [initialCategory] : []);
-              setSelectedColor("All");
+              setSelectedColor(ALL_COLORS);
               setSort("featured");
               setInStockOnly(false);
               setNewOnly(false);

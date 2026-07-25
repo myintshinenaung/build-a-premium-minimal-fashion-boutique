@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductListing } from "@/features/catalog/client";
 import { getCategories, getCategoryBySlug, getProductsByCategory } from "@/features/catalog/server";
+import { getTranslator } from "@/features/i18n/server";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
@@ -17,11 +18,11 @@ type CategoryPageProps = {
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const [category, settings] = await Promise.all([getCategoryBySlug(slug), getStoreSettings()]);
+  const [category, settings, { t }] = await Promise.all([getCategoryBySlug(slug), getStoreSettings(), getTranslator()]);
 
   if (!category) {
     return {
-      title: "Category"
+      title: t("categories.eyebrow")
     };
   }
 
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
-  const category = await getCategoryBySlug(slug);
+  const [{ t }, category] = await Promise.all([getTranslator(), getCategoryBySlug(slug)]);
   if (!category) notFound();
 
   const [categoryProducts, categories] = await Promise.all([
@@ -47,9 +48,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       <section className="mx-auto grid max-w-[1440px] gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end lg:px-8">
         <div>
           <Link href="/categories" className="text-sm text-stone underline underline-offset-8">
-            Categories
+            {t("categories.eyebrow")}
           </Link>
-          <SectionHeader className="mt-8" eyebrow="Category" title={category.name} description={category.description} />
+          <SectionHeader
+            className="mt-8"
+            eyebrow={t("categories.eyebrow")}
+            title={category.name}
+            description={category.description}
+          />
         </div>
         <BoutiqueImage
           src={category.image}

@@ -7,6 +7,7 @@ import {
   getRelatedProducts,
   ProductGrid
 } from "@/features/catalog/server";
+import { getTranslator } from "@/features/i18n/server";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 import { slugify } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -38,7 +39,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const [{ t }, product] = await Promise.all([getTranslator(), getProductBySlug(slug)]);
   if (!product) notFound();
 
   const [relatedProducts, category, settings] = await Promise.all([
@@ -63,7 +64,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </section>
 
       <section className="mx-auto max-w-[1440px] px-4 py-20 sm:px-6 lg:px-8">
-        <SectionHeader eyebrow="Related products" title="Complete the edit" />
+        <SectionHeader eyebrow={t("product.relatedEyebrow")} title={t("product.relatedTitle")} />
         <div className="mt-10">
           <ProductGrid products={relatedProducts} />
         </div>

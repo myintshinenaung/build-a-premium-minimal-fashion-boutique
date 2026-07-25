@@ -3,6 +3,11 @@ import { ADMIN_PUBLIC_PATHS } from "@/features/identity/domain/admin-auth";
 import { isAuthorizedAdmin } from "@/features/identity/domain/authorization";
 import { getAdminProxySession } from "@/features/identity/infrastructure/supabase-auth-proxy";
 
+function withAdminPathname(response: NextResponse, pathname: string) {
+  response.headers.set("x-admin-pathname", pathname);
+  return response;
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
@@ -28,15 +33,15 @@ export async function proxy(request: NextRequest) {
     response.cookies.getAll().forEach((cookie) => {
       redirect.cookies.set(cookie);
     });
-    return redirect;
+    return withAdminPathname(redirect, pathname);
   }
 
   if (isAuthorized && pathname === "/admin/login") {
     const dashboardUrl = request.nextUrl.clone();
     dashboardUrl.pathname = "/admin";
     dashboardUrl.search = "";
-    return NextResponse.redirect(dashboardUrl);
+    return withAdminPathname(NextResponse.redirect(dashboardUrl), pathname);
   }
 
-  return response;
+  return withAdminPathname(response, pathname);
 }

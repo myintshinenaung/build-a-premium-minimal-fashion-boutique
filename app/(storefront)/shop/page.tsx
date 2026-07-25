@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import { ProductListing } from "@/features/catalog/client";
 import { getCategories, getProducts } from "@/features/catalog/server";
+import { getTranslator } from "@/features/i18n/server";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getStoreSettings();
+  const [settings, { t }] = await Promise.all([getStoreSettings(), getTranslator()]);
 
   return buildPageMetadata(settings, {
-    title: "Shop",
-    description: `Shop ${settings.storeName} dresses, tops, pants, jeans, shoes, bags, and accessories.`
+    title: t("shop.eyebrow"),
+    description: t("shop.description")
   });
 }
 
@@ -29,15 +30,15 @@ function getInitialCategory(categories: Awaited<ReturnType<typeof getCategories>
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const resolvedSearchParams = await searchParams;
-  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
+  const [{ t }, products, categories] = await Promise.all([getTranslator(), getProducts(), getCategories()]);
   const initialCategory = getInitialCategory(categories, resolvedSearchParams?.category);
 
   return (
     <section className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8">
       <SectionHeader
-        eyebrow="Shop"
-        title={initialCategory ? initialCategory : "All pieces"}
-        description="Search, filter, and sort the full boutique edit."
+        eyebrow={t("shop.eyebrow")}
+        title={initialCategory ? initialCategory : t("shop.allPieces")}
+        description={t("shop.description")}
       />
       <div className="mt-10">
         <ProductListing products={products} categories={categories} initialCategory={initialCategory} />

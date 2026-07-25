@@ -2,7 +2,7 @@ import type { User } from "@supabase/supabase-js";
 
 const ADMIN_ROLE = "admin";
 
-function getAllowedAdminEmails() {
+export function getAllowedAdminEmails() {
   const raw = process.env.ADMIN_ALLOWED_EMAILS?.trim();
 
   if (!raw) {
@@ -38,6 +38,20 @@ export function isAuthorizedAdmin(user: User | null | undefined) {
   }
 
   return allowedEmails.includes(user.email.toLowerCase());
+}
+
+export function assertProductionAdminAccessConfigured() {
+  if (process.env.NODE_ENV !== "production") {
+    return;
+  }
+
+  if (getAllowedAdminEmails().length > 0) {
+    return;
+  }
+
+  throw new Error(
+    "Production admin access is not configured. Set ADMIN_ALLOWED_EMAILS or assign app_metadata.role = \"admin\" in Supabase before deploying."
+  );
 }
 
 export function getAdminAuthorizationErrorMessage() {
