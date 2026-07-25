@@ -4,10 +4,19 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { CheckoutForm } from "@/features/checkout/ui/storefront/CheckoutForm";
 import { FLAT_RATE_SHIPPING_MMK } from "@/features/checkout/domain/shipping";
 import { getTranslator } from "@/features/i18n/server";
+import type { MessageKey } from "@/features/i18n/domain/message-keys";
 import { orderRepository } from "@/features/orders/infrastructure/order-repository";
+import type { PaymentStatus } from "@/lib/supabase/types";
 import { formatPrice } from "@/lib/utils";
 
 const labelClass = "text-xs font-medium uppercase tracking-[0.18em] text-stone";
+
+const paymentStatusKeys: Record<PaymentStatus, MessageKey> = {
+  pending: "checkout.paymentStatusPending",
+  processing: "checkout.paymentStatusProcessing",
+  paid: "checkout.paymentStatusPaid",
+  failed: "checkout.paymentStatusFailed"
+};
 
 export async function CheckoutPage() {
   const { t } = await getTranslator();
@@ -48,6 +57,10 @@ export async function OrderConfirmationPage({ params }: { params: Promise<{ orde
             <div>
               <dt className={labelClass}>{t("checkout.orderStatus")}</dt>
               <dd className="mt-1 text-ink">{order.status}</dd>
+            </div>
+            <div>
+              <dt className={labelClass}>{t("checkout.paymentStatus")}</dt>
+              <dd className="mt-1 text-ink">{t(paymentStatusKeys[order.paymentStatus])}</dd>
             </div>
             <div>
               <dt className={labelClass}>{t("checkout.shippingAddress")}</dt>

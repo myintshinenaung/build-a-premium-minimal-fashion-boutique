@@ -5,6 +5,8 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type BannerPlacement = "Homepage Hero" | "New Collection" | "Announcement";
 export type OrderStatus = "Pending" | "Confirmed" | "Packed" | "Completed";
 export type OrderChannel = "Messenger" | "Viber" | "Phone" | "Web";
+export type PaymentStatus = "pending" | "processing" | "paid" | "failed";
+export type PaymentProvider = "stripe";
 
 export type ProductRow = {
   id: string;
@@ -108,7 +110,19 @@ export type OrderRow = {
   total_mmk: number;
   status: OrderStatus;
   channel: OrderChannel;
+  payment_id: string | null;
+  payment_provider: PaymentProvider | null;
+  payment_status: PaymentStatus;
+  paid_at: string | null;
   created_at: string;
+};
+
+export type PaymentEventRow = {
+  id: string;
+  provider: PaymentProvider;
+  event_type: string;
+  order_id: string | null;
+  processed_at: string;
 };
 
 export type OrderItemRow = {
@@ -169,6 +183,12 @@ export type Database = {
         Row: OrderItemRow;
         Insert: Omit<OrderItemRow, "id"> & Partial<Pick<OrderItemRow, "id">>;
         Update: Partial<Omit<OrderItemRow, "id">>;
+        Relationships: [];
+      };
+      payment_events: {
+        Row: PaymentEventRow;
+        Insert: Omit<PaymentEventRow, "processed_at"> & Partial<Pick<PaymentEventRow, "processed_at">>;
+        Update: Partial<Omit<PaymentEventRow, "id">>;
         Relationships: [];
       };
     };

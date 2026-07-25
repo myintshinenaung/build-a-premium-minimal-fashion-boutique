@@ -1,4 +1,4 @@
-import type { OrderChannel, OrderStatus } from "@/lib/supabase/types";
+import type { OrderChannel, OrderStatus, PaymentProvider, PaymentStatus } from "@/lib/supabase/types";
 
 export type StorefrontOrderItem = {
   id: string;
@@ -28,6 +28,10 @@ export type StorefrontOrder = {
   totalMmk: number;
   status: OrderStatus;
   channel: OrderChannel;
+  paymentId: string | null;
+  paymentProvider: PaymentProvider | null;
+  paymentStatus: PaymentStatus;
+  paidAt: string | null;
   createdAt: string;
   items: StorefrontOrderItem[];
 };

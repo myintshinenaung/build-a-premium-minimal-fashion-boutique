@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { CartLineItem } from "@/features/cart/client";
 import { selectCartSubtotal, useCartStore } from "@/features/cart/infrastructure/store";
@@ -18,7 +17,6 @@ const inputClass =
 const labelClass = "text-xs font-medium uppercase tracking-[0.18em] text-stone";
 
 export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
-  const router = useRouter();
   const { t } = useTranslator();
   const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
@@ -78,8 +76,26 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
         return;
       }
 
+      const paymentResponse = await fetch("/api/payments/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          orderId: payload.orderId,
+          idempotencyKey: crypto.randomUUID()
+        })
+      });
+
+      const paymentPayload = (await paymentResponse.json()) as { checkoutUrl?: string; message?: string };
+
+      if (!paymentResponse.ok || !paymentPayload.checkoutUrl) {
+        setError(paymentPayload.message ?? t("checkout.paymentError"));
+        return;
+      }
+
       clearCart();
-      router.replace(`/checkout/confirmation/${payload.orderId}`);
+      window.location.assign(paymentPayload.checkoutUrl);
     } catch {
       setError(t("checkout.submitError"));
     } finally {
@@ -190,7 +206,7 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
           disabled={isSubmitting}
           className="mt-8 inline-flex h-12 w-full items-center justify-center bg-ink px-6 text-sm font-medium text-white transition-colors hover:bg-stone disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? t("checkout.placingOrder") : t("checkout.placeOrder")}
+          {isSubmitting ? t("checkout.redirectingToPayment") : t("checkout.placeOrder")}
         </button>
       </form>
 
