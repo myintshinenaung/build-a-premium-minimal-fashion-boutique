@@ -102,6 +102,28 @@ export const reservationRepository = {
     }
   },
 
+  async listActiveByReference(referenceType: string, referenceId: string): Promise<InventoryReservation[]> {
+    try {
+      const supabase = createSupabaseServerClient();
+      const now = new Date().toISOString();
+      const { data, error } = await supabase
+        .from("inventory_reservations")
+        .select("*")
+        .eq("reference_type", referenceType)
+        .eq("reference_id", referenceId)
+        .eq("status", "active")
+        .gt("expires_at", now);
+
+      if (error) {
+        throw error;
+      }
+
+      return (data ?? []).map(reservationFromRow);
+    } catch (error) {
+      throw createRepositoryError("Unable to load reference reservations", error);
+    }
+  },
+
   async listExpiredActive(): Promise<InventoryReservation[]> {
     try {
       const supabase = createSupabaseServerClient();

@@ -44,6 +44,19 @@ function mapWebhookEvent(event: Stripe.Event): PaymentWebhookEvent {
     };
   }
 
+  if (event.type === "checkout.session.async_payment_failed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const orderId = session.metadata?.orderId?.trim() || null;
+
+    return {
+      id: event.id,
+      type: event.type,
+      orderId,
+      paymentId: session.id,
+      paidAt: null
+    };
+  }
+
   return {
     id: event.id,
     type: event.type,

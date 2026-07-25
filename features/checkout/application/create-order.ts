@@ -7,6 +7,11 @@ import {
   validateCheckoutCart
 } from "@/features/checkout/application/validate-cart";
 import { getShippingFee } from "@/features/shipping/server";
+import {
+  InsufficientStockError,
+  releaseOrderReservations,
+  reserveOrderInventory
+} from "@/features/inventory/application/order-reservations";
 import { orderRepository } from "@/features/orders/infrastructure/order-repository";
 import type { StorefrontOrder } from "@/types/order";
 import { ZodError } from "zod";
@@ -39,31 +44,46 @@ export async function createOrder(input: unknown): Promise<StorefrontOrder> {
   const email = parsed.customer.email?.trim() ?? "";
   const orderId = createOrderId();
 
-  return orderRepository.create({
-    id: orderId,
-    customer: parsed.customer.name.trim(),
-    customerPhone: parsed.customer.phone.trim(),
-    customerEmail: email,
-    shippingAddress: parsed.customer.address.trim(),
-    township: parsed.customer.township.trim(),
-    notes: parsed.customer.notes?.trim() ?? "",
-    subtotalMmk: validatedCart.subtotalMmk,
-    shippingMmk,
-    totalMmk,
-    channel: "Web",
-    status: "Pending",
-    items: validatedCart.items.map((item, index) => ({
-      id: `${orderId}-${index + 1}`,
-      productId: item.productId,
-      variantId: item.variantId,
-      productName: item.productName,
-      productSlug: item.productSlug,
-      image: item.image,
-      size: item.size,
-      color: item.color,
-      unitPriceMmk: item.unitPriceMmk,
-      quantity: item.quantity,
-      lineTotalMmk: item.lineTotalMmk
-    }))
-  });
+  try {
+    await reserveOrderInventory(orderId, validatedCart.items);
+  } catch (error) {
+    if (error instanceof InsufficientStockError) {
+      throw new CheckoutValidationError(`Out of stock. ${error.message}`);
+    }
+
+    throw error;
+  }
+
+  try {
+    return await orderRepository.create({
+      id: orderId,
+      customer: parsed.customer.name.trim(),
+      customerPhone: parsed.customer.phone.trim(),
+      customerEmail: email,
+      shippingAddress: parsed.customer.address.trim(),
+      township: parsed.customer.township.trim(),
+      notes: parsed.customer.notes?.trim() ?? "",
+      subtotalMmk: validatedCart.subtotalMmk,
+      shippingMmk,
+      totalMmk,
+      channel: "Web",
+      status: "Pending",
+      items: validatedCart.items.map((item, index) => ({
+        id: `${orderId}-${index + 1}`,
+        productId: item.productId,
+        variantId: item.variantId,
+        productName: item.productName,
+        productSlug: item.productSlug,
+        image: item.image,
+        size: item.size,
+        color: item.color,
+        unitPriceMmk: item.unitPriceMmk,
+        quantity: item.quantity,
+        lineTotalMmk: item.lineTotalMmk
+      }))
+    });
+  } catch (error) {
+    await releaseOrderReservations(orderId);
+    throw error;
+  }
 }

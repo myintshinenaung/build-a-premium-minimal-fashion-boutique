@@ -1,6 +1,7 @@
 import { findProductVariant } from "@/features/catalog/domain/variants";
 import { getProducts } from "@/features/catalog/server";
 import type { CheckoutCartItemInput } from "@/features/checkout/domain/checkout-schemas";
+import { getAvailableStock } from "@/features/inventory/server";
 
 export type ValidatedCartLine = {
   variantId: string;
@@ -49,12 +50,14 @@ export async function validateCheckoutCart(items: CheckoutCartItemInput[]): Prom
       throw new CheckoutValidationError("A selected size or color is no longer available.");
     }
 
-    if (variant.stockQuantity <= 0) {
-      throw new CheckoutValidationError(`${product.name} is sold out.`);
+    const stock = await getAvailableStock(product.id, variant.id);
+
+    if (stock.available <= 0) {
+      throw new CheckoutValidationError(`${product.name} is out of stock.`);
     }
 
-    if (item.quantity > variant.stockQuantity) {
-      throw new CheckoutValidationError(`Only ${variant.stockQuantity} left for ${product.name}.`);
+    if (item.quantity > stock.available) {
+      throw new CheckoutValidationError(`Out of stock: only ${stock.available} left for ${product.name}.`);
     }
 
     validatedItems.push({

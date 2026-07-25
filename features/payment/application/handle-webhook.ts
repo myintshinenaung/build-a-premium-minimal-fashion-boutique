@@ -3,6 +3,10 @@ import { DEFAULT_PAYMENT_PROVIDER } from "@/features/payment/domain/payment-prov
 import { getPaymentAdapter } from "@/features/payment/infrastructure/payment-adapter-registry";
 import { paymentEventRepository } from "@/features/payment/infrastructure/payment-event-repository";
 import { sendPaymentSuccessNotifications } from "@/features/email/server";
+import {
+  consumeOrderReservations,
+  releaseOrderReservations
+} from "@/features/inventory/application/order-reservations";
 import { orderRepository } from "@/features/orders/infrastructure/order-repository";
 
 export type HandlePaymentWebhookResult = {
@@ -43,16 +47,22 @@ export async function handlePaymentWebhook(payload: string, signature: string | 
       status: "Confirmed"
     });
 
+    await consumeOrderReservations(event.orderId);
     await sendPaymentSuccessNotifications(event.orderId);
   }
 
-  if (event.type === "checkout.session.expired" && event.orderId) {
+  if (
+    (event.type === "checkout.session.expired" || event.type === "checkout.session.async_payment_failed") &&
+    event.orderId
+  ) {
     await orderRepository.updatePayment({
       orderId: event.orderId,
       paymentId: event.paymentId,
       paymentProvider: DEFAULT_PAYMENT_PROVIDER,
       paymentStatus: "failed"
     });
+
+    await releaseOrderReservations(event.orderId);
   }
 
   await paymentEventRepository.markProcessed({

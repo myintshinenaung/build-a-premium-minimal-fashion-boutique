@@ -9,6 +9,11 @@ export {
   ReservationNotFoundError
 } from "@/features/inventory/application/inventory-errors";
 export { inventoryService } from "@/features/inventory/application/inventory-service";
+export {
+  consumeOrderReservations,
+  releaseOrderReservations,
+  reserveOrderInventory
+} from "@/features/inventory/application/order-reservations";
 export { releaseReservation } from "@/features/inventory/application/release-reservation";
 export { reserveStock } from "@/features/inventory/application/reserve-stock";
 export { AdminInventoryPage } from "@/features/inventory/ui/admin/AdminInventoryPage";
