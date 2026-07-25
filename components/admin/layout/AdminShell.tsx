@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Bell,
+  Boxes,
   ChevronDown,
   Image,
   LayoutDashboard,
@@ -34,6 +35,7 @@ type AdminNavItem = {
 const navItems: AdminNavItem[] = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Package },
+  { href: "/admin/inventory", label: "Inventory", icon: Boxes },
   { href: "/admin/categories", label: "Categories", icon: Tags },
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { href: "/admin/customers", label: "Customers", icon: Users },
@@ -45,6 +47,7 @@ const navItems: AdminNavItem[] = [
 const pageTitles: Record<string, string> = {
   "/admin": "Dashboard Overview",
   "/admin/products": "Products",
+  "/admin/inventory": "Inventory",
   "/admin/categories": "Categories",
   "/admin/orders": "Orders",
   "/admin/customers": "Customers",

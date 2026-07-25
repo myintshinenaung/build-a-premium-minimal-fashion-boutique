@@ -8,6 +8,7 @@ export type OrderChannel = "Messenger" | "Viber" | "Phone" | "Web";
 export type PaymentStatus = "pending" | "processing" | "paid" | "failed";
 export type PaymentProvider = "stripe";
 export type ShippingStatus = "pending" | "shipped";
+export type ReservationStatus = "active" | "released" | "consumed";
 
 export type ProductRow = {
   id: string;
@@ -130,6 +131,19 @@ export type PaymentEventRow = {
   processed_at: string;
 };
 
+export type InventoryReservationRow = {
+  id: string;
+  product_id: string;
+  variant_id: string;
+  quantity: number;
+  status: ReservationStatus;
+  reference_type: string | null;
+  reference_id: string | null;
+  expires_at: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type OrderItemRow = {
   id: string;
   order_id: string;
@@ -194,6 +208,13 @@ export type Database = {
         Row: PaymentEventRow;
         Insert: Omit<PaymentEventRow, "processed_at"> & Partial<Pick<PaymentEventRow, "processed_at">>;
         Update: Partial<Omit<PaymentEventRow, "id">>;
+        Relationships: [];
+      };
+      inventory_reservations: {
+        Row: InventoryReservationRow;
+        Insert: Omit<InventoryReservationRow, "created_at" | "updated_at"> &
+          Partial<Pick<InventoryReservationRow, "created_at" | "updated_at">>;
+        Update: Partial<Omit<InventoryReservationRow, "id">>;
         Relationships: [];
       };
     };
