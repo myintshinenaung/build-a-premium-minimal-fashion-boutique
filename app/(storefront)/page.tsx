@@ -16,7 +16,7 @@ import { getTranslator } from "@/features/i18n/server";
 import { getStoreSettings } from "@/features/settings/server";
 import { getInstagramHandle } from "@/lib/storefront/social";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function HomePage() {
   const { t } = await getTranslator();

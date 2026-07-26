@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Activity,
   BarChart3,
   Bell,
   Boxes,
@@ -44,6 +45,7 @@ const navItems: AdminNavItem[] = [
   { href: "/admin/banners", label: "Banner Manager", icon: Image },
   { href: "/admin/media", label: "Media Library", icon: Image },
   { href: "/admin/security", label: "Security", icon: ShieldCheck },
+  { href: "/admin/performance", label: "Performance", icon: Activity },
   { href: "/admin/settings", label: "Settings", icon: Settings }
 ];
 
@@ -73,6 +75,7 @@ const pageTitles: Record<string, string> = {
   "/admin/security/audit": "Security Audit Logs",
   "/admin/security/login-history": "Login History",
   "/admin/security/sessions": "Active Sessions",
+  "/admin/performance": "Performance Overview",
   "/admin/settings": "Settings"
 };
 

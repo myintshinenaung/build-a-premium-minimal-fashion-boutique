@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { invalidateCatalogCache } from "@/features/performance/server";
 import { categoryService, type CategoryCreateInput } from "@/features/catalog/server";
 
 export async function GET(request: NextRequest) {
@@ -21,6 +22,7 @@ export async function POST(request: NextRequest) {
   try {
     const input = (await request.json()) as CategoryCreateInput;
     const category = await categoryService.createCategory(input);
+    await invalidateCatalogCache();
 
     return NextResponse.json({ category }, { status: 201 });
   } catch (error) {

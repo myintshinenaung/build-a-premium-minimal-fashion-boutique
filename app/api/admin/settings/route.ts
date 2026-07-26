@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { invalidateSettingsCache } from "@/features/performance/server";
 import { settingsService, type SettingsUpdateInput } from "@/features/settings/server";
 
 export async function GET(request: NextRequest) {
@@ -21,6 +22,7 @@ export async function PATCH(request: NextRequest) {
   try {
     const input = (await request.json()) as SettingsUpdateInput;
     const settings = await settingsService.updateSettings(input);
+    await invalidateSettingsCache();
 
     return NextResponse.json({ settings });
   } catch (error) {

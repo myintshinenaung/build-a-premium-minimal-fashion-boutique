@@ -38,6 +38,8 @@ function createMovementId() {
   return `MOV-${Date.now().toString(36).toUpperCase()}-${suffix}`;
 }
 
+let cachedDefaultWarehouseId: string | null = null;
+
 export const movementRepository = {
   async create(input: MovementCreateInput): Promise<InventoryMovement> {
     try {
@@ -203,8 +205,13 @@ export const warehouseRepository = {
   },
 
   async getDefaultWarehouseId() {
+    if (cachedDefaultWarehouseId) {
+      return cachedDefaultWarehouseId;
+    }
+
     const warehouses = await this.list();
-    return warehouses.find((warehouse) => warehouse.isDefault)?.id ?? "WH-MAIN";
+    cachedDefaultWarehouseId = warehouses.find((warehouse) => warehouse.isDefault)?.id ?? "WH-MAIN";
+    return cachedDefaultWarehouseId;
   },
 
   async getStock(warehouseId: string, productId: string) {

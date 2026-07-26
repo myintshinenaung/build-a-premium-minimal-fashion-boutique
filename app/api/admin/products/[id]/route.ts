@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { jsonError, requireAdminApiSession } from "@/features/identity/server";
+import { invalidateCatalogCache } from "@/features/performance/server";
 import { productService, type ProductUpdateInput } from "@/features/catalog/server";
 
 type ProductRouteContext = {
@@ -21,6 +22,7 @@ export async function PATCH(request: NextRequest, { params }: ProductRouteContex
       return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
 
+    await invalidateCatalogCache();
     return NextResponse.json({ product });
   } catch (error) {
     return jsonError(error);
@@ -39,6 +41,7 @@ export async function POST(request: NextRequest, { params }: ProductRouteContext
       return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
 
+    await invalidateCatalogCache();
     return NextResponse.json({ product }, { status: 201 });
   } catch (error) {
     return jsonError(error);
@@ -52,6 +55,7 @@ export async function DELETE(request: NextRequest, { params }: ProductRouteConte
   try {
     const { id } = await params;
     await productService.deleteProduct(id);
+    await invalidateCatalogCache();
 
     return NextResponse.json({ ok: true });
   } catch (error) {

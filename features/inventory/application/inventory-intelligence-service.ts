@@ -24,6 +24,10 @@ import {
 } from "@/features/inventory/infrastructure/inventory-intelligence-repository";
 import { productRepository } from "@/features/catalog/infrastructure/product-repository";
 import { reservationRepository } from "@/features/inventory/infrastructure/reservation-repository";
+import { CACHE_TAGS, CACHE_TTLS } from "@/features/performance/domain/cache-tags";
+import { invalidateInventoryCache } from "@/features/performance/application/cache-invalidation";
+import { enqueueInventorySync } from "@/features/performance/infrastructure/job-queue";
+import { createCachedLoader } from "@/features/performance/infrastructure/cache-store";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatZodError(error: ZodError) {
@@ -83,7 +87,7 @@ async function loadSalesByProduct(days = 30) {
   }));
 }
 
-export async function getInventoryDashboard() {
+async function loadInventoryDashboardData() {
   const [items, warehouses, incomingStock, products] = await Promise.all([
     loadInventoryItems(),
     warehouseRepository.list(),
@@ -92,6 +96,47 @@ export async function getInventoryDashboard() {
   ]);
   const costByProduct = new Map(products.map((product) => [product.id, product.costPriceMmk]));
   return buildInventoryDashboard(items, incomingStock, calculateInventoryValue(items, costByProduct), warehouses);
+}
+
+const loadInventoryDashboardCached = createCachedLoader(
+  "inventory-dashboard",
+  [CACHE_TAGS.inventory],
+  CACHE_TTLS.inventory,
+  loadInventoryDashboardData
+);
+
+const loadInventoryAlertsCached = createCachedLoader(
+  "inventory-alerts",
+  [CACHE_TAGS.inventory],
+  CACHE_TTLS.inventory,
+  async () => {
+    const [items, settings] = await Promise.all([loadInventoryItems(), alertSettingsRepository.getGlobalSettings()]);
+    return {
+      settings,
+      alerts: buildInventoryAlerts(items, settings, new Map())
+    };
+  }
+);
+
+const loadInventoryForecastCached = createCachedLoader(
+  "inventory-forecast",
+  [CACHE_TAGS.inventory, CACHE_TAGS.analytics],
+  CACHE_TTLS.inventory,
+  async () => {
+    const [items, settings, salesByProduct] = await Promise.all([
+      loadInventoryItems(),
+      alertSettingsRepository.getGlobalSettings(),
+      loadSalesByProduct()
+    ]);
+
+    return {
+      items: buildInventoryForecast(items, salesByProduct, settings)
+    };
+  }
+);
+
+export async function getInventoryDashboard() {
+  return loadInventoryDashboardCached();
 }
 
 export async function getInventoryHistory(input: Record<string, string | string[] | undefined> | URLSearchParams) {
@@ -117,23 +162,11 @@ export async function getInventoryHistory(input: Record<string, string | string[
 }
 
 export async function getInventoryAlerts() {
-  const [items, settings] = await Promise.all([loadInventoryItems(), alertSettingsRepository.getGlobalSettings()]);
-  return {
-    settings,
-    alerts: buildInventoryAlerts(items, settings, new Map())
-  };
+  return loadInventoryAlertsCached();
 }
 
 export async function getInventoryForecast() {
-  const [items, settings, salesByProduct] = await Promise.all([
-    loadInventoryItems(),
-    alertSettingsRepository.getGlobalSettings(),
-    loadSalesByProduct()
-  ]);
-
-  return {
-    items: buildInventoryForecast(items, salesByProduct, settings)
-  };
+  return loadInventoryForecastCached();
 }
 
 type InventoryActor = {
@@ -174,6 +207,9 @@ export async function adjustInventory(input: unknown, actor: InventoryActor) {
     reason: parsed.reason
   });
 
+  await invalidateInventoryCache();
+  enqueueInventorySync(parsed.productId);
+
   return { movement };
 }
 
@@ -207,6 +243,8 @@ export async function restockInventory(input: unknown, actor: InventoryActor) {
       reason: parsed.reason,
       syncProductStock: false
     });
+    await invalidateInventoryCache();
+    enqueueInventorySync(parsed.productId);
     return { movement, incoming: true };
   }
 
@@ -223,6 +261,9 @@ export async function restockInventory(input: unknown, actor: InventoryActor) {
     userName: actor.userName,
     reason: parsed.reason
   });
+
+  await invalidateInventoryCache();
+  enqueueInventorySync(parsed.productId);
 
   return { movement, incoming: false };
 }
@@ -283,6 +324,9 @@ export async function transferInventory(input: unknown, actor: InventoryActor) {
     referenceId: parsed.destinationWarehouseId,
     syncProductStock: false
   });
+
+  await invalidateInventoryCache();
+  enqueueInventorySync(parsed.productId);
 
   return {
     movement,

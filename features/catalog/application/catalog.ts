@@ -8,6 +8,9 @@ import { categoryService } from "@/features/catalog/application/category-service
 import { productService } from "@/features/catalog/application/product-service";
 import { runRecommendationEngine } from "@/features/recommendations/domain/recommendation-engine";
 import { recommendationRepository } from "@/features/recommendations/infrastructure/recommendation-repository";
+import { CACHE_TAGS, CACHE_TTLS } from "@/features/performance/domain/cache-tags";
+import { createCachedLoader } from "@/features/performance/infrastructure/cache-store";
+import { timedQuery } from "@/features/performance/infrastructure/metrics-store";
 import type { Category, Product } from "@/types/product";
 
 type Catalog = {
@@ -15,26 +18,32 @@ type Catalog = {
   products: Product[];
 };
 
-const getCatalog = cache(async (): Promise<Catalog> => {
-  const [adminCategories, adminProducts] = await Promise.all([
-    categoryService.getCategories(),
-    productService.getProducts({ status: "Published" })
-  ]);
+const loadCatalogData = createCachedLoader(
+  "storefront-catalog",
+  [CACHE_TAGS.catalog, CACHE_TAGS.products, CACHE_TAGS.categories, CACHE_TAGS.homepage],
+  CACHE_TTLS.catalog,
+  async (): Promise<Catalog> => {
+    const [adminCategories, adminProducts] = await timedQuery("catalog.load", () =>
+      Promise.all([categoryService.getCategories(), productService.getProducts({ status: "Published" })])
+    );
 
-  const publishedCategories = adminCategories.filter((category) => category.status === "Published");
-  const categoryById = new Map(publishedCategories.map((category) => [category.id, category]));
+    const publishedCategories = adminCategories.filter((category) => category.status === "Published");
+    const categoryById = new Map(publishedCategories.map((category) => [category.id, category]));
 
-  const products = assignUniqueProductSlugs(
-    adminProducts
-      .filter((product) => product.status === "Published" && categoryById.has(product.categoryId))
-      .map((product) => mapAdminProductToProduct(product, categoryById.get(product.categoryId)!.name))
-  );
+    const products = assignUniqueProductSlugs(
+      adminProducts
+        .filter((product) => product.status === "Published" && categoryById.has(product.categoryId))
+        .map((product) => mapAdminProductToProduct(product, categoryById.get(product.categoryId)!.name))
+    );
 
-  return {
-    categories: publishedCategories.map(mapAdminCategoryToCategory),
-    products
-  };
-});
+    return {
+      categories: publishedCategories.map(mapAdminCategoryToCategory),
+      products
+    };
+  }
+);
+
+const getCatalog = cache(loadCatalogData);
 
 export async function getCategories() {
   const { categories } = await getCatalog();
@@ -85,3 +94,5 @@ export async function getCategorySlugs() {
   const categories = await getCategories();
   return categories.map((category) => category.slug);
 }
+
+export const revalidate = 300;
