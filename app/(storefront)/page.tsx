@@ -7,12 +7,11 @@ import {
   HomeHeroBanner,
   NewCollectionBanner
 } from "@/features/content/server";
+import { getCategories, ProductGrid } from "@/features/catalog/server";
 import {
-  getBestSellers,
-  getCategories,
-  getNewArrivals,
-  ProductGrid
-} from "@/features/catalog/server";
+  getBestSellerRecommendations,
+  getNewArrivalRecommendations
+} from "@/features/recommendations/server";
 import { getTranslator } from "@/features/i18n/server";
 import { getStoreSettings } from "@/features/settings/server";
 import { getInstagramHandle } from "@/lib/storefront/social";
@@ -21,13 +20,15 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const { t } = await getTranslator();
-  const [settings, categories, bestSellers, newArrivals, newCollectionBanner] = await Promise.all([
+  const [settings, categories, bestSellerRecommendations, newArrivalRecommendations, newCollectionBanner] = await Promise.all([
     getStoreSettings(),
     getCategories(),
-    getBestSellers(),
-    getNewArrivals(),
+    getBestSellerRecommendations(),
+    getNewArrivalRecommendations(),
     getStorefrontBannerByPlacement("New Collection")
   ]);
+  const bestSellers = bestSellerRecommendations.items;
+  const newArrivals = newArrivalRecommendations.items;
 
   const featuredCategories = categories.filter((category) =>
     ["Dresses", "Tops", "Pants", "Bags"].includes(category.name)

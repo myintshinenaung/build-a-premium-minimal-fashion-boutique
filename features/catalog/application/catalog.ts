@@ -6,6 +6,8 @@ import {
 } from "@/features/catalog/domain/map-catalog";
 import { categoryService } from "@/features/catalog/application/category-service";
 import { productService } from "@/features/catalog/application/product-service";
+import { runRecommendationEngine } from "@/features/recommendations/domain/recommendation-engine";
+import { recommendationRepository } from "@/features/recommendations/infrastructure/recommendation-repository";
 import type { Category, Product } from "@/types/product";
 
 type Catalog = {
@@ -60,22 +62,18 @@ export async function getProductsByCategory(categoryName: string) {
 }
 
 export async function getRelatedProducts(product: Product, limit = 4) {
-  const products = await getProducts();
-
-  return products
-    .filter((item) => item.slug !== product.slug && item.category === product.category)
-    .concat(products.filter((item) => item.slug !== product.slug && item.category !== product.category))
-    .slice(0, limit);
+  const catalog = await recommendationRepository.loadRecommendationCatalog();
+  return runRecommendationEngine(catalog, "related", { productId: product.id, limit });
 }
 
 export async function getBestSellers(limit = 4) {
-  const products = await getProducts();
-  return products.filter((product) => product.bestSeller).slice(0, limit);
+  const catalog = await recommendationRepository.loadRecommendationCatalog();
+  return runRecommendationEngine(catalog, "best-sellers", { limit });
 }
 
 export async function getNewArrivals(limit = 4) {
-  const products = await getProducts();
-  return products.filter((product) => product.newArrival).slice(0, limit);
+  const catalog = await recommendationRepository.loadRecommendationCatalog();
+  return runRecommendationEngine(catalog, "new-arrivals", { limit });
 }
 
 export async function getProductSlugs() {

@@ -76,6 +76,18 @@ export const myMessages: Messages = {
     closeZoom: "Zoom ပိတ်ရန်",
     showImage: "{productName} ပုံ {index} ကို ပြရန်"
   },
+  recommendations: {
+    relatedEyebrow: "ဆက်စပ်ပစ္စည်းများ",
+    relatedTitle: "ပြည့်စုံသော ရွေးချယ်မှု",
+    similarEyebrow: "Similar products",
+    similarTitle: "သင်ကြိုက်နိုင်သော ပစ္စည်းများ",
+    trendingEyebrow: "Trending now",
+    trendingTitle: "ဆိုင်တွင် လူကြိုက်များသော ပစ္စည်းများ",
+    bestSellersEyebrow: "Best sellers",
+    bestSellersTitle: "တိတ်ဆိတ်သော momentum ရှိသော ပစ္စည်းများ",
+    newArrivalsEyebrow: "New arrivals",
+    newArrivalsTitle: "Fresh proportion, same restraint"
+  },
   reviews: {
     eyebrow: "Reviews",
     title: "Customer reviews",

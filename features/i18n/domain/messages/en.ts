@@ -74,6 +74,18 @@ export const enMessages = {
     closeZoom: "Close zoom view",
     showImage: "Show {productName} image {index}"
   },
+  recommendations: {
+    relatedEyebrow: "Related products",
+    relatedTitle: "Complete the edit",
+    similarEyebrow: "Similar products",
+    similarTitle: "More pieces you may like",
+    trendingEyebrow: "Trending now",
+    trendingTitle: "Popular in the boutique",
+    bestSellersEyebrow: "Best sellers",
+    bestSellersTitle: "Pieces with quiet momentum",
+    newArrivalsEyebrow: "New arrivals",
+    newArrivalsTitle: "Fresh proportion, same restraint"
+  },
   reviews: {
     eyebrow: "Reviews",
     title: "Customer reviews",

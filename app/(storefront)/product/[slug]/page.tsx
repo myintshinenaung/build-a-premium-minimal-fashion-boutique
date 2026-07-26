@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProductGallery, ProductPurchasePanel } from "@/features/catalog/client";
+import { getCategoryBySlug, getProductBySlug } from "@/features/catalog/server";
 import { ProductReviewsSection } from "@/features/reviews/client";
 import {
-  getCategoryBySlug,
-  getProductBySlug,
   getRelatedProducts,
-  ProductGrid
-} from "@/features/catalog/server";
+  getSimilarProducts,
+  getTrendingProducts
+} from "@/features/recommendations/server";
+import { ProductRecommendationsSection } from "@/features/recommendations/ui/storefront/ProductRecommendationsSection";
 import { getTranslator } from "@/features/i18n/server";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 import { slugify } from "@/lib/utils";
@@ -43,8 +43,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const [{ t }, product] = await Promise.all([getTranslator(), getProductBySlug(slug)]);
   if (!product) notFound();
 
-  const [relatedProducts, category, settings] = await Promise.all([
-    getRelatedProducts(product),
+  const [relatedProducts, similarProducts, trendingProducts, category, settings] = await Promise.all([
+    getRelatedProducts(product.id),
+    getSimilarProducts(product.id),
+    getTrendingProducts(4, product.id),
     getCategoryBySlug(slugify(product.category)),
     getStoreSettings()
   ]);
@@ -68,12 +70,23 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <ProductReviewsSection productId={product.id} />
       </section>
 
-      <section className="mx-auto max-w-[1440px] px-4 py-20 sm:px-6 lg:px-8">
-        <SectionHeader eyebrow={t("product.relatedEyebrow")} title={t("product.relatedTitle")} />
-        <div className="mt-10">
-          <ProductGrid products={relatedProducts} />
-        </div>
-      </section>
+      <ProductRecommendationsSection
+        eyebrow={t("recommendations.relatedEyebrow")}
+        title={t("recommendations.relatedTitle")}
+        products={relatedProducts.items}
+      />
+
+      <ProductRecommendationsSection
+        eyebrow={t("recommendations.similarEyebrow")}
+        title={t("recommendations.similarTitle")}
+        products={similarProducts.items}
+      />
+
+      <ProductRecommendationsSection
+        eyebrow={t("recommendations.trendingEyebrow")}
+        title={t("recommendations.trendingTitle")}
+        products={trendingProducts.items}
+      />
     </>
   );
 }
