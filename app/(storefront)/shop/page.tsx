@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { ProductListing } from "@/features/catalog/client";
-import { getCategories, getProducts } from "@/features/catalog/server";
+import { getCategories } from "@/features/catalog/server";
 import { getTranslator } from "@/features/i18n/server";
+import { searchProductCatalog } from "@/features/search/server";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 
@@ -17,31 +18,25 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 type ShopPageProps = {
-  searchParams?: Promise<{
-    category?: string;
-  }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
-
-function getInitialCategory(categories: Awaited<ReturnType<typeof getCategories>>, value?: string) {
-  if (!value) return undefined;
-  const decoded = decodeURIComponent(value).toLowerCase();
-  return categories.find((category) => category.name.toLowerCase() === decoded || category.slug === decoded)?.name;
-}
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const resolvedSearchParams = await searchParams;
-  const [{ t }, products, categories] = await Promise.all([getTranslator(), getProducts(), getCategories()]);
-  const initialCategory = getInitialCategory(categories, resolvedSearchParams?.category);
+  const [{ t }, categories, results] = await Promise.all([
+    getTranslator(),
+    getCategories(),
+    searchProductCatalog(resolvedSearchParams ?? {})
+  ]);
+
+  const activeCategory = results.query.category.length === 1 ? results.query.category[0] : undefined;
+  const title = activeCategory ?? (results.query.q ? t("shop.searchResults") : t("shop.allPieces"));
 
   return (
     <section className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8">
-      <SectionHeader
-        eyebrow={t("shop.eyebrow")}
-        title={initialCategory ? initialCategory : t("shop.allPieces")}
-        description={t("shop.description")}
-      />
+      <SectionHeader eyebrow={t("shop.eyebrow")} title={title} description={t("shop.description")} />
       <div className="mt-10">
-        <ProductListing products={products} categories={categories} initialCategory={initialCategory} />
+        <ProductListing categories={categories} initialResults={results} />
       </div>
     </section>
   );

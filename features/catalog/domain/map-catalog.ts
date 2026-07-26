@@ -55,6 +55,7 @@ export function mapAdminProductToProduct(product: AdminProduct, categoryName: st
     slug: productSlugFromName(product.name),
     name: product.name,
     sku: product.sku,
+    brand: product.brand,
     tags: buildProductTags(product, categoryName),
     price: defaultVariant?.price ?? (onSale && product.salePriceMmk ? product.salePriceMmk : product.priceMmk),
     compareAtPrice: defaultVariant?.compareAtPrice ?? (onSale ? product.priceMmk : undefined),

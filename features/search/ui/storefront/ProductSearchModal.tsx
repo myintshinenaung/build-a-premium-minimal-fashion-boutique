@@ -7,6 +7,7 @@ import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { useSearch } from "@/features/search/ui/storefront/SearchProvider";
 import { useTranslator } from "@/features/i18n/client";
 import { clearRecentSearches, readRecentSearches, writeRecentSearch } from "@/features/search/infrastructure/search-history";
+import { buildProductSearchPath } from "@/features/search/domain/product-search";
 import { searchProducts } from "@/features/search/domain/search-query";
 import { cn, formatPrice } from "@/lib/utils";
 
@@ -53,6 +54,21 @@ export function ProductSearchModal() {
     closeSearch();
   }
 
+  const viewAllHref = useMemo(() => {
+    if (!query.trim()) {
+      return "/shop";
+    }
+
+    return buildProductSearchPath({
+      q: query.trim(),
+      category: [],
+      brand: [],
+      sort: "popularity",
+      page: 1,
+      pageSize: 8
+    });
+  }, [query]);
+
   if (!isOpen) {
     return null;
   }
@@ -92,24 +108,37 @@ export function ProductSearchModal() {
               {results.length === 0 ? (
                 <p className="mt-6 text-sm text-stone">{t("search.noResults")}</p>
               ) : (
-                <ul className="mt-4 divide-y divide-line">
-                  {results.slice(0, 8).map((product) => (
-                    <li key={product.id}>
+                <>
+                  <ul className="mt-4 divide-y divide-line">
+                    {results.slice(0, 8).map((product) => (
+                      <li key={product.id}>
+                        <Link
+                          href={`/product/${product.slug}`}
+                          onClick={() => handleResultClick(product.name)}
+                          className="flex items-center gap-4 py-4 transition-colors hover:bg-mist/60"
+                        >
+                          <BoutiqueImage src={product.image} alt={product.name} className="h-16 w-14 shrink-0 rounded-[2px]" sizes="56px" />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-medium text-ink">{product.name}</p>
+                            <p className="mt-1 text-xs text-stone">{product.category}</p>
+                          </div>
+                          <p className="text-sm text-ink">{formatPrice(product.price)}</p>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  {results.length > 0 ? (
+                    <div className="mt-4 border-t border-line pt-4">
                       <Link
-                        href={`/product/${product.slug}`}
-                        onClick={() => handleResultClick(product.name)}
-                        className="flex items-center gap-4 py-4 transition-colors hover:bg-mist/60"
+                        href={viewAllHref}
+                        onClick={() => handleResultClick(query.trim())}
+                        className="text-sm text-ink underline underline-offset-4"
                       >
-                        <BoutiqueImage src={product.image} alt={product.name} className="h-16 w-14 shrink-0 rounded-[2px]" sizes="56px" />
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium text-ink">{product.name}</p>
-                          <p className="mt-1 text-xs text-stone">{product.category}</p>
-                        </div>
-                        <p className="text-sm text-ink">{formatPrice(product.price)}</p>
+                        {t("search.viewAll", { count: results.length })}
                       </Link>
-                    </li>
-                  ))}
-                </ul>
+                    </div>
+                  ) : null}
+                </>
               )}
             </>
           ) : (

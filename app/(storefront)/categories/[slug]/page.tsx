@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductListing } from "@/features/catalog/client";
-import { getCategories, getCategoryBySlug, getProductsByCategory } from "@/features/catalog/server";
+import { getCategories, getCategoryBySlug } from "@/features/catalog/server";
 import { getTranslator } from "@/features/i18n/server";
+import { searchProductCatalog } from "@/features/search/server";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
@@ -38,8 +39,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const [{ t }, category] = await Promise.all([getTranslator(), getCategoryBySlug(slug)]);
   if (!category) notFound();
 
-  const [categoryProducts, categories] = await Promise.all([
-    getProductsByCategory(category.name),
+  const [results, categories] = await Promise.all([
+    searchProductCatalog({ category: category.name }),
     getCategories()
   ]);
 
@@ -67,7 +68,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </section>
 
       <section className="mx-auto max-w-[1440px] px-4 pb-20 sm:px-6 lg:px-8">
-        <ProductListing products={categoryProducts} categories={categories} initialCategory={category.name} />
+        <ProductListing categories={categories} initialResults={results} />
       </section>
     </>
   );

@@ -8,6 +8,7 @@ export function productToSearchIndex(product: Product): SearchProductIndex {
     slug: product.slug,
     name: product.name,
     category: product.category,
+    brand: product.brand,
     colors: product.colors.map((color) => color.name),
     tags: product.tags,
     sku: product.sku,

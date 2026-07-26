@@ -26,6 +26,7 @@ export type Product = {
   price: number;
   compareAtPrice?: number;
   category: ProductCategory;
+  brand: string;
   description: string;
   details: string[];
   images: string[];
@@ -37,6 +38,8 @@ export type Product = {
   stockStatus: StockStatus;
   newArrival: boolean;
   bestSeller: boolean;
+  averageRating?: number;
+  reviewCount?: number;
 };
 
 export type Category = {

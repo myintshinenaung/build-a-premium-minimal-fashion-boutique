@@ -83,6 +83,32 @@ export const reviewRepository = {
     }
   },
 
+  async listPublishedRatingSummaries() {
+    try {
+      const supabase = createSupabaseServerClient();
+      const { data, error } = await supabase
+        .from("product_reviews")
+        .select("product_id, rating")
+        .eq("status", "published");
+
+      if (error) {
+        throw error;
+      }
+
+      const summaries = new Map<string, { rating: number }[]>();
+
+      for (const row of data ?? []) {
+        const current = summaries.get(row.product_id) ?? [];
+        current.push({ rating: row.rating });
+        summaries.set(row.product_id, current);
+      }
+
+      return summaries;
+    } catch (error) {
+      throw createRepositoryError("Unable to load published review ratings", error);
+    }
+  },
+
   async listByAccountId(accountId: string) {
     try {
       const supabase = createSupabaseServerClient();

@@ -1,9 +1,10 @@
 import type { SearchProductIndex } from "@/types/search";
+import { tokenizeSearchQuery } from "@/features/search/domain/product-search";
 
 export function searchProducts(index: SearchProductIndex[], query: string) {
-  const normalized = query.trim().toLowerCase();
+  const tokens = tokenizeSearchQuery(query);
 
-  if (!normalized) {
+  if (tokens.length === 0) {
     return [];
   }
 
@@ -11,6 +12,7 @@ export function searchProducts(index: SearchProductIndex[], query: string) {
     const haystack = [
       product.name,
       product.category,
+      product.brand,
       product.sku,
       ...product.colors,
       ...product.tags
@@ -18,7 +20,7 @@ export function searchProducts(index: SearchProductIndex[], query: string) {
       .join(" ")
       .toLowerCase();
 
-    return normalized.split(/\s+/).every((token) => haystack.includes(token));
+    return tokens.every((token) => haystack.includes(token));
   });
 }
 
