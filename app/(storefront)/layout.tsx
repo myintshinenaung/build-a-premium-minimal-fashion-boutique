@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { StorefrontChrome } from "@/components/storefront/StorefrontChrome";
 import { StorefrontCartShell } from "@/features/cart/client";
 import { WishlistShell } from "@/features/wishlist/client";
 import { Footer } from "@/components/layout/Footer";
@@ -27,9 +28,9 @@ export default async function StorefrontLayout({ children }: { children: ReactNo
     <StorefrontProviders initialLocale={initialLocale} searchIndex={searchIndex}>
       <StorefrontCartShell>
         <WishlistShell>
-          <Header storeName={settings.storeName} />
-          <main id="main-content">{children}</main>
-          <Footer />
+          <StorefrontChrome header={<Header storeName={settings.storeName} />} footer={<Footer />}>
+            {children}
+          </StorefrontChrome>
         </WishlistShell>
       </StorefrontCartShell>
     </StorefrontProviders>

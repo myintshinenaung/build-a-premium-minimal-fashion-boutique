@@ -4,6 +4,7 @@ const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./features/**/*.{js,ts,jsx,tsx,mdx}",
     "./lib/**/*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
@@ -13,7 +14,16 @@ const config: Config = {
         mist: "#F5F5F5",
         line: "#E7E2DC",
         clay: "#B8A896",
-        stone: "#77716A"
+        stone: "#77716A",
+        novora: {
+          ink: "#111827",
+          muted: "#6B7280",
+          accent: "#4F46E5",
+          accentSoft: "#EEF2FF",
+          surface: "#F8FAFC",
+          border: "#E5E7EB",
+          sale: "#EF4444"
+        }
       },
       fontFamily: {
         sans: ["Inter", "Manrope", "Segoe UI", "Arial", "sans-serif"]

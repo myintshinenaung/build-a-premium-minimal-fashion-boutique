@@ -53,6 +53,15 @@ textarea {
   }
 }
 
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 [data-admin-theme="dark"] {
   background: #111111;
   color: #f6f3ef;
