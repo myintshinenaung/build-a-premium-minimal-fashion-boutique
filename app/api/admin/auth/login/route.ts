@@ -62,6 +62,14 @@ export async function POST(request: NextRequest) {
       success: true
     }).catch(() => undefined);
 
+    if (user?.id) {
+      const { sendAdminNotification } = await import("@/features/notifications/server");
+      await sendAdminNotification(user.id, user.email ?? null, "login_alert", {
+        deviceLabel: request.headers.get("user-agent")?.includes("Mobile") ? "Mobile browser" : "Web browser",
+        timestamp: new Date().toISOString()
+      }).catch(() => undefined);
+    }
+
     return withSessionCookies(NextResponse.json({ ok: true }));
   } catch (error) {
     return jsonError(error);

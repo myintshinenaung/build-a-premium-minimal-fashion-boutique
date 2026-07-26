@@ -9,6 +9,7 @@ export function mapSupabaseUserToAdminUser(user: User): AdminUser {
   const metadata = user.user_metadata ?? {};
 
   return {
+    id: user.id,
     name: typeof metadata.full_name === "string" ? metadata.full_name : user.email?.split("@")[0] ?? "Admin",
     email: user.email ?? "",
     role: typeof metadata.role === "string" ? metadata.role : "Store Manager"

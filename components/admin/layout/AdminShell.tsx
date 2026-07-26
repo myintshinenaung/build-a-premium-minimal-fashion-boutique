@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useState, type ComponentType, type ReactNode } from "react";
 import { ADMIN_SHELLLESS_PATHS, ADMIN_THEME_STORAGE_KEY, type AdminUser } from "@/features/identity/client";
+import { NotificationBell } from "@/features/notifications/client";
 import { cn } from "@/lib/utils";
 
 type AdminNavItem = {
@@ -46,6 +47,7 @@ const navItems: AdminNavItem[] = [
   { href: "/admin/media", label: "Media Library", icon: Image },
   { href: "/admin/security", label: "Security", icon: ShieldCheck },
   { href: "/admin/performance", label: "Performance", icon: Activity },
+  { href: "/admin/notifications", label: "Notifications", icon: Bell },
   { href: "/admin/settings", label: "Settings", icon: Settings }
 ];
 
@@ -76,15 +78,20 @@ const pageTitles: Record<string, string> = {
   "/admin/security/login-history": "Login History",
   "/admin/security/sessions": "Active Sessions",
   "/admin/performance": "Performance Overview",
+  "/admin/notifications": "Notification Dashboard",
+  "/admin/notifications/templates": "Notification Templates",
+  "/admin/notifications/delivery-logs": "Delivery Logs",
+  "/admin/notifications/failed": "Failed Notifications",
   "/admin/settings": "Settings"
 };
 
 type AdminShellProps = {
   children: ReactNode;
   user: AdminUser | null;
+  unreadCount?: number;
 };
 
-export function AdminShell({ children, user }: AdminShellProps) {
+export function AdminShell({ children, user, unreadCount = 0 }: AdminShellProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -145,13 +152,7 @@ export function AdminShell({ children, user }: AdminShellProps) {
                   className="h-10 w-56 border border-line bg-white pl-9 pr-3 text-sm outline-none transition-colors placeholder:text-stone/70 focus:border-ink"
                 />
               </label>
-              <button
-                type="button"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-mist"
-                aria-label="Notifications"
-              >
-                <Bell size={18} strokeWidth={1.7} />
-              </button>
+              <NotificationBell unreadCount={unreadCount} />
               <button
                 type="button"
                 onClick={() => setAdminTheme(theme === "light" ? "dark" : "light")}

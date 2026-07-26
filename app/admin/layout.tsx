@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { AdminShell } from "@/components/admin/layout/AdminShell";
 import { ADMIN_PUBLIC_PATHS, getAdminUser } from "@/features/identity/server";
+import { getAdminUnreadCount } from "@/features/notifications/server";
 
 export const metadata: Metadata = {
   title: {
@@ -26,5 +27,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     redirect(`/admin/login?next=${encodeURIComponent(pathname)}`);
   }
 
-  return <AdminShell user={user}>{children}</AdminShell>;
+  const unreadCount = user ? await getAdminUnreadCount(user.id).catch(() => 0) : 0;
+
+  return (
+    <AdminShell user={user} unreadCount={unreadCount}>
+      {children}
+    </AdminShell>
+  );
 }

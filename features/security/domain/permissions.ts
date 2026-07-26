@@ -145,7 +145,7 @@ function resolveModuleFromPath(pathname: string): PermissionModule | null {
     return "analytics";
   }
 
-  if (pathname.startsWith("/api/admin/banners") || pathname.startsWith("/api/admin/media")) {
+  if (pathname.startsWith("/api/admin/banners") || pathname.startsWith("/api/admin/media") || pathname.startsWith("/api/admin/notifications")) {
     return "marketing";
   }
 

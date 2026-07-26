@@ -332,6 +332,47 @@ export type AdminLoginHistoryRow = {
   created_at: string;
 };
 
+export type NotificationTemplateRow = {
+  id: string;
+  name: string;
+  category: string;
+  notification_type: string;
+  subject_template: string;
+  body_template: string;
+  channels: string[];
+  enabled: boolean;
+  updated_at: string;
+};
+
+export type NotificationRow = {
+  id: string;
+  recipient_type: string;
+  recipient_id: string;
+  recipient_email: string | null;
+  notification_type: string;
+  title: string;
+  body: string;
+  data: Record<string, unknown>;
+  channel: string;
+  status: string;
+  read_at: string | null;
+  archived_at: string | null;
+  created_at: string;
+};
+
+export type NotificationDeliveryLogRow = {
+  id: string;
+  notification_id: string | null;
+  template_id: string | null;
+  channel: string;
+  status: string;
+  recipient: string;
+  payload: Record<string, unknown>;
+  error: string | null;
+  sent_at: string | null;
+  created_at: string;
+};
+
 export type OrderItemRow = {
   id: string;
   order_id: string;
@@ -511,6 +552,24 @@ export type Database = {
         Row: AdminLoginHistoryRow;
         Insert: Omit<AdminLoginHistoryRow, "created_at"> & Partial<Pick<AdminLoginHistoryRow, "created_at">>;
         Update: Partial<Omit<AdminLoginHistoryRow, "id">>;
+        Relationships: [];
+      };
+      notification_templates: {
+        Row: NotificationTemplateRow;
+        Insert: Omit<NotificationTemplateRow, "updated_at"> & Partial<Pick<NotificationTemplateRow, "updated_at">>;
+        Update: Partial<Omit<NotificationTemplateRow, "id">>;
+        Relationships: [];
+      };
+      notifications: {
+        Row: NotificationRow;
+        Insert: Omit<NotificationRow, "created_at"> & Partial<Pick<NotificationRow, "created_at">>;
+        Update: Partial<Omit<NotificationRow, "id">>;
+        Relationships: [];
+      };
+      notification_delivery_logs: {
+        Row: NotificationDeliveryLogRow;
+        Insert: Omit<NotificationDeliveryLogRow, "created_at"> & Partial<Pick<NotificationDeliveryLogRow, "created_at">>;
+        Update: Partial<Omit<NotificationDeliveryLogRow, "id">>;
         Relationships: [];
       };
     };
