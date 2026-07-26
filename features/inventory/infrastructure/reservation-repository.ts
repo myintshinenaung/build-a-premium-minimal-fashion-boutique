@@ -203,6 +203,49 @@ export const reservationRepository = {
     } catch (error) {
       throw createRepositoryError("Unable to decrement product stock", error);
     }
+  },
+
+  async getProductStock(productId: string): Promise<number> {
+    try {
+      const supabase = createSupabaseServerClient();
+      const { data, error } = await supabase.from("products").select("stock_quantity").eq("id", productId).maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error("Product not found.");
+      }
+
+      return data.stock_quantity;
+    } catch (error) {
+      throw createRepositoryError("Unable to load product stock", error);
+    }
+  },
+
+  async setProductStock(productId: string, quantity: number): Promise<number> {
+    try {
+      const supabase = createSupabaseServerClient();
+      const nextStock = Math.max(0, quantity);
+      const { data, error } = await supabase
+        .from("products")
+        .update({
+          stock_quantity: nextStock,
+          updated_at: new Date().toISOString().slice(0, 10)
+        })
+        .eq("id", productId)
+        .select("stock_quantity")
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      return data.stock_quantity;
+    } catch (error) {
+      throw createRepositoryError("Unable to update product stock", error);
+    }
   }
 };
 

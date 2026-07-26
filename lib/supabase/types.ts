@@ -228,6 +228,54 @@ export type InventoryReservationRow = {
   updated_at: string;
 };
 
+export type WarehouseRow = {
+  id: string;
+  name: string;
+  code: string;
+  is_default: boolean;
+  created_at: string;
+};
+
+export type WarehouseStockRow = {
+  id: string;
+  warehouse_id: string;
+  product_id: string;
+  quantity: number;
+  incoming_quantity: number;
+  updated_at: string;
+};
+
+export type InventoryMovementRow = {
+  id: string;
+  product_id: string;
+  warehouse_id: string;
+  movement_type: string;
+  quantity: number;
+  quantity_before: number;
+  quantity_after: number;
+  user_id: string | null;
+  user_name: string;
+  reason: string;
+  reference_type: string | null;
+  reference_id: string | null;
+  created_at: string;
+};
+
+export type InventoryAlertSettingsRow = {
+  id: string;
+  low_stock_threshold: number;
+  critical_stock_threshold: number;
+  overstock_threshold: number;
+  updated_at: string;
+};
+
+export type InventoryProductAlertSettingsRow = {
+  product_id: string;
+  low_stock_threshold: number | null;
+  critical_stock_threshold: number | null;
+  overstock_threshold: number | null;
+};
+
 export type OrderItemRow = {
   id: string;
   order_id: string;
@@ -345,6 +393,36 @@ export type Database = {
         Insert: Omit<InventoryReservationRow, "created_at" | "updated_at"> &
           Partial<Pick<InventoryReservationRow, "created_at" | "updated_at">>;
         Update: Partial<Omit<InventoryReservationRow, "id">>;
+        Relationships: [];
+      };
+      warehouses: {
+        Row: WarehouseRow;
+        Insert: Omit<WarehouseRow, "created_at"> & Partial<Pick<WarehouseRow, "created_at">>;
+        Update: Partial<Omit<WarehouseRow, "id">>;
+        Relationships: [];
+      };
+      warehouse_stock: {
+        Row: WarehouseStockRow;
+        Insert: Omit<WarehouseStockRow, "updated_at"> & Partial<Pick<WarehouseStockRow, "updated_at">>;
+        Update: Partial<Omit<WarehouseStockRow, "id">>;
+        Relationships: [];
+      };
+      inventory_movements: {
+        Row: InventoryMovementRow;
+        Insert: Omit<InventoryMovementRow, "created_at"> & Partial<Pick<InventoryMovementRow, "created_at">>;
+        Update: Partial<Omit<InventoryMovementRow, "id">>;
+        Relationships: [];
+      };
+      inventory_alert_settings: {
+        Row: InventoryAlertSettingsRow;
+        Insert: Omit<InventoryAlertSettingsRow, "updated_at"> & Partial<Pick<InventoryAlertSettingsRow, "updated_at">>;
+        Update: Partial<Omit<InventoryAlertSettingsRow, "id">>;
+        Relationships: [];
+      };
+      inventory_product_alert_settings: {
+        Row: InventoryProductAlertSettingsRow;
+        Insert: InventoryProductAlertSettingsRow;
+        Update: Partial<Omit<InventoryProductAlertSettingsRow, "product_id">>;
         Relationships: [];
       };
     };

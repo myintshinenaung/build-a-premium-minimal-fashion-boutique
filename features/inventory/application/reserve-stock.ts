@@ -6,6 +6,7 @@ import {
   InventoryValidationError
 } from "@/features/inventory/application/inventory-errors";
 import { getAvailableStock } from "@/features/inventory/application/get-available-stock";
+import { recordInventoryMovement } from "@/features/inventory/application/record-movement";
 import { reservationRepository } from "@/features/inventory/infrastructure/reservation-repository";
 import { loadProductForInventory } from "@/features/inventory/infrastructure/variant-stock";
 import type { InventoryReservation } from "@/features/inventory/domain/reservation";
@@ -53,7 +54,7 @@ export async function reserveStock(input: unknown): Promise<InventoryReservation
     throw new InsufficientStockError(`Only ${productAvailable} units available for this product.`);
   }
 
-  return reservationRepository.create({
+  const created = await reservationRepository.create({
     id: createReservationId(),
     productId: parsed.productId,
     variantId: parsed.variantId,
@@ -62,4 +63,19 @@ export async function reserveStock(input: unknown): Promise<InventoryReservation
     referenceId: parsed.referenceId ?? null,
     expiresAt: parsed.expiresAt ?? createReservationExpiryDate()
   });
+
+  await recordInventoryMovement({
+    productId: parsed.productId,
+    movementType: "reservation",
+    quantity: parsed.quantity,
+    quantityBefore: product.stockQuantity,
+    quantityAfter: product.stockQuantity,
+    userName: "System",
+    reason: "Stock reserved",
+    referenceType: parsed.referenceType ?? null,
+    referenceId: parsed.referenceId ?? null,
+    syncProductStock: false
+  });
+
+  return created;
 }
