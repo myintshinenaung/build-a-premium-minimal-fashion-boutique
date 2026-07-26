@@ -13,6 +13,7 @@ import {
   reserveOrderInventory
 } from "@/features/inventory/application/order-reservations";
 import { orderRepository } from "@/features/orders/infrastructure/order-repository";
+import { PromotionValidationError, recordCouponRedemption, resolveCheckoutPromotion } from "@/features/promotions/server";
 import type { StorefrontOrder } from "@/types/order";
 import { ZodError } from "zod";
 
@@ -25,7 +26,10 @@ function createOrderId() {
   return `ORD-${Date.now().toString(36).toUpperCase()}-${suffix}`;
 }
 
-export async function createOrder(input: unknown, options?: { accountId?: string | null }): Promise<StorefrontOrder> {
+export async function createOrder(
+  input: unknown,
+  options?: { accountId?: string | null; isAuthenticated?: boolean }
+): Promise<StorefrontOrder> {
   let parsed: CreateOrderInput;
 
   try {
@@ -40,9 +44,24 @@ export async function createOrder(input: unknown, options?: { accountId?: string
 
   const validatedCart = await validateCheckoutCart(parsed.items);
   const shippingMmk = await getShippingFee(parsed.shippingMethod);
-  const totalMmk = validatedCart.subtotalMmk + shippingMmk;
   const email = parsed.customer.email?.trim() ?? "";
   const orderId = createOrderId();
+
+  let promotion;
+
+  try {
+    promotion = await resolveCheckoutPromotion(parsed.couponCode, validatedCart.subtotalMmk, shippingMmk, {
+      isAuthenticated: options?.isAuthenticated ?? Boolean(options?.accountId)
+    });
+  } catch (error) {
+    if (error instanceof PromotionValidationError) {
+      throw new CheckoutValidationError(error.message);
+    }
+
+    throw error;
+  }
+
+  const { summary, coupon } = promotion;
 
   try {
     await reserveOrderInventory(orderId, validatedCart.items);
@@ -55,18 +74,22 @@ export async function createOrder(input: unknown, options?: { accountId?: string
   }
 
   try {
-    return await orderRepository.create({
+    const order = await orderRepository.create({
       id: orderId,
       accountId: options?.accountId ?? null,
+      couponId: coupon?.id ?? null,
+      couponCode: coupon?.code ?? null,
+      discountMmk: summary.discountMmk,
+      taxMmk: summary.taxMmk,
       customer: parsed.customer.name.trim(),
       customerPhone: parsed.customer.phone.trim(),
       customerEmail: email,
       shippingAddress: parsed.customer.address.trim(),
       township: parsed.customer.township.trim(),
       notes: parsed.customer.notes?.trim() ?? "",
-      subtotalMmk: validatedCart.subtotalMmk,
-      shippingMmk,
-      totalMmk,
+      subtotalMmk: summary.subtotalMmk,
+      shippingMmk: summary.shippingMmk,
+      totalMmk: summary.totalMmk,
       channel: "Web",
       status: "Pending",
       items: validatedCart.items.map((item, index) => ({
@@ -83,6 +106,12 @@ export async function createOrder(input: unknown, options?: { accountId?: string
         lineTotalMmk: item.lineTotalMmk
       }))
     });
+
+    if (coupon) {
+      await recordCouponRedemption(coupon.id);
+    }
+
+    return order;
   } catch (error) {
     await releaseOrderReservations(orderId);
     throw error;

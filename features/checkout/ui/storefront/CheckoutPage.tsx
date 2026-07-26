@@ -118,11 +118,19 @@ export async function OrderConfirmationPage({ params }: { params: Promise<{ orde
               <span className="text-ink">{formatPrice(order.subtotalMmk)}</span>
             </div>
             <div className="flex items-center justify-between gap-4 text-stone">
+              <span>{t("checkout.discount")}</span>
+              <span className="text-ink">{order.discountMmk > 0 ? `-${formatPrice(order.discountMmk)}` : formatPrice(0)}</span>
+            </div>
+            <div className="flex items-center justify-between gap-4 text-stone">
               <span>{t("checkout.shippingLabel")}</span>
               <span className="text-ink">{formatPrice(order.shippingMmk)}</span>
             </div>
+            <div className="flex items-center justify-between gap-4 text-stone">
+              <span>{t("checkout.tax")}</span>
+              <span className="text-ink">{formatPrice(order.taxMmk)}</span>
+            </div>
             <div className="flex items-center justify-between gap-4 border-t border-line pt-3 text-base font-medium text-ink">
-              <span>{t("checkout.total")}</span>
+              <span>{t("checkout.grandTotal")}</span>
               <span>{formatPrice(order.totalMmk)}</span>
             </div>
           </div>

@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CartLineItem } from "@/features/cart/client";
 import { selectCartSubtotal, useCartStore } from "@/features/cart/infrastructure/store";
 import { FLAT_RATE_SHIPPING_METHOD } from "@/features/checkout/domain/shipping";
+import type { OrderSummary } from "@/features/promotions";
 import { useTranslator } from "@/features/i18n/client";
 import { formatPrice } from "@/lib/utils";
 
@@ -16,12 +17,22 @@ const inputClass =
   "mt-2 w-full border border-line bg-white px-3 py-3 text-sm outline-none transition-colors placeholder:text-stone/70 focus:border-ink";
 const labelClass = "text-xs font-medium uppercase tracking-[0.18em] text-stone";
 
+function buildInitialSummary(subtotal: number, shippingMmk: number): OrderSummary {
+  return {
+    subtotalMmk: subtotal,
+    discountMmk: 0,
+    shippingMmk,
+    taxMmk: 0,
+    totalMmk: subtotal + shippingMmk,
+    coupon: null
+  };
+}
+
 export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
   const { t } = useTranslator();
   const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
   const subtotal = selectCartSubtotal(items);
-  const total = subtotal + flatRateShippingMmk;
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -29,8 +40,13 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
   const [address, setAddress] = useState("");
   const [township, setTownship] = useState("");
   const [notes, setNotes] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCouponCode, setAppliedCouponCode] = useState("");
+  const [summary, setSummary] = useState<OrderSummary>(() => buildInitialSummary(subtotal, flatRateShippingMmk));
   const [error, setError] = useState("");
+  const [couponError, setCouponError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   const cartPayload = useMemo(
     () =>
@@ -43,6 +59,76 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
       })),
     [items]
   );
+
+  const promotionPayload = useMemo(
+    () => ({
+      shippingMethod: FLAT_RATE_SHIPPING_METHOD,
+      items: cartPayload
+    }),
+    [cartPayload]
+  );
+
+  useEffect(() => {
+    if (!appliedCouponCode) {
+      setSummary(buildInitialSummary(subtotal, flatRateShippingMmk));
+    }
+  }, [appliedCouponCode, flatRateShippingMmk, subtotal]);
+
+  async function refreshSummaryWithoutCoupon() {
+    const response = await fetch("/api/promotions/remove", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(promotionPayload)
+    });
+    const payload = (await response.json()) as { summary?: OrderSummary; message?: string };
+
+    if (!response.ok || !payload.summary) {
+      setSummary(buildInitialSummary(subtotal, flatRateShippingMmk));
+      return;
+    }
+
+    setSummary(payload.summary);
+  }
+
+  async function handleApplyCoupon() {
+    setCouponError("");
+    setIsApplyingCoupon(true);
+
+    try {
+      const response = await fetch("/api/promotions/apply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ...promotionPayload,
+          code: couponCode
+        })
+      });
+      const payload = (await response.json()) as { summary?: OrderSummary; message?: string };
+
+      if (!response.ok || !payload.summary) {
+        setCouponError(payload.message ?? t("checkout.couponError"));
+        return;
+      }
+
+      setSummary(payload.summary);
+      setAppliedCouponCode(payload.summary.coupon?.code ?? couponCode.trim().toUpperCase());
+    } catch {
+      setCouponError(t("checkout.couponError"));
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  }
+
+  async function handleRemoveCoupon() {
+    setCouponError("");
+    setAppliedCouponCode("");
+    setCouponCode("");
+    await refreshSummaryWithoutCoupon();
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,7 +151,8 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
             notes
           },
           shippingMethod: FLAT_RATE_SHIPPING_METHOD,
-          items: cartPayload
+          items: cartPayload,
+          couponCode: appliedCouponCode
         })
       });
 
@@ -194,7 +281,7 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
             <input type="radio" name="shipping" checked readOnly className="mt-1 accent-ink" />
             <span>
               <span className="block text-sm font-medium text-ink">{t("checkout.flatRateShipping")}</span>
-              <span className="mt-1 block text-sm text-stone">{formatPrice(flatRateShippingMmk)}</span>
+              <span className="mt-1 block text-sm text-stone">{formatPrice(summary.coupon?.freeShipping ? 0 : flatRateShippingMmk)}</span>
             </span>
           </label>
         </div>
@@ -219,18 +306,60 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
           ))}
         </div>
 
+        <div className="mt-6 border-t border-line pt-6">
+          <label className="block">
+            <span className={labelClass}>{t("checkout.couponCode")}</span>
+            <div className="mt-2 flex gap-2">
+              <input
+                className="w-full border border-line bg-white px-3 py-3 text-sm outline-none transition-colors placeholder:text-stone/70 focus:border-ink"
+                value={couponCode}
+                onChange={(event) => setCouponCode(event.target.value.toUpperCase())}
+                disabled={Boolean(appliedCouponCode)}
+              />
+              {appliedCouponCode ? (
+                <button
+                  type="button"
+                  onClick={() => void handleRemoveCoupon()}
+                  className="shrink-0 border border-line px-4 text-sm font-medium text-ink transition-colors hover:bg-mist"
+                >
+                  {t("checkout.removeCoupon")}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => void handleApplyCoupon()}
+                  disabled={!couponCode.trim() || isApplyingCoupon}
+                  className="shrink-0 border border-ink bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-stone disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {t("checkout.applyCoupon")}
+                </button>
+              )}
+            </div>
+          </label>
+          {appliedCouponCode ? <p className="mt-2 text-xs text-stone">{t("checkout.couponApplied", { code: appliedCouponCode })}</p> : null}
+          {couponError ? <p className="mt-2 text-xs text-red-700">{couponError}</p> : null}
+        </div>
+
         <div className="mt-6 space-y-3 border-t border-line pt-6 text-sm">
           <div className="flex items-center justify-between gap-4 text-stone">
             <span>{t("checkout.subtotal")}</span>
-            <span className="text-ink">{formatPrice(subtotal)}</span>
+            <span className="text-ink">{formatPrice(summary.subtotalMmk)}</span>
+          </div>
+          <div className="flex items-center justify-between gap-4 text-stone">
+            <span>{t("checkout.discount")}</span>
+            <span className="text-ink">{summary.discountMmk > 0 ? `-${formatPrice(summary.discountMmk)}` : formatPrice(0)}</span>
           </div>
           <div className="flex items-center justify-between gap-4 text-stone">
             <span>{t("checkout.shippingLabel")}</span>
-            <span className="text-ink">{formatPrice(flatRateShippingMmk)}</span>
+            <span className="text-ink">{formatPrice(summary.shippingMmk)}</span>
+          </div>
+          <div className="flex items-center justify-between gap-4 text-stone">
+            <span>{t("checkout.tax")}</span>
+            <span className="text-ink">{formatPrice(summary.taxMmk)}</span>
           </div>
           <div className="flex items-center justify-between gap-4 border-t border-line pt-3 text-base font-medium text-ink">
-            <span>{t("checkout.total")}</span>
-            <span>{formatPrice(total)}</span>
+            <span>{t("checkout.grandTotal")}</span>
+            <span>{formatPrice(summary.totalMmk)}</span>
           </div>
         </div>
       </aside>

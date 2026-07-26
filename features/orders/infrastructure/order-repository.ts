@@ -7,6 +7,10 @@ import type { StorefrontOrder, StorefrontOrderItem } from "@/types/order";
 export type OrderCreateInput = {
   id: string;
   accountId?: string | null;
+  couponId?: string | null;
+  couponCode?: string | null;
+  discountMmk?: number;
+  taxMmk?: number;
   customer: string;
   customerPhone: string;
   customerEmail: string;
@@ -186,6 +190,10 @@ export const orderRepository = {
         .insert({
           id: input.id,
           account_id: input.accountId ?? null,
+          coupon_id: input.couponId ?? null,
+          coupon_code: input.couponCode ?? null,
+          discount_mmk: input.discountMmk ?? 0,
+          tax_mmk: input.taxMmk ?? 0,
           customer: input.customer,
           customer_phone: input.customerPhone,
           customer_email: input.customerEmail,
@@ -386,6 +394,10 @@ function storefrontOrderFromRow(row: OrderRow, items: OrderItemRow[]): Storefron
   return {
     id: row.id,
     accountId: row.account_id,
+    couponId: row.coupon_id,
+    couponCode: row.coupon_code,
+    discountMmk: row.discount_mmk,
+    taxMmk: row.tax_mmk,
     customer: row.customer,
     customerPhone: row.customer_phone,
     customerEmail: row.customer_email,

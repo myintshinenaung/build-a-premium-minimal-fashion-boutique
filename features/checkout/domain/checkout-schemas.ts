@@ -21,7 +21,8 @@ export const checkoutCustomerSchema = z.object({
 export const createOrderInputSchema = z.object({
   customer: checkoutCustomerSchema,
   shippingMethod: z.literal(FLAT_RATE_SHIPPING_METHOD),
-  items: z.array(checkoutCartItemSchema).min(1, "Your cart is empty.")
+  items: z.array(checkoutCartItemSchema).min(1, "Your cart is empty."),
+  couponCode: z.string().trim().max(40).optional().or(z.literal(""))
 });
 
 export type CheckoutCartItemInput = z.infer<typeof checkoutCartItemSchema>;

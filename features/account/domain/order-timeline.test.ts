@@ -6,6 +6,10 @@ function createOrder(overrides: Partial<StorefrontOrder> = {}): StorefrontOrder 
   return {
     id: "ORD-1",
     accountId: "ACC-1",
+    couponId: null,
+    couponCode: null,
+    discountMmk: 0,
+    taxMmk: 0,
     customer: "Aye Aye",
     customerPhone: "09123456789",
     customerEmail: "aye@example.com",

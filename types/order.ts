@@ -18,6 +18,10 @@ export type StorefrontOrderItem = {
 export type StorefrontOrder = {
   id: string;
   accountId: string | null;
+  couponId: string | null;
+  couponCode: string | null;
+  discountMmk: number;
+  taxMmk: number;
   customer: string;
   customerPhone: string;
   customerEmail: string;

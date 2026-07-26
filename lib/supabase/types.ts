@@ -125,9 +125,30 @@ export type CustomerAddressRow = {
   updated_at: string;
 };
 
+export type CouponRow = {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  discount_type: "percentage" | "fixed" | "free_shipping";
+  discount_value: number;
+  minimum_order_mmk: number;
+  usage_limit: number | null;
+  usage_count: number;
+  expires_at: string | null;
+  enabled: boolean;
+  customer_eligibility: "all" | "authenticated" | "guest";
+  created_at: string;
+  updated_at: string;
+};
+
 export type OrderRow = {
   id: string;
   account_id: string | null;
+  coupon_id: string | null;
+  coupon_code: string | null;
+  discount_mmk: number;
+  tax_mmk: number;
   customer: string;
   customer_phone: string;
   customer_email: string;
@@ -230,6 +251,13 @@ export type Database = {
         Insert: Omit<CustomerAddressRow, "created_at" | "updated_at"> &
           Partial<Pick<CustomerAddressRow, "created_at" | "updated_at">>;
         Update: Partial<Omit<CustomerAddressRow, "id">>;
+        Relationships: [];
+      };
+      coupons: {
+        Row: CouponRow;
+        Insert: Omit<CouponRow, "created_at" | "updated_at" | "usage_count"> &
+          Partial<Pick<CouponRow, "created_at" | "updated_at" | "usage_count">>;
+        Update: Partial<Omit<CouponRow, "id">>;
         Relationships: [];
       };
       orders: {
