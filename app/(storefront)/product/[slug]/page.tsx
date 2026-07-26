@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProductGallery, ProductPurchasePanel } from "@/features/catalog/client";
+import { ProductReviewsSection } from "@/features/reviews/client";
 import {
   getCategoryBySlug,
   getProductBySlug,
@@ -61,6 +62,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
             categoryHref={categoryHref}
           />
         </div>
+      </section>
+
+      <section className="mx-auto max-w-[1440px] px-4 pb-10 sm:px-6 lg:px-8">
+        <ProductReviewsSection productId={product.id} />
       </section>
 
       <section className="mx-auto max-w-[1440px] px-4 py-20 sm:px-6 lg:px-8">

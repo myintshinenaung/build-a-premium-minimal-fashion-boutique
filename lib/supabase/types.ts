@@ -132,6 +132,36 @@ export type WishlistRow = {
   created_at: string;
 };
 
+export type ProductReviewRow = {
+  id: string;
+  product_id: string;
+  account_id: string;
+  order_id: string | null;
+  rating: number;
+  title: string;
+  body: string;
+  status: "pending" | "published" | "rejected" | "hidden";
+  verified_purchase: boolean;
+  helpful_count: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ReviewHelpfulVoteRow = {
+  id: string;
+  review_id: string;
+  account_id: string;
+  created_at: string;
+};
+
+export type ReviewReportRow = {
+  id: string;
+  review_id: string;
+  account_id: string;
+  reason: string;
+  created_at: string;
+};
+
 export type CouponRow = {
   id: string;
   code: string;
@@ -271,6 +301,25 @@ export type Database = {
         Row: WishlistRow;
         Insert: Omit<WishlistRow, "created_at"> & Partial<Pick<WishlistRow, "created_at">>;
         Update: Partial<Omit<WishlistRow, "id">>;
+        Relationships: [];
+      };
+      product_reviews: {
+        Row: ProductReviewRow;
+        Insert: Omit<ProductReviewRow, "created_at" | "updated_at" | "helpful_count"> &
+          Partial<Pick<ProductReviewRow, "created_at" | "updated_at" | "helpful_count">>;
+        Update: Partial<Omit<ProductReviewRow, "id">>;
+        Relationships: [];
+      };
+      review_helpful_votes: {
+        Row: ReviewHelpfulVoteRow;
+        Insert: Omit<ReviewHelpfulVoteRow, "created_at"> & Partial<Pick<ReviewHelpfulVoteRow, "created_at">>;
+        Update: Partial<Omit<ReviewHelpfulVoteRow, "id">>;
+        Relationships: [];
+      };
+      review_reports: {
+        Row: ReviewReportRow;
+        Insert: Omit<ReviewReportRow, "created_at"> & Partial<Pick<ReviewReportRow, "created_at">>;
+        Update: Partial<Omit<ReviewReportRow, "id">>;
         Relationships: [];
       };
       orders: {
