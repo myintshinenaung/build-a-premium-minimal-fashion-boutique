@@ -43,6 +43,7 @@ const navItems: AdminNavItem[] = [
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/banners", label: "Banner Manager", icon: Image },
   { href: "/admin/media", label: "Media Library", icon: Image },
+  { href: "/admin/security", label: "Security", icon: ShieldCheck },
   { href: "/admin/settings", label: "Settings", icon: Settings }
 ];
 
@@ -66,6 +67,12 @@ const pageTitles: Record<string, string> = {
   "/admin/customers": "Customers",
   "/admin/banners": "Banner Manager",
   "/admin/media": "Media Library",
+  "/admin/security": "Security",
+  "/admin/security/roles": "Security Roles",
+  "/admin/security/permissions": "Security Permissions",
+  "/admin/security/audit": "Security Audit Logs",
+  "/admin/security/login-history": "Login History",
+  "/admin/security/sessions": "Active Sessions",
   "/admin/settings": "Settings"
 };
 

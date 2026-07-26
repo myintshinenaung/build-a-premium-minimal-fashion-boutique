@@ -2,5 +2,5 @@
 export { proxy } from "@/features/identity/infrastructure/admin-proxy";
 
 export const config = {
-  matcher: ["/admin/:path*", "/admin"]
+  matcher: ["/admin/:path*", "/admin", "/api/admin/:path*"]
 };

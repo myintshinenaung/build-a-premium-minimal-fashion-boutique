@@ -276,6 +276,62 @@ export type InventoryProductAlertSettingsRow = {
   overstock_threshold: number | null;
 };
 
+export type AdminUserRoleRow = {
+  user_id: string;
+  email: string;
+  role: string;
+  assigned_by: string | null;
+  assigned_at: string;
+  updated_at: string;
+};
+
+export type AdminRolePermissionRow = {
+  role: string;
+  permission: string;
+  allowed: boolean;
+  updated_at: string;
+};
+
+export type AdminAuditLogRow = {
+  id: string;
+  user_id: string | null;
+  user_name: string;
+  user_email: string | null;
+  action: string;
+  resource: string;
+  resource_id: string | null;
+  details: Record<string, unknown>;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+};
+
+export type AdminSessionRow = {
+  id: string;
+  user_id: string;
+  user_email: string;
+  session_token: string;
+  device_label: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  last_seen_at: string;
+  expires_at: string;
+  revoked_at: string | null;
+  created_at: string;
+};
+
+export type AdminLoginHistoryRow = {
+  id: string;
+  user_id: string | null;
+  user_email: string;
+  success: boolean;
+  ip_address: string | null;
+  user_agent: string | null;
+  device_label: string | null;
+  failure_reason: string | null;
+  created_at: string;
+};
+
 export type OrderItemRow = {
   id: string;
   order_id: string;
@@ -423,6 +479,38 @@ export type Database = {
         Row: InventoryProductAlertSettingsRow;
         Insert: InventoryProductAlertSettingsRow;
         Update: Partial<Omit<InventoryProductAlertSettingsRow, "product_id">>;
+        Relationships: [];
+      };
+      admin_user_roles: {
+        Row: AdminUserRoleRow;
+        Insert: Omit<AdminUserRoleRow, "assigned_at" | "updated_at"> &
+          Partial<Pick<AdminUserRoleRow, "assigned_at" | "updated_at">>;
+        Update: Partial<Omit<AdminUserRoleRow, "user_id">>;
+        Relationships: [];
+      };
+      admin_role_permissions: {
+        Row: AdminRolePermissionRow;
+        Insert: Omit<AdminRolePermissionRow, "updated_at"> & Partial<Pick<AdminRolePermissionRow, "updated_at">>;
+        Update: Partial<Omit<AdminRolePermissionRow, "role" | "permission">>;
+        Relationships: [];
+      };
+      admin_audit_logs: {
+        Row: AdminAuditLogRow;
+        Insert: Omit<AdminAuditLogRow, "created_at"> & Partial<Pick<AdminAuditLogRow, "created_at">>;
+        Update: Partial<Omit<AdminAuditLogRow, "id">>;
+        Relationships: [];
+      };
+      admin_sessions: {
+        Row: AdminSessionRow;
+        Insert: Omit<AdminSessionRow, "created_at" | "last_seen_at"> &
+          Partial<Pick<AdminSessionRow, "created_at" | "last_seen_at">>;
+        Update: Partial<Omit<AdminSessionRow, "id">>;
+        Relationships: [];
+      };
+      admin_login_history: {
+        Row: AdminLoginHistoryRow;
+        Insert: Omit<AdminLoginHistoryRow, "created_at"> & Partial<Pick<AdminLoginHistoryRow, "created_at">>;
+        Update: Partial<Omit<AdminLoginHistoryRow, "id">>;
         Relationships: [];
       };
     };

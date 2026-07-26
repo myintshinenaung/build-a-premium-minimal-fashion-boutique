@@ -5,6 +5,7 @@ import {
   isAuthorizedAdmin,
   jsonError
 } from "@/features/identity/server";
+import { recordAdminLoginAttempt } from "@/features/security/server";
 
 type LoginBody = {
   email?: string;
@@ -25,6 +26,13 @@ export async function POST(request: NextRequest) {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
+      await recordAdminLoginAttempt({
+        request,
+        email,
+        success: false,
+        failureReason: error.message
+      }).catch(() => undefined);
+
       return NextResponse.json({ message: error.message }, { status: 401 });
     }
 
@@ -34,10 +42,25 @@ export async function POST(request: NextRequest) {
 
     if (!isAuthorizedAdmin(user)) {
       await supabase.auth.signOut();
+      await recordAdminLoginAttempt({
+        request,
+        user,
+        email,
+        success: false,
+        failureReason: getAdminAuthorizationErrorMessage()
+      }).catch(() => undefined);
+
       return withSessionCookies(
         NextResponse.json({ message: getAdminAuthorizationErrorMessage() }, { status: 403 })
       );
     }
+
+    await recordAdminLoginAttempt({
+      request,
+      user,
+      email,
+      success: true
+    }).catch(() => undefined);
 
     return withSessionCookies(NextResponse.json({ ok: true }));
   } catch (error) {
