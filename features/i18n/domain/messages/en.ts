@@ -20,6 +20,8 @@ export const enMessages = {
     search: "Search products",
     openCart: "Open shopping cart",
     openCartWithCount: "Open shopping cart, {count} items",
+    openWishlist: "Open wishlist",
+    openWishlistWithCount: "Open wishlist, {count} items",
     language: "Language"
   },
   language: {
@@ -156,6 +158,23 @@ export const enMessages = {
     trackingNumber: "Tracking number",
     continueShopping: "Continue Shopping",
     backHome: "Back to Home"
+  },
+  wishlist: {
+    eyebrow: "Wishlist",
+    title: "Saved pieces",
+    description: "Keep track of the items you love and move them to your bag when you are ready.",
+    loading: "Loading your wishlist…",
+    empty: "Your wishlist is empty.",
+    continueShopping: "Continue Shopping",
+    moveToCart: "Move to Cart",
+    remove: "Remove",
+    addToWishlist: "Add to wishlist",
+    removeFromWishlist: "Remove from wishlist",
+    added: "Saved to wishlist.",
+    removed: "Removed from wishlist.",
+    loginRequired: "Sign in to save items to your wishlist.",
+    unavailable: "This item is currently unavailable.",
+    error: "Unable to update your wishlist. Please try again."
   },
   email: {
     orderConfirmation: {

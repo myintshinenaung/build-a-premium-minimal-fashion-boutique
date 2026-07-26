@@ -125,6 +125,13 @@ export type CustomerAddressRow = {
   updated_at: string;
 };
 
+export type WishlistRow = {
+  id: string;
+  account_id: string;
+  product_id: string;
+  created_at: string;
+};
+
 export type CouponRow = {
   id: string;
   code: string;
@@ -258,6 +265,12 @@ export type Database = {
         Insert: Omit<CouponRow, "created_at" | "updated_at" | "usage_count"> &
           Partial<Pick<CouponRow, "created_at" | "updated_at" | "usage_count">>;
         Update: Partial<Omit<CouponRow, "id">>;
+        Relationships: [];
+      };
+      wishlist: {
+        Row: WishlistRow;
+        Insert: Omit<WishlistRow, "created_at"> & Partial<Pick<WishlistRow, "created_at">>;
+        Update: Partial<Omit<WishlistRow, "id">>;
         Relationships: [];
       };
       orders: {

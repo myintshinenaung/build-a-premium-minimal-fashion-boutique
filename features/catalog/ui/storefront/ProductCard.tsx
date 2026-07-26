@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WishlistButton } from "@/features/wishlist/client";
 import type { Product } from "@/types/product";
 import { formatPrice } from "@/lib/utils";
 import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
@@ -11,16 +12,21 @@ type ProductCardProps = {
 export function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <article className="group">
-      <Link href={`/product/${product.slug}`} className="block" aria-label={`View ${product.name}`}>
-        <BoutiqueImage
-          src={product.images[0]}
-          alt={product.name}
-          className="aspect-[4/5] rounded-[2px]"
-          imageClassName="transition-transform duration-500 ease-out group-hover:scale-[1.025]"
-          priority={priority}
-          sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
-        />
-        <div className="mt-4 flex items-start justify-between gap-4">
+      <div className="relative">
+        <WishlistButton productId={product.id} className="absolute right-3 top-3 z-10" compact />
+        <Link href={`/product/${product.slug}`} className="block" aria-label={`View ${product.name}`}>
+          <BoutiqueImage
+            src={product.images[0]}
+            alt={product.name}
+            className="aspect-[4/5] rounded-[2px]"
+            imageClassName="transition-transform duration-500 ease-out group-hover:scale-[1.025]"
+            priority={priority}
+            sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+          />
+        </Link>
+      </div>
+      <Link href={`/product/${product.slug}`} className="mt-4 block" aria-label={`View ${product.name}`}>
+        <div className="flex items-start justify-between gap-4">
           <div>
             <h3 className="text-sm font-medium leading-5 text-ink">{product.name}</h3>
             <p className="mt-1 text-xs uppercase tracking-[0.18em] text-stone">{product.category}</p>

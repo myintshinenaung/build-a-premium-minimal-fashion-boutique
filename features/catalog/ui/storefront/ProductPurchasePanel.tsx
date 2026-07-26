@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 import { QuantitySelector } from "@/features/catalog/ui/storefront/QuantitySelector";
 import { ShareProduct } from "@/features/catalog/ui/storefront/ShareProduct";
 import { StockStatusBadge } from "@/features/catalog/ui/storefront/StockStatusBadge";
 import { VariantSelectors } from "@/features/catalog/ui/storefront/VariantSelectors";
 import { useCartStore } from "@/features/cart/client";
+import { isWishlisted, useWishlistStore } from "@/features/wishlist/client";
 import { useTranslator } from "@/features/i18n/client";
 import {
   findProductVariant,
@@ -28,11 +29,16 @@ type ProductPurchasePanelProps = {
 export function ProductPurchasePanel({ product, storeName, categoryHref }: ProductPurchasePanelProps) {
   const { t } = useTranslator();
   const addItem = useCartStore((state) => state.addItem);
+  const productIds = useWishlistStore((state) => state.productIds);
+  const removeProductId = useWishlistStore((state) => state.removeProductId);
+  const addProductId = useWishlistStore((state) => state.addProductId);
   const defaultSelection = useMemo(() => getDefaultVariantSelection(product), [product]);
   const [selectedSize, setSelectedSize] = useState(defaultSelection.size);
   const [selectedColor, setSelectedColor] = useState(defaultSelection.color);
   const [quantity, setQuantity] = useState(1);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [isWishlistPending, setIsWishlistPending] = useState(false);
+  const wishlisted = isWishlisted(productIds, product.id);
 
   const selectedVariant = useMemo(
     () => findProductVariant(product, selectedSize, selectedColor),
@@ -91,8 +97,58 @@ export function ProductPurchasePanel({ product, storeName, categoryHref }: Produ
       quantity
     });
 
+    if (wishlisted) {
+      void fetch(`/api/wishlist/${encodeURIComponent(product.id)}`, { method: "DELETE" })
+        .then((response) => {
+          if (response.ok) {
+            removeProductId(product.id);
+          }
+        })
+        .catch(() => undefined);
+    }
+
     setFeedback(t("product.addedToCart"));
     window.setTimeout(() => setFeedback(null), 1800);
+  }
+
+  async function handleToggleWishlist() {
+    if (isWishlistPending) {
+      return;
+    }
+
+    setIsWishlistPending(true);
+
+    try {
+      const response = await fetch("/api/wishlist/toggle", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ productId: product.id })
+      });
+      const payload = (await response.json()) as { inWishlist?: boolean; message?: string };
+
+      if (!response.ok) {
+        setFeedback(payload.message ?? t("wishlist.loginRequired"));
+        window.setTimeout(() => setFeedback(null), 2200);
+        return;
+      }
+
+      if (payload.inWishlist) {
+        addProductId(product.id);
+        setFeedback(t("wishlist.added"));
+      } else {
+        removeProductId(product.id);
+        setFeedback(t("wishlist.removed"));
+      }
+
+      window.setTimeout(() => setFeedback(null), 1800);
+    } catch {
+      setFeedback(t("wishlist.error"));
+      window.setTimeout(() => setFeedback(null), 2200);
+    } finally {
+      setIsWishlistPending(false);
+    }
   }
 
   const displayPrice = selectedVariant?.price ?? product.price;
@@ -116,11 +172,26 @@ export function ProductPurchasePanel({ product, storeName, categoryHref }: Produ
           <p className="text-xs font-medium uppercase tracking-[0.24em] text-stone">{product.category}</p>
           <h1 className="mt-3 text-3xl font-medium leading-tight text-ink md:text-5xl">{product.name}</h1>
         </div>
-        <div className="pt-2 text-right">
-          <p className="text-lg text-ink">{formatPrice(displayPrice)}</p>
-          {displayCompareAtPrice && displayCompareAtPrice > displayPrice ? (
-            <p className="text-sm text-stone line-through">{formatPrice(displayCompareAtPrice)}</p>
-          ) : null}
+        <div className="flex items-start gap-3 pt-2">
+          <button
+            type="button"
+            onClick={() => void handleToggleWishlist()}
+            disabled={isWishlistPending}
+            aria-pressed={wishlisted}
+            aria-label={wishlisted ? t("wishlist.removeFromWishlist") : t("wishlist.addToWishlist")}
+            className={cn(
+              "inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-ink disabled:cursor-not-allowed disabled:opacity-60",
+              wishlisted ? "border-ink" : ""
+            )}
+          >
+            <Heart size={18} strokeWidth={1.7} className={cn(wishlisted ? "fill-ink text-ink" : "")} />
+          </button>
+          <div className="text-right">
+            <p className="text-lg text-ink">{formatPrice(displayPrice)}</p>
+            {displayCompareAtPrice && displayCompareAtPrice > displayPrice ? (
+              <p className="text-sm text-stone line-through">{formatPrice(displayCompareAtPrice)}</p>
+            ) : null}
+          </div>
         </div>
       </div>
 

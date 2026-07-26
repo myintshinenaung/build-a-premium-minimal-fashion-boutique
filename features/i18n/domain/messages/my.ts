@@ -22,6 +22,8 @@ export const myMessages: Messages = {
     search: "ပစ္စည်းရှာရန်",
     openCart: "စျေးဝယ်ခြင်းတောင်းဖွင့်ရန်",
     openCartWithCount: "စျေးဝယ်ခြင်းတောင်း ဖွင့်ရန်၊ {count} ခု",
+    openWishlist: "Wishlist ဖွင့်ရန်",
+    openWishlistWithCount: "Wishlist ဖွင့်ရန်၊ {count} ခု",
     language: "ဘာသာစကား"
   },
   language: {
@@ -158,6 +160,23 @@ export const myMessages: Messages = {
     trackingNumber: "Tracking နံပါတ်",
     continueShopping: "ဆက်လက်ဝယ်ယူရန်",
     backHome: "ပင်မစာမျက်နှာသို့"
+  },
+  wishlist: {
+    eyebrow: "Wishlist",
+    title: "သိမ်းထားသော ပစ္စည်းများ",
+    description: "သင်ကြိုက်နှစ်သက်သော ပစ္စည်းများကို သိမ်းထားပြီး အဆင်သင့်ဖြစ်သောအခါတွင် အိတ်သို့ ပြောင်းလဲပါ။",
+    loading: "Wishlist ကို တင်နေသည်…",
+    empty: "Wishlist တွင် ပစ္စည်းမရှိပါ။",
+    continueShopping: "ဆိုင်သို့ ဆက်သွားရန်",
+    moveToCart: "တောင်းထဲ ထည့်ရန်",
+    remove: "ဖယ်ရှားရန်",
+    addToWishlist: "Wishlist သို့ ထည့်ရန်",
+    removeFromWishlist: "Wishlist မှ ဖယ်ရှားရန်",
+    added: "Wishlist သို့ သိမ်းပြီးပါပြီ။",
+    removed: "Wishlist မှ ဖယ်ရှားပြီးပါပြီ။",
+    loginRequired: "Wishlist သို့ သိမ်းရန် အကောင့်ဝင်ပါ။",
+    unavailable: "ဤပစ္စည်းသည် လက်ရှိတွင် မရရှိနိုင်ပါ။",
+    error: "Wishlist ကို မွမ်းမံ၍ မရပါ။ ထပ်ကြိုးစားပါ။"
   },
   email: {
     orderConfirmation: {

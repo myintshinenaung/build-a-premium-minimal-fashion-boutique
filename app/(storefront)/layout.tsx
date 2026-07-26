@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { StorefrontCartShell } from "@/features/cart/client";
+import { WishlistShell } from "@/features/wishlist/client";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { StorefrontProviders } from "@/components/storefront/StorefrontProviders";
@@ -25,9 +26,11 @@ export default async function StorefrontLayout({ children }: { children: ReactNo
   return (
     <StorefrontProviders initialLocale={initialLocale} searchIndex={searchIndex}>
       <StorefrontCartShell>
-        <Header storeName={settings.storeName} />
-        <main id="main-content">{children}</main>
-        <Footer />
+        <WishlistShell>
+          <Header storeName={settings.storeName} />
+          <main id="main-content">{children}</main>
+          <Footer />
+        </WishlistShell>
       </StorefrontCartShell>
     </StorefrontProviders>
   );

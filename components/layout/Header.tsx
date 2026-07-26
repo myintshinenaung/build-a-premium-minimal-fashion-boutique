@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, ShoppingBag, X } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { selectCartCount, useCartStore } from "@/features/cart/client";
+import { selectWishlistCount, useWishlistStore } from "@/features/wishlist/client";
 import { LanguageSwitcher, useTranslator } from "@/features/i18n/client";
 import { useSearch } from "@/features/search/client";
 import { cn } from "@/lib/utils";
@@ -28,7 +29,9 @@ export function Header({ storeName }: HeaderProps) {
   const [hasHydrated, setHasHydrated] = useState(false);
   const items = useCartStore((state) => state.items);
   const openCart = useCartStore((state) => state.openCart);
+  const wishlistProductIds = useWishlistStore((state) => state.productIds);
   const cartCount = hasHydrated ? selectCartCount(items) : 0;
+  const wishlistCount = hasHydrated ? selectWishlistCount(wishlistProductIds) : 0;
 
   useEffect(() => {
     setHasHydrated(true);
@@ -76,6 +79,20 @@ export function Header({ storeName }: HeaderProps) {
           >
             <Search size={18} strokeWidth={1.7} />
           </button>
+          <Link
+            href="/wishlist"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-mist"
+            aria-label={
+              wishlistCount > 0 ? t("header.openWishlistWithCount", { count: wishlistCount }) : t("header.openWishlist")
+            }
+          >
+            <Heart size={18} strokeWidth={1.7} />
+            {wishlistCount > 0 ? (
+              <span className="absolute -right-0.5 -top-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-ink px-1 text-[10px] font-medium text-white">
+                {wishlistCount}
+              </span>
+            ) : null}
+          </Link>
           <button
             type="button"
             onClick={openCart}
