@@ -17,6 +17,7 @@ export type StorefrontOrderItem = {
 
 export type StorefrontOrder = {
   id: string;
+  accountId: string | null;
   customer: string;
   customerPhone: string;
   customerEmail: string;

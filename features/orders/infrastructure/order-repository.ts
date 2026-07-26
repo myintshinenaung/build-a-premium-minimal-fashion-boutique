@@ -6,6 +6,7 @@ import type { StorefrontOrder, StorefrontOrderItem } from "@/types/order";
 
 export type OrderCreateInput = {
   id: string;
+  accountId?: string | null;
   customer: string;
   customerPhone: string;
   customerEmail: string;
@@ -99,6 +100,82 @@ export const orderRepository = {
     }
   },
 
+  async getByIdForAccount(accountId: string, orderId: string): Promise<StorefrontOrder | null> {
+    try {
+      const supabase = createSupabaseServerClient();
+      const [{ data: order, error: orderError }, { data: items, error: itemsError }] = await Promise.all([
+        supabase.from("orders").select("*").eq("id", orderId).eq("account_id", accountId).maybeSingle(),
+        supabase.from("order_items").select("*").eq("order_id", orderId).order("product_name", { ascending: true })
+      ]);
+
+      if (orderError) {
+        throw orderError;
+      }
+
+      if (itemsError) {
+        throw itemsError;
+      }
+
+      if (!order) {
+        return null;
+      }
+
+      return storefrontOrderFromRow(order, items ?? []);
+    } catch (error) {
+      if (isRecoverableReadError(error)) {
+        return null;
+      }
+
+      throw createRepositoryError("Unable to load order", error);
+    }
+  },
+
+  async listByAccountId(accountId: string): Promise<StorefrontOrder[]> {
+    try {
+      const supabase = createSupabaseServerClient();
+      const { data: orders, error: ordersError } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("account_id", accountId)
+        .order("created_at", { ascending: false });
+
+      if (ordersError) {
+        throw ordersError;
+      }
+
+      if (!orders?.length) {
+        return [];
+      }
+
+      const orderIds = orders.map((order) => order.id);
+      const { data: items, error: itemsError } = await supabase
+        .from("order_items")
+        .select("*")
+        .in("order_id", orderIds)
+        .order("product_name", { ascending: true });
+
+      if (itemsError) {
+        throw itemsError;
+      }
+
+      const itemsByOrderId = new Map<string, OrderItemRow[]>();
+
+      for (const item of items ?? []) {
+        const existing = itemsByOrderId.get(item.order_id) ?? [];
+        existing.push(item);
+        itemsByOrderId.set(item.order_id, existing);
+      }
+
+      return orders.map((order) => storefrontOrderFromRow(order, itemsByOrderId.get(order.id) ?? []));
+    } catch (error) {
+      if (isRecoverableReadError(error)) {
+        return [];
+      }
+
+      throw createRepositoryError("Unable to load account orders", error);
+    }
+  },
+
   async create(input: OrderCreateInput): Promise<StorefrontOrder> {
     try {
       const supabase = createSupabaseServerClient();
@@ -108,6 +185,7 @@ export const orderRepository = {
         .from("orders")
         .insert({
           id: input.id,
+          account_id: input.accountId ?? null,
           customer: input.customer,
           customer_phone: input.customerPhone,
           customer_email: input.customerEmail,
@@ -307,6 +385,7 @@ function orderItemFromRow(row: OrderItemRow): StorefrontOrderItem {
 function storefrontOrderFromRow(row: OrderRow, items: OrderItemRow[]): StorefrontOrder {
   return {
     id: row.id,
+    accountId: row.account_id,
     customer: row.customer,
     customerPhone: row.customer_phone,
     customerEmail: row.customer_email,

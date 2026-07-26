@@ -100,8 +100,34 @@ export type CustomerRow = {
   last_order_at: string;
 };
 
+export type CustomerAccountRow = {
+  id: string;
+  user_id: string;
+  name: string;
+  phone: string;
+  email: string;
+  avatar_url: string;
+  preferred_language: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CustomerAddressRow = {
+  id: string;
+  account_id: string;
+  label: string;
+  recipient_name: string;
+  phone: string;
+  address_line: string;
+  township: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export type OrderRow = {
   id: string;
+  account_id: string | null;
   customer: string;
   customer_phone: string;
   customer_email: string;
@@ -190,6 +216,20 @@ export type Database = {
         Row: CustomerRow;
         Insert: Omit<CustomerRow, "id"> & Partial<Pick<CustomerRow, "id">>;
         Update: Partial<Omit<CustomerRow, "id">>;
+        Relationships: [];
+      };
+      customer_accounts: {
+        Row: CustomerAccountRow;
+        Insert: Omit<CustomerAccountRow, "created_at" | "updated_at"> &
+          Partial<Pick<CustomerAccountRow, "created_at" | "updated_at">>;
+        Update: Partial<Omit<CustomerAccountRow, "id">>;
+        Relationships: [];
+      };
+      customer_addresses: {
+        Row: CustomerAddressRow;
+        Insert: Omit<CustomerAddressRow, "created_at" | "updated_at"> &
+          Partial<Pick<CustomerAddressRow, "created_at" | "updated_at">>;
+        Update: Partial<Omit<CustomerAddressRow, "id">>;
         Relationships: [];
       };
       orders: {

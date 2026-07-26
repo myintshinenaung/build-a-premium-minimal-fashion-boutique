@@ -25,7 +25,7 @@ function createOrderId() {
   return `ORD-${Date.now().toString(36).toUpperCase()}-${suffix}`;
 }
 
-export async function createOrder(input: unknown): Promise<StorefrontOrder> {
+export async function createOrder(input: unknown, options?: { accountId?: string | null }): Promise<StorefrontOrder> {
   let parsed: CreateOrderInput;
 
   try {
@@ -57,6 +57,7 @@ export async function createOrder(input: unknown): Promise<StorefrontOrder> {
   try {
     return await orderRepository.create({
       id: orderId,
+      accountId: options?.accountId ?? null,
       customer: parsed.customer.name.trim(),
       customerPhone: parsed.customer.phone.trim(),
       customerEmail: email,
