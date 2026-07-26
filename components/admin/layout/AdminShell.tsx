@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
   Bell,
   Boxes,
   ChevronDown,
@@ -34,6 +35,7 @@ type AdminNavItem = {
 
 const navItems: AdminNavItem[] = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/inventory", label: "Inventory", icon: Boxes },
   { href: "/admin/categories", label: "Categories", icon: Tags },
@@ -46,6 +48,13 @@ const navItems: AdminNavItem[] = [
 
 const pageTitles: Record<string, string> = {
   "/admin": "Dashboard Overview",
+  "/admin/analytics": "Analytics Overview",
+  "/admin/analytics/sales": "Sales Analytics",
+  "/admin/analytics/revenue": "Revenue Analytics",
+  "/admin/analytics/customers": "Customer Analytics",
+  "/admin/analytics/products": "Product Analytics",
+  "/admin/analytics/orders": "Order Analytics",
+  "/admin/analytics/reviews": "Review Analytics",
   "/admin/products": "Products",
   "/admin/inventory": "Inventory",
   "/admin/categories": "Categories",
