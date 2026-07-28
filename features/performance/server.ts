@@ -8,6 +8,8 @@ export {
   invalidateHomepageCache,
   invalidateInventoryCache,
   invalidatePromotionCache,
+  invalidateFeaturedCollectionCache,
+  invalidateProductRailCache,
   invalidateReviewCache,
   invalidateSettingsCache
 } from "@/features/performance/application/cache-invalidation";

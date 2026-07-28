@@ -10,7 +10,9 @@ export const CACHE_TAGS = {
   homepage: "homepage",
   settings: "settings",
   banners: "banners",
-  promotions: "promotions"
+  promotions: "promotions",
+  featuredCollections: "featured-collections",
+  productRails: "product-rails"
 } as const;
 
 export type CacheTag = (typeof CACHE_TAGS)[keyof typeof CACHE_TAGS];
@@ -42,7 +44,9 @@ export const INVALIDATION_GROUPS = {
   homepage: [CACHE_TAGS.homepage, CACHE_TAGS.banners, CACHE_TAGS.settings],
   settings: [CACHE_TAGS.settings, CACHE_TAGS.homepage],
   banners: [CACHE_TAGS.banners, CACHE_TAGS.homepage],
-  promotions: [CACHE_TAGS.promotions, CACHE_TAGS.analytics]
+  promotions: [CACHE_TAGS.promotions, CACHE_TAGS.analytics, CACHE_TAGS.homepage],
+  featuredCollections: [CACHE_TAGS.featuredCollections, CACHE_TAGS.homepage],
+  productRails: [CACHE_TAGS.productRails, CACHE_TAGS.homepage]
 } as const;
 
 export const MAX_API_PAYLOAD_BYTES = 512_000;

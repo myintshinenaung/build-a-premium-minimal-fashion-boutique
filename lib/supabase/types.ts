@@ -42,6 +42,7 @@ export type CategoryRow = {
   image: string;
   product_count: number;
   sort_order: number;
+  store_id: string;
   status: AdminStatus;
 };
 
@@ -50,10 +51,15 @@ export type BannerRow = {
   title: string;
   placement: BannerPlacement;
   image: string;
+  mobile_image: string;
   eyebrow: string;
   headline: string;
   cta_label: string;
   cta_href: string;
+  store_name: string;
+  sort_order: number;
+  starts_at: string | null;
+  ends_at: string | null;
   status: AdminStatus;
 };
 
@@ -177,6 +183,72 @@ export type CouponRow = {
   customer_eligibility: "all" | "authenticated" | "guest";
   created_at: string;
   updated_at: string;
+};
+
+export type FlashSaleRow = {
+  id: string;
+  store_id: string;
+  section_title: string;
+  section_subtitle: string;
+  badge_text: string;
+  starts_at: string | null;
+  ends_at: string | null;
+  status: AdminStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type FlashSaleItemRow = {
+  id: string;
+  flash_sale_id: string;
+  product_id: string;
+  discount_percent: number;
+  sort_order: number;
+};
+
+export type FeaturedCollectionRow = {
+  id: string;
+  store_id: string;
+  title: string;
+  subtitle: string;
+  cover_image: string;
+  button_text: string;
+  button_url: string;
+  sort_order: number;
+  starts_at: string | null;
+  ends_at: string | null;
+  status: AdminStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type FeaturedCollectionItemRow = {
+  id: string;
+  collection_id: string;
+  product_id: string;
+  sort_order: number;
+};
+
+export type ProductRailRow = {
+  id: string;
+  store_id: string;
+  title: string;
+  subtitle: string;
+  badge_text: string;
+  description: string;
+  sort_order: number;
+  starts_at: string | null;
+  ends_at: string | null;
+  status: AdminStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ProductRailItemRow = {
+  id: string;
+  rail_id: string;
+  product_id: string;
+  sort_order: number;
 };
 
 export type OrderRow = {
@@ -440,6 +512,44 @@ export type Database = {
         Insert: Omit<CouponRow, "created_at" | "updated_at" | "usage_count"> &
           Partial<Pick<CouponRow, "created_at" | "updated_at" | "usage_count">>;
         Update: Partial<Omit<CouponRow, "id">>;
+        Relationships: [];
+      };
+      flash_sales: {
+        Row: FlashSaleRow;
+        Insert: Omit<FlashSaleRow, "created_at" | "updated_at"> & Partial<Pick<FlashSaleRow, "created_at" | "updated_at">>;
+        Update: Partial<Omit<FlashSaleRow, "id">>;
+        Relationships: [];
+      };
+      flash_sale_items: {
+        Row: FlashSaleItemRow;
+        Insert: Omit<FlashSaleItemRow, "id"> & Partial<Pick<FlashSaleItemRow, "id">>;
+        Update: Partial<Omit<FlashSaleItemRow, "id">>;
+        Relationships: [];
+      };
+      featured_collections: {
+        Row: FeaturedCollectionRow;
+        Insert: Omit<FeaturedCollectionRow, "created_at" | "updated_at"> &
+          Partial<Pick<FeaturedCollectionRow, "created_at" | "updated_at">>;
+        Update: Partial<Omit<FeaturedCollectionRow, "id">>;
+        Relationships: [];
+      };
+      featured_collection_items: {
+        Row: FeaturedCollectionItemRow;
+        Insert: Omit<FeaturedCollectionItemRow, "id"> & Partial<Pick<FeaturedCollectionItemRow, "id">>;
+        Update: Partial<Omit<FeaturedCollectionItemRow, "id">>;
+        Relationships: [];
+      };
+      product_rails: {
+        Row: ProductRailRow;
+        Insert: Omit<ProductRailRow, "created_at" | "updated_at"> &
+          Partial<Pick<ProductRailRow, "created_at" | "updated_at">>;
+        Update: Partial<Omit<ProductRailRow, "id">>;
+        Relationships: [];
+      };
+      product_rail_items: {
+        Row: ProductRailItemRow;
+        Insert: Omit<ProductRailItemRow, "id"> & Partial<Pick<ProductRailItemRow, "id">>;
+        Update: Partial<Omit<ProductRailItemRow, "id">>;
         Relationships: [];
       };
       wishlist: {

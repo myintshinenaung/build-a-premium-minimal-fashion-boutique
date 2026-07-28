@@ -4,6 +4,7 @@ import {
   mapAdminCategoryToCategory,
   mapAdminProductToProduct
 } from "@/features/catalog/domain/map-catalog";
+import { mapAdminCategoryToRailItem, type CategoryRailItem } from "@/features/catalog/domain/map-category-rail";
 import { categoryService } from "@/features/catalog/application/category-service";
 import { productService } from "@/features/catalog/application/product-service";
 import { runRecommendationEngine } from "@/features/recommendations/domain/recommendation-engine";
@@ -11,6 +12,7 @@ import { recommendationRepository } from "@/features/recommendations/infrastruct
 import { CACHE_TAGS, CACHE_TTLS } from "@/features/performance/domain/cache-tags";
 import { createCachedLoader } from "@/features/performance/infrastructure/cache-store";
 import { timedQuery } from "@/features/performance/infrastructure/metrics-store";
+import { ACTIVE_PLATFORM_STORE_ID } from "@/lib/storefront/brand";
 import type { Category, Product } from "@/types/product";
 
 type Catalog = {
@@ -49,6 +51,24 @@ export async function getCategories() {
   const { categories } = await getCatalog();
   return categories;
 }
+
+const loadCategoryRailData = createCachedLoader(
+  "storefront-category-rail",
+  [CACHE_TAGS.categories, CACHE_TAGS.homepage],
+  CACHE_TTLS.catalog,
+  async (): Promise<CategoryRailItem[]> => {
+    const adminCategories = await categoryService.getCategories();
+
+    return adminCategories
+      .filter((category) => category.status === "Published")
+      .filter((category) => (category.storeId ?? ACTIVE_PLATFORM_STORE_ID) === ACTIVE_PLATFORM_STORE_ID)
+      .filter((category) => category.image.trim().length > 0)
+      .sort((left, right) => left.sortOrder - right.sortOrder)
+      .map(mapAdminCategoryToRailItem);
+  }
+);
+
+export const getCategoryRailItems = cache(loadCategoryRailData);
 
 export async function getProducts() {
   const { products } = await getCatalog();

@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { jsonError, requireAdminApiSession } from "@/features/identity/server";
 import { bannerService, type BannerCreateInput } from "@/features/content/server";
+import { invalidateBannerCache } from "@/features/performance/server";
 
 export async function GET(request: NextRequest) {
   const unauthorized = await requireAdminApiSession(request);
@@ -21,6 +22,7 @@ export async function POST(request: NextRequest) {
   try {
     const input = (await request.json()) as BannerCreateInput;
     const banner = await bannerService.createBanner(input);
+    await invalidateBannerCache();
 
     return NextResponse.json({ banner }, { status: 201 });
   } catch (error) {

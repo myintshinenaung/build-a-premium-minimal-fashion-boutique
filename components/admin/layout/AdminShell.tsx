@@ -9,11 +9,13 @@ import {
   Boxes,
   ChevronDown,
   Image,
+  Layers,
   LayoutDashboard,
   LogOut,
   Menu,
   Moon,
   Package,
+  Rows3,
   Search,
   Settings,
   ShieldCheck,
@@ -22,7 +24,8 @@ import {
   Tags,
   UserCircle,
   Users,
-  X
+  X,
+  Zap
 } from "lucide-react";
 import { useState, type ComponentType, type ReactNode } from "react";
 import { ADMIN_SHELLLESS_PATHS, ADMIN_THEME_STORAGE_KEY, type AdminUser } from "@/features/identity/client";
@@ -44,6 +47,9 @@ const navItems: AdminNavItem[] = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/banners", label: "Banner Manager", icon: Image },
+  { href: "/admin/flash-sales", label: "Flash Sale Manager", icon: Zap },
+  { href: "/admin/featured-collections", label: "Featured Collections", icon: Layers },
+  { href: "/admin/product-rails", label: "Product Rails", icon: Rows3 },
   { href: "/admin/media", label: "Media Library", icon: Image },
   { href: "/admin/security", label: "Security", icon: ShieldCheck },
   { href: "/admin/performance", label: "Performance", icon: Activity },
@@ -70,6 +76,9 @@ const pageTitles: Record<string, string> = {
   "/admin/orders": "Orders",
   "/admin/customers": "Customers",
   "/admin/banners": "Banner Manager",
+  "/admin/flash-sales": "Flash Sale Manager",
+  "/admin/featured-collections": "Featured Collection Manager",
+  "/admin/product-rails": "Product Rail Manager",
   "/admin/media": "Media Library",
   "/admin/security": "Security",
   "/admin/security/roles": "Security Roles",
@@ -137,7 +146,7 @@ export function AdminShell({ children, user, unreadCount = 0 }: AdminShellProps)
                 <Menu size={20} strokeWidth={1.7} />
               </button>
               <div>
-                <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-stone">Atelier Lune Admin</p>
+                <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-stone">NOVORA Admin</p>
                 <p className="text-sm font-medium text-ink">{currentTitle}</p>
               </div>
             </div>
@@ -237,7 +246,7 @@ export function AdminShell({ children, user, unreadCount = 0 }: AdminShellProps)
         )}
       >
         <div className="flex h-16 items-center justify-between border-b border-line px-4">
-          <span className="text-sm font-semibold uppercase tracking-[0.3em] text-ink">Atelier</span>
+          <span className="text-sm font-semibold uppercase tracking-[0.3em] text-ink">NOVORA</span>
           <button
             type="button"
             onClick={() => setIsOpen(false)}
@@ -258,7 +267,7 @@ function AdminSidebar({ pathname, onNavigate }: { pathname: string; onNavigate?:
     <div className="flex min-h-screen flex-col">
       <div className="border-b border-line px-6 py-6">
         <Link href="/admin" className="block text-sm font-semibold uppercase tracking-[0.34em] text-ink">
-          Atelier Lune
+          NOVORA
         </Link>
         <div className="mt-5 flex items-center gap-3 border border-line p-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white">

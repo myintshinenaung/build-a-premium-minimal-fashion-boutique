@@ -2,6 +2,7 @@
 export {
   getBestSellers,
   getCategories,
+  getCategoryRailItems,
   getCategoryBySlug,
   getCategorySlugs,
   getNewArrivals,

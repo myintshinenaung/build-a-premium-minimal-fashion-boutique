@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { jsonError, requireAdminApiSession } from "@/features/identity/server";
 import { bannerService, type BannerUpdateInput } from "@/features/content/server";
+import { invalidateBannerCache } from "@/features/performance/server";
 
 type BannerRouteContext = {
   params: Promise<{
@@ -16,6 +17,7 @@ export async function PATCH(request: NextRequest, { params }: BannerRouteContext
     const { id } = await params;
     const input = (await request.json()) as BannerUpdateInput;
     const banner = await bannerService.updateBanner(id, input);
+    await invalidateBannerCache();
 
     if (!banner) {
       return NextResponse.json({ message: "Banner not found" }, { status: 404 });
@@ -34,6 +36,7 @@ export async function DELETE(request: NextRequest, { params }: BannerRouteContex
   try {
     const { id } = await params;
     await bannerService.deleteBanner(id);
+    await invalidateBannerCache();
 
     return NextResponse.json({ ok: true });
   } catch (error) {

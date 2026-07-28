@@ -5,6 +5,7 @@ import { SectionHeading } from "@/features/homepage/ui/SectionHeading";
 type HorizontalProductRailProps = {
   title: string;
   subtitle?: string;
+  description?: string;
   products: Product[];
   actionLabel?: string;
   actionHref?: string;
@@ -14,6 +15,7 @@ type HorizontalProductRailProps = {
 export function HorizontalProductRail({
   title,
   subtitle,
+  description,
   products,
   actionLabel,
   actionHref,
@@ -26,6 +28,7 @@ export function HorizontalProductRail({
   return (
     <section className="mt-10">
       <SectionHeading title={title} subtitle={subtitle} actionLabel={actionLabel} actionHref={actionHref} />
+      {description ? <p className="-mt-2 mb-4 px-4 text-sm leading-6 text-novora-muted sm:px-6 lg:px-8">{description}</p> : null}
       <div className="flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-none sm:gap-4 sm:px-6 lg:px-8">
         {products.map((product, index) => (
           <MarketplaceProductCard key={product.id} product={product} priority={index < 2} badge={badge} />

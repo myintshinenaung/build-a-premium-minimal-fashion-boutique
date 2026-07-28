@@ -43,6 +43,14 @@ export async function invalidatePromotionCache() {
   await invalidateCacheTags(INVALIDATION_GROUPS.promotions);
 }
 
+export async function invalidateFeaturedCollectionCache() {
+  await invalidateCacheTags(INVALIDATION_GROUPS.featuredCollections);
+}
+
+export async function invalidateProductRailCache() {
+  await invalidateCacheTags(INVALIDATION_GROUPS.productRails);
+}
+
 export async function clearAllCaches() {
   const allTags = Array.from(new Set(Object.values(INVALIDATION_GROUPS).flat())) as CacheTag[];
   await invalidateCacheTags(allTags);

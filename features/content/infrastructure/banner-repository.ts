@@ -16,7 +16,15 @@ export const bannerRepository = {
   async list() {
     try {
       const supabase = createSupabaseServerClient();
-      const { data, error } = await supabase.from("banners").select("*").order("placement", { ascending: true });
+      let { data, error } = await supabase
+        .from("banners")
+        .select("*")
+        .order("sort_order", { ascending: true })
+        .order("placement", { ascending: true });
+
+      if (error?.message?.includes("sort_order")) {
+        ({ data, error } = await supabase.from("banners").select("*").order("placement", { ascending: true }));
+      }
 
       if (error) {
         throw error;
@@ -86,16 +94,29 @@ export const bannerRepository = {
 };
 
 function bannerFromRow(row: BannerRow): AdminBanner {
+  const record = row as BannerRow & {
+    mobile_image?: string;
+    store_name?: string;
+    sort_order?: number;
+    starts_at?: string | null;
+    ends_at?: string | null;
+  };
+
   return {
-    id: row.id,
-    title: row.title,
-    placement: row.placement,
-    image: row.image,
-    eyebrow: row.eyebrow,
-    headline: row.headline,
-    ctaLabel: row.cta_label,
-    ctaHref: row.cta_href,
-    status: row.status
+    id: record.id,
+    title: record.title,
+    placement: record.placement,
+    image: record.image,
+    mobileImage: record.mobile_image ?? "",
+    eyebrow: record.eyebrow,
+    headline: record.headline,
+    ctaLabel: record.cta_label,
+    ctaHref: record.cta_href,
+    storeName: record.store_name ?? "",
+    sortOrder: record.sort_order ?? 0,
+    startsAt: record.starts_at ?? null,
+    endsAt: record.ends_at ?? null,
+    status: record.status
   };
 }
 
@@ -105,10 +126,15 @@ function bannerToInsert(input: BannerCreateInput): BannerInsert {
     title: input.title,
     placement: input.placement,
     image: input.image,
+    mobile_image: input.mobileImage,
     eyebrow: input.eyebrow,
     headline: input.headline,
     cta_label: input.ctaLabel,
     cta_href: input.ctaHref,
+    store_name: input.storeName,
+    sort_order: input.sortOrder,
+    starts_at: input.startsAt,
+    ends_at: input.endsAt,
     status: input.status
   };
 }
@@ -119,10 +145,15 @@ function bannerToUpdate(input: BannerUpdateInput): BannerUpdate {
   if (input.title !== undefined) update.title = input.title;
   if (input.placement !== undefined) update.placement = input.placement;
   if (input.image !== undefined) update.image = input.image;
+  if (input.mobileImage !== undefined) update.mobile_image = input.mobileImage;
   if (input.eyebrow !== undefined) update.eyebrow = input.eyebrow;
   if (input.headline !== undefined) update.headline = input.headline;
   if (input.ctaLabel !== undefined) update.cta_label = input.ctaLabel;
   if (input.ctaHref !== undefined) update.cta_href = input.ctaHref;
+  if (input.storeName !== undefined) update.store_name = input.storeName;
+  if (input.sortOrder !== undefined) update.sort_order = input.sortOrder;
+  if (input.startsAt !== undefined) update.starts_at = input.startsAt;
+  if (input.endsAt !== undefined) update.ends_at = input.endsAt;
   if (input.status !== undefined) update.status = input.status;
 
   return update;

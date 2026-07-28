@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowDown, ArrowUp, Image as ImageIcon, Pencil, Plus, Save, Trash2, Upload } from "lucide-react";
-import { useState } from "react";
+import { ArrowDown, ArrowUp, Pencil, Plus, Save, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
 import { requestAdminJson } from "@/features/identity/client";
+import { ACTIVE_PLATFORM_STORE_ID, PLATFORM_STORES } from "@/lib/storefront/brand";
 import type { AdminCategory, AdminStatus } from "@/types/admin";
 
 type CategoryFormState = {
@@ -16,6 +17,7 @@ type CategoryFormState = {
   image: string;
   productCount: string;
   sortOrder: string;
+  storeId: string;
   status: AdminStatus;
 };
 
@@ -27,10 +29,11 @@ const emptyCategoryForm: CategoryFormState = {
   name: "",
   slug: "",
   description: "",
-  image: "/images/store-interior.png",
+  image: "",
   productCount: "0",
   sortOrder: "1",
-  status: "Published"
+  storeId: ACTIVE_PLATFORM_STORE_ID,
+  status: "Draft"
 };
 
 function categoryToForm(category: AdminCategory): CategoryFormState {
@@ -42,31 +45,50 @@ function categoryToForm(category: AdminCategory): CategoryFormState {
     image: category.image,
     productCount: String(category.productCount),
     sortOrder: String(category.sortOrder),
+    storeId: category.storeId,
     status: category.status
   };
+}
+
+function storeLabel(storeId: string) {
+  return PLATFORM_STORES.find((store) => store.id === storeId)?.label ?? storeId;
 }
 
 export function CategoryManager({ initialCategories }: { initialCategories: AdminCategory[] }) {
   const [categories, setCategories] = useState(() => [...initialCategories].sort((a, b) => a.sortOrder - b.sortOrder));
   const [form, setForm] = useState<CategoryFormState>(emptyCategoryForm);
 
+  const dailyOutfitCategories = useMemo(
+    () => categories.filter((category) => category.storeId === ACTIVE_PLATFORM_STORE_ID),
+    [categories]
+  );
+
   async function saveCategory() {
+    if (!form.image.trim()) {
+      window.alert("Category icon / image is required.");
+      return;
+    }
+
     const category: AdminCategory = {
       id: form.id ?? `cat-${Date.now()}`,
       name: form.name.trim() || "Untitled Category",
       slug: form.slug.trim() || form.name.toLowerCase().replace(/\s+/g, "-"),
       description: form.description.trim(),
-      image: form.image.trim() || "/images/store-interior.png",
+      image: form.image.trim(),
       productCount: Number(form.productCount) || 0,
       sortOrder: Number(form.sortOrder) || categories.length + 1,
+      storeId: form.storeId,
       status: form.status
     };
 
     try {
-      const { category: savedCategory } = await requestAdminJson<{ category: AdminCategory }>(form.id ? `/api/admin/categories/${encodeURIComponent(category.id)}` : "/api/admin/categories", {
-        method: form.id ? "PATCH" : "POST",
-        body: JSON.stringify(category)
-      });
+      const { category: savedCategory } = await requestAdminJson<{ category: AdminCategory }>(
+        form.id ? `/api/admin/categories/${encodeURIComponent(category.id)}` : "/api/admin/categories",
+        {
+          method: form.id ? "PATCH" : "POST",
+          body: JSON.stringify(category)
+        }
+      );
 
       setCategories((current) => {
         const exists = current.some((item) => item.id === savedCategory.id);
@@ -105,9 +127,16 @@ export function CategoryManager({ initialCategories }: { initialCategories: Admi
   }
 
   async function deleteCategory(categoryId: string) {
+    if (!window.confirm("Delete this category?")) {
+      return;
+    }
+
     try {
       await requestAdminJson<{ ok: boolean }>(`/api/admin/categories/${encodeURIComponent(categoryId)}`, { method: "DELETE" });
       setCategories((current) => normalizeOrder(current.filter((item) => item.id !== categoryId)));
+      if (form.id === categoryId) {
+        setForm(emptyCategoryForm);
+      }
     } catch (error) {
       window.alert(error instanceof Error ? error.message : "Unable to delete category.");
     }
@@ -116,12 +145,12 @@ export function CategoryManager({ initialCategories }: { initialCategories: Admi
   return (
     <section className="space-y-8">
       <AdminPageHeader
-        title="Categories"
-        description="Version 2 taxonomy controls with image placeholders, product counts, and reorderable merchandising order."
+        title="Category Rail Manager"
+        description="Control homepage category icons — image, name, display order, store assignment, and active state."
         action={
           <button
             type="button"
-            onClick={() => setForm({ ...emptyCategoryForm, sortOrder: String(categories.length + 1) })}
+            onClick={() => setForm({ ...emptyCategoryForm, sortOrder: String(dailyOutfitCategories.length + 1) })}
             className="inline-flex h-12 items-center justify-center gap-2 bg-ink px-5 text-sm font-medium text-white transition-colors hover:bg-stone"
           >
             <Plus size={17} strokeWidth={1.7} />
@@ -130,15 +159,19 @@ export function CategoryManager({ initialCategories }: { initialCategories: Admi
         }
       />
 
-      <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
+      <div className="grid gap-6 xl:grid-cols-[1fr_440px]">
         <div className="border border-line bg-white">
+          <div className="border-b border-line px-5 py-4">
+            <p className={labelClass}>Daily Outfit category rail</p>
+            <p className="mt-1 text-sm text-stone">{dailyOutfitCategories.length} categories configured for the active storefront</p>
+          </div>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[920px] border-collapse text-left text-sm">
+            <table className="w-full min-w-[980px] border-collapse text-left text-sm">
               <thead className="bg-mist text-xs uppercase tracking-[0.18em] text-stone">
                 <tr>
                   <th className="px-5 py-4 font-medium">Order</th>
                   <th className="px-5 py-4 font-medium">Category</th>
-                  <th className="px-5 py-4 font-medium">Slug</th>
+                  <th className="px-5 py-4 font-medium">Store</th>
                   <th className="px-5 py-4 font-medium">Products</th>
                   <th className="px-5 py-4 font-medium">Status</th>
                   <th className="px-5 py-4 text-right font-medium">Actions</th>
@@ -172,16 +205,19 @@ export function CategoryManager({ initialCategories }: { initialCategories: Admi
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="relative h-16 w-12 shrink-0 overflow-hidden bg-mist">
-                          <Image src={category.image} alt={category.name} fill sizes="48px" className="object-cover" />
+                        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-mist ring-1 ring-line">
+                          {category.image ? (
+                            <Image src={category.image} alt={category.name} fill sizes="64px" className="object-cover" />
+                          ) : null}
                         </div>
                         <div>
                           <p className="font-medium text-ink">{category.name}</p>
-                          <p className="mt-1 max-w-md text-sm text-stone">{category.description}</p>
+                          <p className="mt-1 text-xs text-stone">{category.slug}</p>
+                          {category.description ? <p className="mt-1 max-w-md text-sm text-stone">{category.description}</p> : null}
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-stone">{category.slug}</td>
+                    <td className="px-5 py-4 text-stone">{storeLabel(category.storeId)}</td>
                     <td className="px-5 py-4 text-stone">{category.productCount}</td>
                     <td className="px-5 py-4">
                       <AdminStatusBadge status={category.status} />
@@ -213,30 +249,28 @@ export function CategoryManager({ initialCategories }: { initialCategories: Admi
           </div>
         </div>
 
-        <aside className="border border-line bg-white p-5">
+        <aside className="border border-line bg-white p-5 xl:sticky xl:top-6 xl:self-start">
           <div className="border-b border-line pb-5">
             <p className={labelClass}>Category form</p>
             <h2 className="mt-2 text-xl font-medium text-ink">{form.id ? "Edit category" : "Create category"}</h2>
           </div>
           <div className="mt-5 space-y-5">
-            <div className="border border-dashed border-line bg-mist p-5">
-              <div className="relative aspect-[16/10] overflow-hidden bg-white">
-                {form.image ? (
-                  <Image src={form.image} alt="Category preview" fill sizes="360px" className="object-cover" />
-                ) : (
-                  <div className="flex h-full items-center justify-center text-stone">
-                    <ImageIcon size={24} strokeWidth={1.6} />
-                  </div>
-                )}
-              </div>
-              <div className="mt-4 flex items-center gap-3 text-sm text-stone">
-                <Upload size={16} strokeWidth={1.7} />
-                Category image placeholder for future upload integration.
-              </div>
-            </div>
-            <Field label="Image URL">
-              <input value={form.image} onChange={(event) => setForm((current) => ({ ...current, image: event.target.value }))} className={inputClass} />
+            <Field label="Icon / image URL">
+              <input
+                value={form.image}
+                onChange={(event) => setForm((current) => ({ ...current, image: event.target.value }))}
+                className={inputClass}
+                placeholder="/images/your-category.png or full URL"
+                required
+              />
             </Field>
+
+            {form.image ? (
+              <div className="relative aspect-square overflow-hidden rounded-2xl border border-line">
+                <Image src={form.image} alt="Category preview" fill sizes="440px" className="object-cover" />
+              </div>
+            ) : null}
+
             <Field label="Name">
               <input value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} className={inputClass} />
             </Field>
@@ -250,20 +284,52 @@ export function CategoryManager({ initialCategories }: { initialCategories: Admi
                 className={`${inputClass} min-h-28 resize-y`}
               />
             </Field>
+
+            <Field label="Store">
+              <select
+                value={form.storeId}
+                onChange={(event) => setForm((current) => ({ ...current, storeId: event.target.value }))}
+                className={inputClass}
+              >
+                {PLATFORM_STORES.map((store) => (
+                  <option key={store.id} value={store.id}>
+                    {store.label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-              <Field label="Product Count">
-                <input type="number" value={form.productCount} onChange={(event) => setForm((current) => ({ ...current, productCount: event.target.value }))} className={inputClass} />
+              <Field label="Product count">
+                <input
+                  type="number"
+                  value={form.productCount}
+                  onChange={(event) => setForm((current) => ({ ...current, productCount: event.target.value }))}
+                  className={inputClass}
+                />
               </Field>
-              <Field label="Sort Order">
-                <input type="number" value={form.sortOrder} onChange={(event) => setForm((current) => ({ ...current, sortOrder: event.target.value }))} className={inputClass} />
-              </Field>
-              <Field label="Status">
-                <select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as AdminStatus }))} className={inputClass}>
-                  <option>Published</option>
-                  <option>Draft</option>
-                </select>
+              <Field label="Display order">
+                <input
+                  type="number"
+                  min={1}
+                  value={form.sortOrder}
+                  onChange={(event) => setForm((current) => ({ ...current, sortOrder: event.target.value }))}
+                  className={inputClass}
+                />
               </Field>
             </div>
+
+            <Field label="Active / inactive">
+              <select
+                value={form.status}
+                onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as AdminStatus }))}
+                className={inputClass}
+              >
+                <option value="Published">Active (Published)</option>
+                <option value="Draft">Inactive (Draft)</option>
+              </select>
+            </Field>
+
             <button
               type="button"
               onClick={saveCategory}
