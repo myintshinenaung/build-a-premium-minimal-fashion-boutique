@@ -36,7 +36,14 @@ export const enMessages = {
     shortcutHint: "Ctrl K",
     noResults: "No products matched your search.",
     recent: "Recent searches",
-    popular: "Popular searches",
+    trending: "Trending searches",
+    popularStores: "Popular stores",
+    popularCategories: "Popular categories",
+    recommendedKeywords: "Recommended keywords",
+    products: "Products",
+    stores: "Stores",
+    categories: "Categories",
+    brands: "Brands",
     clearRecent: "Clear recent",
     resultCount: "{count} results",
     viewAll: "View all {count} results"
@@ -80,7 +87,7 @@ export const enMessages = {
     similarEyebrow: "Similar products",
     similarTitle: "More pieces you may like",
     trendingEyebrow: "Trending now",
-    trendingTitle: "Popular in the boutique",
+    trendingTitle: "Popular on Daily Outfit",
     bestSellersEyebrow: "Best sellers",
     bestSellersTitle: "Pieces with quiet momentum",
     newArrivalsEyebrow: "New arrivals",
@@ -116,7 +123,7 @@ export const enMessages = {
     eyebrow: "Shop",
     allPieces: "All pieces",
     searchResults: "Search results",
-    description: "Search, filter, and sort the full boutique edit.",
+    description: "Search, filter, and sort the Daily Outfit catalog.",
     filters: "Filters",
     category: "Category",
     brand: "Brand",
@@ -156,7 +163,7 @@ export const enMessages = {
   },
   categories: {
     eyebrow: "Categories",
-    title: "Shop the boutique edit",
+    title: "Shop Daily Outfit",
     description: "Every category is intentionally narrow, giving each piece space to work with the rest of the wardrobe."
   },
   checkout: {
@@ -267,14 +274,14 @@ export const enMessages = {
   },
   contact: {
     eyebrow: "Contact",
-    title: "Visit the boutique",
+    title: "Visit Daily Outfit",
     description: "For availability, styling questions, or reserved fittings, contact {storeName} directly.",
     storeLocation: "Store location",
     mapTitle: "Google Map for {storeName}"
   },
   about: {
     brandStory: "Brand story",
-    heroTitle: "Quiet pieces. Precise intent.",
+    heroTitle: "Style that moves with your day.",
     missionEyebrow: "Mission",
     missionTitle: "Make the wardrobe feel calm before it feels full.",
     missionDescription:
@@ -299,7 +306,7 @@ export const enMessages = {
     hero: {
       browseCategories: "Browse Categories",
       imageAlt: "Minimal fashion editorial",
-      fallbackPrimaryCta: "Shop Collection"
+      fallbackPrimaryCta: "Shop Now"
     },
     featuredCategories: {
       eyebrow: "Featured categories",
@@ -327,11 +334,11 @@ export const enMessages = {
       title: "From the fitting room"
     },
     gallery: {
-      ivoryDress: "Ivory midi dress editorial",
+      linenDress: "Linen wrap midi dress editorial",
       blackVest: "Black vest and tailored trouser editorial",
       satinBlouse: "Satin blouse with wide denim editorial",
       accessories: "Leather shoes and structured handbag",
-      storeInterior: "Minimal boutique interior",
+      storeInterior: "Daily Outfit store interior",
       newCollection: "Neutral tailored collection editorial"
     }
   }
@@ -342,3 +349,4 @@ type DeepStringMap<T> = {
 };
 
 export type Messages = DeepStringMap<typeof enMessages>;
+

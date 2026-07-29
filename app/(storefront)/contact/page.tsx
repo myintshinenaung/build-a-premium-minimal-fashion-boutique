@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { ExternalLink, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-react";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { buildStorefrontContactLinks, formatStoreAddress, getGoogleMapEmbedUrl } from "@/lib/storefront/contact-links";
+import { STOREFRONT_DISPLAY_NAME } from "@/lib/storefront/brand";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 
 const contactIcons = {
@@ -19,9 +20,9 @@ const contactIcons = {
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getStoreSettings();
 
-  return buildPageMetadata(settings, {
+  return buildPageMetadata({ ...settings, storeName: STOREFRONT_DISPLAY_NAME }, {
     title: "Contact",
-    description: `Visit or contact ${settings.storeName} by phone, email, and store location.`
+    description: `Visit or contact ${STOREFRONT_DISPLAY_NAME} by phone, email, and store location.`
   });
 }
 
@@ -36,8 +37,8 @@ export default async function ContactPage() {
       <section className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Contact"
-          title="Visit the boutique"
-          description={`For availability, styling questions, or reserved fittings, contact ${settings.storeName} directly.`}
+          title="Visit Daily Outfit"
+          description={`For availability, styling questions, or reserved fittings, contact ${STOREFRONT_DISPLAY_NAME} directly.`}
         />
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
@@ -82,16 +83,16 @@ export default async function ContactPage() {
           </div>
 
           <div className="space-y-4">
-            <BoutiqueImage
+            <MarketplaceImage
               src="/images/store-interior.png"
-              alt={`${settings.storeName} store interior`}
+              alt={`${STOREFRONT_DISPLAY_NAME} store interior`}
               className="aspect-[16/10] rounded-[2px]"
               priority
               sizes="(min-width: 1024px) 60vw, 100vw"
             />
             {mapEmbedUrl ? (
               <iframe
-                title={`Google Map for ${settings.storeName}`}
+                title={`Google Map for ${STOREFRONT_DISPLAY_NAME}`}
                 src={mapEmbedUrl}
                 className="h-[380px] w-full border-0"
                 loading="lazy"
@@ -104,3 +105,4 @@ export default async function ContactPage() {
     </>
   );
 }
+

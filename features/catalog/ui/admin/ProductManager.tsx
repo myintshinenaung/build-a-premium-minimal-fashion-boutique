@@ -4,7 +4,7 @@ import Image from "next/image";
 import {
   ChevronLeft,
   ChevronRight,
-  Copy,
+  Files as DuplicateIcon,
   Pencil,
   Plus,
   Save,
@@ -57,13 +57,13 @@ function createEmptyForm(categoryId: string): ProductFormState {
     sku: "",
     barcode: "",
     categoryId,
-    brand: "Atelier Lune",
+    brand: "Daily Outfit",
     priceMmk: "",
     salePriceMmk: "",
     costPriceMmk: "",
     description: "",
     images: ["/images/hero-boutique.png"],
-    colors: "Ivory, Black",
+    colors: "Natural, Black",
     sizes: ["S", "M", "L"],
     stockQuantity: "0",
     lowStockWarning: "5",
@@ -187,7 +187,7 @@ export function ProductManager({ initialProducts, categories }: ProductManagerPr
       sku: form.sku.trim() || "SKU-DRAFT",
       barcode: form.barcode.trim() || "BARCODE-PENDING",
       categoryId: form.categoryId,
-      brand: form.brand.trim() || "Atelier Lune",
+      brand: form.brand.trim() || "Daily Outfit",
       priceMmk: Number(form.priceMmk) || 0,
       salePriceMmk: form.salePriceMmk ? Number(form.salePriceMmk) || 0 : undefined,
       costPriceMmk: Number(form.costPriceMmk) || 0,
@@ -263,8 +263,8 @@ export function ProductManager({ initialProducts, categories }: ProductManagerPr
 
   async function duplicateProduct(product: AdminProduct) {
     try {
-      const { product: copy } = await requestAdminJson<{ product: AdminProduct }>(`/api/admin/products/${encodeURIComponent(product.id)}`, { method: "POST" });
-      setProducts((current) => [copy, ...current]);
+      const { product: duplicate } = await requestAdminJson<{ product: AdminProduct }>(`/api/admin/products/${encodeURIComponent(product.id)}`, { method: "POST" });
+      setProducts((current) => [duplicate, ...current]);
       setPage(1);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : "Unable to duplicate product.");
@@ -459,7 +459,7 @@ export function ProductManager({ initialProducts, categories }: ProductManagerPr
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex justify-end gap-2">
-                        <IconButton label={`Duplicate ${product.name}`} onClick={() => duplicateProduct(product)} icon={<Copy size={16} strokeWidth={1.7} />} />
+                        <IconButton label={`Duplicate ${product.name}`} onClick={() => duplicateProduct(product)} icon={<DuplicateIcon size={16} strokeWidth={1.7} />} />
                         <IconButton label={`Edit ${product.name}`} onClick={() => openEditForm(product)} icon={<Pencil size={16} strokeWidth={1.7} />} />
                         <IconButton label={`Delete ${product.name}`} onClick={() => deleteProduct(product.id)} icon={<Trash2 size={16} strokeWidth={1.7} />} />
                       </div>

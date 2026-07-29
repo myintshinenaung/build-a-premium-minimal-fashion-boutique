@@ -1,7 +1,7 @@
 # NOVORA FBEA migration blueprint
 
 **Status:** Approved  
-**Application:** Atelier Lune Boutique (Next.js 16 + Supabase)  
+**Application:** NOVORA Platform (Next.js 16 + Supabase)  
 **Strategy:** Strangler migration — no big-bang rewrite
 
 ## Current architecture (summary)
@@ -54,3 +54,4 @@ See [ADR-001](../adr/ADR-001-feature-based-enterprise-architecture.md).
 ---
 
 Full architectural analysis was approved in planning session 2026-07-23. This file is the persisted summary for the repository.
+

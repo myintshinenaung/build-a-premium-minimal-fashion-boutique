@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { isWishlisted, useWishlistStore } from "@/features/wishlist/infrastructure/store";
 import { useTranslator } from "@/features/i18n/client";
 import { cn } from "@/lib/utils";
@@ -19,7 +19,12 @@ export function WishlistButton({ productId, className, compact = false }: Wishli
   const removeProductId = useWishlistStore((state) => state.removeProductId);
   const [isPending, setIsPending] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const active = isWishlisted(productIds, productId);
+  const [hasMounted, setHasMounted] = useState(false);
+  const active = hasMounted ? isWishlisted(productIds, productId) : false;
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   async function handleToggle(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();

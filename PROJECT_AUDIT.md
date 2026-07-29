@@ -1,6 +1,6 @@
 # PROJECT_AUDIT.md
 
-**Project:** Atelier Lune Boutique  
+**Project:** NOVORA Platform  
 **Last updated:** 2026-07-21  
 **Purpose:** Living audit document for refactoring into a mobile-first fashion commerce platform
 
@@ -8,7 +8,7 @@
 
 ## Project Overview
 
-Atelier Lune Boutique is a premium minimal fashion e-commerce application built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS, and Supabase. It consists of two primary surfaces:
+NOVORA Platform is a premium minimal fashion e-commerce application built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS, and Supabase. It consists of two primary surfaces:
 
 1. **Customer storefront** — Bilingual (Myanmar default + English) shopping experience with catalog browse, product detail, cart, and search.
 2. **Admin dashboard** — Protected back-office for catalog, banner, and store settings management.
@@ -256,7 +256,7 @@ da881ff Replace mock admin auth with Supabase Auth and server-side session valid
 | `date` vs `timestamptz` | P2 | Weak audit trail on `updated_at` / `created_at` |
 | No test suite | P2 | Zero unit, integration, or E2E tests |
 | `outputs/` folder | P3 | Stale duplicate project tree |
-| Admin metadata branding | P3 | Layout template still says "Atelier Lune Admin" |
+| Admin metadata branding | P3 | Layout template still says "NOVORA Admin" |
 | No shared form components | P3 | Input/label classes duplicated across admin forms |
 
 ---
@@ -327,3 +327,4 @@ da881ff Replace mock admin auth with Supabase Auth and server-side session valid
 ---
 
 *This document is read-only audit output. Update after each major sprint or before starting a refactor phase.*
+

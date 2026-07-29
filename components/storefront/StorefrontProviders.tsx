@@ -1,12 +1,13 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import {
   DocumentLang,
   LocaleProvider,
   TranslatorProvider,
   type Locale
 } from "@/features/i18n/client";
+import { useLocaleStore } from "@/features/i18n/infrastructure/locale-store";
 import { ProductSearchModal, SearchKeyboardShortcut, SearchProvider } from "@/features/search/client";
 import type { SearchProductIndex } from "@/types/search";
 
@@ -16,12 +17,21 @@ type StorefrontProvidersProps = {
   children: ReactNode;
 };
 
+function LocaleRehydrator() {
+  useEffect(() => {
+    void useLocaleStore.persist.rehydrate();
+  }, []);
+
+  return null;
+}
+
 export function StorefrontProviders({ initialLocale, searchIndex, children }: StorefrontProvidersProps) {
   return (
     <LocaleProvider initialLocale={initialLocale}>
-      <TranslatorProvider>
+      <TranslatorProvider initialLocale={initialLocale}>
+        <LocaleRehydrator />
         <SearchProvider index={searchIndex}>
-          <DocumentLang />
+          <DocumentLang initialLocale={initialLocale} />
           {children}
           <ProductSearchModal />
           <SearchKeyboardShortcut />

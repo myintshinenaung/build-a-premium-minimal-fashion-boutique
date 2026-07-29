@@ -9,9 +9,9 @@ import { getAdminUnreadCount } from "@/features/notifications/server";
 export const metadata: Metadata = {
   title: {
     default: "Admin Dashboard",
-    template: "%s | Atelier Lune Admin"
+    template: "%s | NOVORA Admin"
   },
-  description: "Admin dashboard UI for Atelier Lune boutique management.",
+  description: "NOVORA platform admin dashboard for store management.",
   robots: {
     index: false,
     follow: false

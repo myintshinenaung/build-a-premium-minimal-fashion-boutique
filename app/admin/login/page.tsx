@@ -14,7 +14,7 @@ export default function AdminLoginPage() {
       <div className="flex items-center px-4 py-12 sm:px-8 lg:px-12">
         <div className="mx-auto w-full max-w-md">
           <Link href="/" className="text-sm font-semibold uppercase tracking-[0.34em] text-ink">
-            Atelier Lune
+            NOVORA
           </Link>
           <p className="mt-10 text-xs font-medium uppercase tracking-[0.24em] text-stone">Secure admin area</p>
           <h1 className="mt-4 text-4xl font-medium leading-tight text-ink md:text-5xl">Admin login</h1>
@@ -39,10 +39,11 @@ export default function AdminLoginPage() {
           <div className="mt-10 grid gap-4 text-sm text-stone">
             <p className="border-t border-line pt-4">Supabase Auth sessions protect admin routes and API endpoints.</p>
             <p className="border-t border-line pt-4">Only allowlisted emails or accounts with an admin role can sign in.</p>
-            <p className="border-t border-line pt-4">Public boutique pages remain separate from admin operations.</p>
+            <p className="border-t border-line pt-4">Public storefront pages remain separate from admin operations.</p>
           </div>
         </div>
       </div>
     </section>
   );
 }
+

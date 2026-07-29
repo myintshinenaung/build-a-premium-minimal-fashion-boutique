@@ -19,11 +19,11 @@ insert into products (
   id, name, sku, barcode, category_id, brand, price_mmk, sale_price_mmk, cost_price_mmk, description,
   images, colors, sizes, stock_quantity, low_stock_warning, featured, best_seller, new_arrival, on_sale, status, updated_at
 ) values
-  ('prd-ivory-column', 'Ivory Column Midi Dress', 'AL-DR-1001', '8850001001001', 'cat-dresses', 'Atelier Lune', 585000, 548000, 312000, 'Sleeveless midi dress with a softened column line and refined matte finish.', array['/images/ivory-dress.png', '/images/hero-boutique.png'], array['Ivory', 'Black'], array['XS', 'S', 'M', 'L', 'XL'], 18, 6, true, true, true, true, 'Published', '2026-07-10'),
-  ('prd-black-waistcoat', 'Tailored Black Waistcoat', 'AL-TP-2042', '8850002042002', 'cat-tops', 'Atelier Lune', 392000, null, 211000, 'Sharply cut waistcoat with a clean V neckline and subtle waist shaping.', array['/images/black-vest-trouser.png', '/images/new-collection.png'], array['Black', 'Warm Taupe'], array['XS', 'S', 'M', 'L'], 9, 10, true, true, true, false, 'Published', '2026-07-09'),
-  ('prd-satin-blouse', 'Satin Ease Blouse', 'AL-TP-2037', '8850002037008', 'cat-tops', 'Atelier Lune', 329000, 299000, 176000, 'Fluid satin blouse shaped with a relaxed collar and soft cuffs.', array['/images/silk-blouse-jeans.png', '/images/store-interior.png'], array['Cream', 'Graphite'], array['XS', 'S', 'M', 'L', 'XL', 'XXL'], 26, 8, false, false, true, true, 'Published', '2026-07-08'),
-  ('prd-wide-jean', 'Sculpted Wide Jean', 'AL-JN-3008', '8850003008007', 'cat-jeans', 'Atelier Lune Denim', 413000, null, 235000, 'Dark-rinse wide jean with a high rise and structured denim finish.', array['/images/silk-blouse-jeans.png', '/images/black-vest-trouser.png'], array['Deep Indigo', 'Washed Black'], array['XS', 'S', 'M', 'L', 'XL'], 14, 5, false, true, false, false, 'Published', '2026-07-07'),
-  ('prd-mini-tote', 'Structured Mini Tote', 'AL-BG-5104', '8850005104004', 'cat-bags', 'Atelier Lune Leather', 658000, null, 384000, 'Compact structured tote in grained leather with a clean flap.', array['/images/accessories.png', '/images/store-interior.png'], array['Taupe', 'Black'], array['One size'], 7, 4, true, true, false, false, 'Draft', '2026-07-06')
+  ('prd-linen-wrap-dress', 'Linen Wrap Midi Dress', 'DO-DR-1001', '8850001001001', 'cat-dresses', 'Daily Outfit', 585000, 548000, 312000, 'Breathable linen midi dress with a soft wrap silhouette for everyday wear.', array['/images/ivory-dress.png', '/images/hero-boutique.png'], array['Natural', 'Black'], array['XS', 'S', 'M', 'L', 'XL'], 18, 6, true, true, true, true, 'Published', '2026-07-10'),
+  ('prd-black-waistcoat', 'Tailored Black Waistcoat', 'DO-TP-2042', '8850002042002', 'cat-tops', 'Daily Outfit', 392000, null, 211000, 'Structured waistcoat with a clean neckline and sharp daily tailoring.', array['/images/black-vest-trouser.png', '/images/new-collection.png'], array['Black', 'Warm Taupe'], array['XS', 'S', 'M', 'L'], 9, 10, true, true, true, false, 'Published', '2026-07-09'),
+  ('prd-satin-blouse', 'Satin Ease Blouse', 'DO-TP-2037', '8850002037008', 'cat-tops', 'Daily Outfit', 329000, 299000, 176000, 'Lightweight satin blouse with relaxed cuffs and an easy drape.', array['/images/silk-blouse-jeans.png', '/images/store-interior.png'], array['Cream', 'Graphite'], array['XS', 'S', 'M', 'L', 'XL', 'XXL'], 26, 8, false, false, true, true, 'Published', '2026-07-08'),
+  ('prd-wide-jean', 'High-Rise Wide Leg Jean', 'DO-JN-3008', '8850003008007', 'cat-jeans', 'Daily Outfit Denim', 413000, null, 235000, 'Deep indigo wide-leg jean with a high rise and clean finish.', array['/images/silk-blouse-jeans.png', '/images/black-vest-trouser.png'], array['Deep Indigo', 'Washed Black'], array['XS', 'S', 'M', 'L', 'XL'], 14, 5, false, true, false, false, 'Published', '2026-07-07'),
+  ('prd-mini-tote', 'Structured Mini Tote', 'DO-BG-5104', '8850005104004', 'cat-bags', 'Luxe Lane', 658000, null, 384000, 'Compact structured tote in grained leather with a minimal flap.', array['/images/accessories.png', '/images/store-interior.png'], array['Taupe', 'Black'], array['One size'], 7, 4, true, true, false, false, 'Draft', '2026-07-06')
 on conflict (id) do update set
   name = excluded.name,
   sku = excluded.sku,
@@ -47,8 +47,8 @@ on conflict (id) do update set
   updated_at = excluded.updated_at;
 
 insert into banners (id, title, placement, image, eyebrow, headline, cta_label, cta_href, status) values
-  ('bnr-home-hero', 'Spring Collection Hero', 'Homepage Hero', '/images/hero-boutique.png', 'Spring collection', 'Atelier Lune', 'Shop Collection', '/shop', 'Published'),
-  ('bnr-new-collection', 'Soft Tailoring Feature', 'New Collection', '/images/new-collection.png', 'New collection', 'Soft tailoring, softened further.', 'View new arrivals', '/shop', 'Published')
+  ('bnr-home-hero', 'Daily Outfit New Season Hero', 'Homepage Hero', '/images/hero-boutique.png', 'New season', 'Daily Outfit', 'Shop Now', '/shop', 'Published'),
+  ('bnr-new-collection', 'Daily Outfit New Arrivals', 'New Collection', '/images/new-collection.png', 'New arrivals', 'Curated edits for the season ahead', 'View new arrivals', '/shop', 'Published')
 on conflict (id) do update set
   title = excluded.title,
   placement = excluded.placement,
@@ -85,11 +85,11 @@ insert into settings (
   id, store_name, logo, store_description, facebook, messenger, viber, telegram, tiktok, instagram,
   email, phone, address, google_map, currency, timezone, updated_at
 ) values (
-  'store', 'Atelier Lune', '/app/icon.svg', 'Premium minimal pieces for a quiet, edited wardrobe.',
-  'https://facebook.com/atelierlune', 'https://m.me/atelierlune', 'viber://chat?number=%2B959421000112',
-  'https://t.me/atelierlune', 'https://tiktok.com/@atelierlune', 'https://instagram.com/atelierlune',
-  'hello@atelierlune.example', '+95 9 421 000 112', '24 Garosu-gil, Gangnam-gu, Seoul',
-  'https://www.google.com/maps?q=Garosu-gil%2C%20Gangnam-gu%2C%20Seoul', 'MMK', 'Asia/Yangon', current_date
+  'store', 'Daily Outfit', '/app/icon.svg', 'Curated fashion for modern wardrobes across the NOVORA marketplace.',
+  'https://facebook.com/dailyoutfit', 'https://m.me/dailyoutfit', 'viber://chat?number=%2B959421000112',
+  'https://t.me/dailyoutfit', 'https://tiktok.com/@dailyoutfit', 'https://instagram.com/dailyoutfit',
+  'hello@dailyoutfit.example', '+95 9 421 000 112', 'Junction City, Yangon',
+  'https://www.google.com/maps?q=Junction+City+Yangon', 'MMK', 'Asia/Yangon', current_date
 )
 on conflict (id) do update set
   store_name = excluded.store_name,

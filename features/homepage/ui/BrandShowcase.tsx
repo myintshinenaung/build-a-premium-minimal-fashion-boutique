@@ -14,7 +14,12 @@ export function BrandShowcase({ brands }: BrandShowcaseProps) {
 
   return (
     <section className="mt-10 pb-8">
-      <SectionHeading title="Brand Showcase" subtitle="Labels shoppers love on NOVORA" actionLabel="Explore" actionHref="/shop" />
+      <SectionHeading
+        title="Brand Showcase"
+        subtitle="Labels shoppers love at Daily Outfit"
+        actionLabel="Explore"
+        actionHref="/shop"
+      />
       <div className="flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-none sm:px-6 lg:px-8">
         {items.map((brand) => (
           <Link

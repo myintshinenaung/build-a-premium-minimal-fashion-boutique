@@ -133,9 +133,9 @@ export const productRepository = {
 
     return this.create({
       ...product,
-      id: `prd-copy-${suffix}`,
-      name: `${product.name} Copy`,
-      sku: `${product.sku}-COPY-${suffix}`,
+      id: `prd-dup-${suffix}`,
+      name: `${product.name} — Duplicate`,
+      sku: `${product.sku}-DUP-${suffix}`,
       barcode: `${product.barcode}-${suffix}`,
       status: "Draft"
     });

@@ -43,7 +43,7 @@ export function buildOrderTimeline(order: StorefrontOrder): OrderTimelineEvent[]
       key: "confirmed",
       label: "Order confirmed",
       at: order.paidAt ?? order.createdAt,
-      description: "The boutique confirmed your order."
+      description: "The store confirmed your order."
     });
   }
 

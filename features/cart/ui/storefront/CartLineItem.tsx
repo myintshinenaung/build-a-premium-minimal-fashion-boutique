@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import { useCartStore } from "@/features/cart/infrastructure/store";
 import { cn, formatPrice } from "@/lib/utils";
 import type { CartItem } from "@/types/cart";
@@ -18,7 +18,7 @@ export function CartLineItem({ item }: CartLineItemProps) {
   return (
     <article className="grid grid-cols-[88px_1fr] gap-4 border-b border-line py-5">
       <Link href={`/product/${item.productSlug}`} className="block overflow-hidden rounded-[2px] bg-mist">
-        <BoutiqueImage src={item.image} alt={item.productName} className="aspect-[4/5]" sizes="88px" />
+        <MarketplaceImage src={item.image} alt={item.productName} className="aspect-[4/5]" sizes="88px" />
       </Link>
 
       <div className="min-w-0">

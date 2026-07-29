@@ -65,7 +65,7 @@ export function AdminLoginForm() {
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="admin@atelierlune.example"
+          placeholder="admin@dailyoutfit.example"
           autoComplete="email"
           className={inputClass}
         />

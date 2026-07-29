@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCategories } from "@/features/catalog/server";
 import { getTranslator } from "@/features/i18n/server";
 import { getStoreSettings } from "@/features/settings/server";
+import { STOREFRONT_DISPLAY_NAME } from "@/lib/storefront/brand";
 import { formatStoreAddress } from "@/lib/storefront/contact-links";
 
 export async function Footer() {
@@ -14,7 +15,7 @@ export async function Footer() {
       <div className="mx-auto grid max-w-[1440px] gap-12 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div>
           <Link href="/" className="text-sm font-semibold uppercase tracking-[0.34em] text-ink">
-            {settings.storeName}
+            {STOREFRONT_DISPLAY_NAME}
           </Link>
           <p className="mt-5 max-w-sm text-sm leading-6 text-stone">{settings.storeDescription}</p>
         </div>
@@ -67,7 +68,7 @@ export async function Footer() {
         </div>
       </div>
       <div className="border-t border-line px-4 py-5 text-center text-xs text-stone sm:px-6 lg:px-8">
-        {t("footer.rights", { year: new Date().getFullYear(), storeName: settings.storeName })}
+        {t("footer.rights", { year: new Date().getFullYear(), storeName: STOREFRONT_DISPLAY_NAME })}
       </div>
     </footer>
   );

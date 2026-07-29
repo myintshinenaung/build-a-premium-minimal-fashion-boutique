@@ -5,7 +5,7 @@ import { ProductListing } from "@/features/catalog/client";
 import { getCategories, getCategoryBySlug } from "@/features/catalog/server";
 import { getTranslator } from "@/features/i18n/server";
 import { searchProductCatalog } from "@/features/search/server";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
 
@@ -58,7 +58,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             description={category.description}
           />
         </div>
-        <BoutiqueImage
+        <MarketplaceImage
           src={category.image}
           alt={category.name}
           className="aspect-[16/9] rounded-[2px]"

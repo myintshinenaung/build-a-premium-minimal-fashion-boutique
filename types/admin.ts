@@ -5,9 +5,12 @@ export type AdminCategory = {
   name: string;
   slug: string;
   description: string;
+  /** Icon / card image shown in the category rail and collection surfaces. */
   image: string;
   productCount: number;
   sortOrder: number;
+  /** Platform store this category belongs to (e.g. daily-outfit). */
+  storeId: string;
   status: AdminStatus;
 };
 
@@ -37,13 +40,23 @@ export type AdminProduct = {
 
 export type AdminBanner = {
   id: string;
+  /** Internal banner label shown in the dashboard list. */
   title: string;
   placement: "Homepage Hero" | "New Collection" | "Announcement";
+  /** Desktop / primary banner image URL. */
   image: string;
+  /** Mobile-optimized banner image URL. Falls back to desktop image on the storefront when empty. */
+  mobileImage: string;
+  /** Hero subtitle (eyebrow). */
   eyebrow: string;
+  /** Hero title (headline). */
   headline: string;
   ctaLabel: string;
   ctaHref: string;
+  storeName: string;
+  sortOrder: number;
+  startsAt: string | null;
+  endsAt: string | null;
   status: AdminStatus;
 };
 

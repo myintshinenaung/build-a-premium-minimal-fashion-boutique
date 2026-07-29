@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import { WishlistButton } from "@/features/wishlist/client";
 import type { Product } from "@/types/product";
 import { cn, formatPrice } from "@/lib/utils";
@@ -8,6 +8,7 @@ type MarketplaceProductCardProps = {
   product: Product;
   priority?: boolean;
   compact?: boolean;
+  size?: "compact" | "default" | "large";
   badge?: string;
 };
 
@@ -15,6 +16,7 @@ export function MarketplaceProductCard({
   product,
   priority = false,
   compact = false,
+  size = compact ? "compact" : "default",
   badge
 }: MarketplaceProductCardProps) {
   const discount =
@@ -23,8 +25,22 @@ export function MarketplaceProductCard({
       : null;
 
   return (
-    <article className={cn("group shrink-0", compact ? "w-[140px] sm:w-[160px]" : "w-[152px] sm:w-[180px]")}>
-      <div className="relative overflow-hidden rounded-2xl bg-novora-surface shadow-sm ring-1 ring-novora-border/60 transition-shadow duration-300 group-hover:shadow-md">
+    <article
+      className={cn(
+        "group shrink-0",
+        size === "large"
+          ? "w-[180px] sm:w-[220px] md:w-[240px]"
+          : size === "compact"
+            ? "w-[140px] sm:w-[160px]"
+            : "w-[152px] sm:w-[180px]"
+      )}
+    >
+      <div
+        className={cn(
+          "relative overflow-hidden bg-novora-surface shadow-sm ring-1 ring-novora-border/60 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-lg",
+          size === "large" ? "rounded-[24px]" : "rounded-2xl"
+        )}
+      >
         <WishlistButton productId={product.id} className="absolute right-2 top-2 z-10" compact />
         {badge ? (
           <span className="absolute left-2 top-2 z-10 rounded-full bg-novora-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
@@ -37,7 +53,7 @@ export function MarketplaceProductCard({
           </span>
         ) : null}
         <Link href={`/product/${product.slug}`} className="block" aria-label={`View ${product.name}`}>
-          <BoutiqueImage
+          <MarketplaceImage
             src={product.images[0]}
             alt={product.name}
             className="aspect-[4/5]"

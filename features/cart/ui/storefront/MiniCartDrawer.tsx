@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { CartLineItem } from "@/features/cart/ui/storefront/CartLineItem";
 import { selectCartSubtotal, useCartStore } from "@/features/cart/infrastructure/store";
@@ -13,10 +13,18 @@ export function MiniCartDrawer() {
   const items = useCartStore((state) => state.items);
   const isOpen = useCartStore((state) => state.isOpen);
   const closeCart = useCartStore((state) => state.closeCart);
-  const subtotal = selectCartSubtotal(items);
+  const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) {
+    setHasHydrated(true);
+  }, []);
+
+  const displayItems = hasHydrated ? items : [];
+  const displayOpen = hasHydrated ? isOpen : false;
+  const subtotal = selectCartSubtotal(displayItems);
+
+  useEffect(() => {
+    if (!displayOpen) {
       return;
     }
 
@@ -33,7 +41,7 @@ export function MiniCartDrawer() {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [closeCart, isOpen]);
+  }, [closeCart, displayOpen]);
 
   return (
     <>
@@ -43,16 +51,16 @@ export function MiniCartDrawer() {
         onClick={closeCart}
         className={cn(
           "fixed inset-0 z-[60] bg-ink/20 transition-opacity duration-300",
-          isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+          displayOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         )}
       />
 
       <aside
-        aria-hidden={!isOpen}
+        aria-hidden={!displayOpen}
         aria-label={t("cart.title")}
         className={cn(
           "fixed inset-y-0 right-0 z-[61] flex w-full max-w-md flex-col bg-white shadow-soft transition-transform duration-300 ease-out",
-          isOpen ? "translate-x-0" : "translate-x-full"
+          displayOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
         <div className="flex items-center justify-between border-b border-line px-5 py-5">
@@ -71,7 +79,7 @@ export function MiniCartDrawer() {
         </div>
 
         <div className="flex-1 overflow-y-auto px-5">
-          {items.length === 0 ? (
+          {displayItems.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center py-16 text-center">
               <p className="text-sm text-stone">{t("cart.empty")}</p>
               <button
@@ -83,11 +91,11 @@ export function MiniCartDrawer() {
               </button>
             </div>
           ) : (
-            items.map((item) => <CartLineItem key={item.lineKey} item={item} />)
+            displayItems.map((item) => <CartLineItem key={item.lineKey} item={item} />)
           )}
         </div>
 
-        {items.length > 0 ? (
+        {displayItems.length > 0 ? (
           <div className="border-t border-line px-5 py-5">
             <div className="flex items-center justify-between gap-4">
               <span className="text-sm text-stone">{t("cart.subtotal")}</span>

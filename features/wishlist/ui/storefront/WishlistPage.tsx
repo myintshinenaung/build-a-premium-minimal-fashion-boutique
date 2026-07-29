@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ShoppingBag, Trash2 } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import { findProductVariant, getDefaultVariantSelection } from "@/features/catalog/domain/variants";
 import { useCartStore } from "@/features/cart/client";
 import { useTranslator } from "@/features/i18n/client";
@@ -160,7 +160,7 @@ export function WishlistPage() {
           {entries.map((entry) => (
             <article key={entry.id} className="grid gap-4 border border-line bg-white p-4 sm:grid-cols-[120px_1fr_auto] sm:items-center">
               <Link href={`/product/${entry.product.slug}`} className="block">
-                <BoutiqueImage
+                <MarketplaceImage
                   src={entry.product.images[0]}
                   alt={entry.product.name}
                   className="aspect-[4/5] w-full max-w-[120px]"

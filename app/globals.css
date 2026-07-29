@@ -62,6 +62,81 @@ textarea {
   display: none;
 }
 
+@keyframes novora-search-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.novora-search-backdrop-enter {
+  animation: novora-search-backdrop-in 0.24s ease-out;
+}
+
+@keyframes novora-fade-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.novora-search-overlay-enter {
+  animation: novora-fade-scale-in 0.28s ease-out;
+}
+
+.novora-search-section-enter {
+  animation: novora-fade-scale-in 0.34s ease-out both;
+}
+
+@keyframes novora-hero-image-drift {
+  from {
+    transform: scale(1.04);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.novora-hero-image-drift {
+  animation: novora-hero-image-drift 8s ease-out forwards;
+}
+
+@keyframes novora-hero-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.novora-hero-progress {
+  animation-name: novora-hero-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .novora-hero-image-drift,
+  .novora-hero-progress {
+    animation: none;
+  }
+
+  .novora-hero-progress {
+    transform: scaleX(1);
+  }
+}
+
 [data-admin-theme="dark"] {
   background: #111111;
   color: #f6f3ef;

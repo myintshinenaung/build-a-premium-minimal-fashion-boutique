@@ -4,7 +4,7 @@ import type { AdminCategory, AdminProduct } from "@/types/admin";
 import type { Category, Product, ProductColor } from "@/types/product";
 
 const COLOR_HEX: Record<string, string> = {
-  Ivory: "#eee7dc",
+  Natural: "#eee7dc",
   Black: "#111111",
   "Warm Taupe": "#a89a8b",
   Champagne: "#d9cdb8",

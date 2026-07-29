@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import type { StorefrontBanner } from "@/types/storefront";
 
 type NewCollectionBannerLabels = {
@@ -21,7 +21,7 @@ export function NewCollectionBanner({ banner, labels }: NewCollectionBannerProps
   return (
     <section className="mx-auto max-w-[1440px] px-4 py-20 sm:px-6 lg:px-8">
       <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <BoutiqueImage
+        <MarketplaceImage
           src={banner.image}
           alt={banner.imageAlt || labels.fallbackImageAlt}
           className="aspect-[16/10] rounded-[2px]"

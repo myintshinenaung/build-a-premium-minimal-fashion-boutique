@@ -26,6 +26,7 @@ export const useLocaleStore = create<LocaleState>()(
     {
       name: LOCALE_STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
+      skipHydration: true,
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
         if (state?.locale) {

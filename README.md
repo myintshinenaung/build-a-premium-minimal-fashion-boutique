@@ -1,10 +1,10 @@
-# Atelier Lune Boutique
+# NOVORA Platform
 
-Premium minimal fashion boutique built with Next.js, React, TypeScript, and Tailwind CSS.
+NOVORA marketplace platform with Daily Outfit storefront built with Next.js, React, TypeScript, and Tailwind CSS.
 
 ## Features
 
-- Mobile-first luxury boutique layout
+- Mobile-first premium marketplace layout
 - Home, categories, shop, product detail, about, contact, sitemap, and robots routes
 - Search, filters, sorting, and pagination on product listings
 - Product data with category, price, description, images, sizes, colors, stock status, new arrival, and best seller flags
@@ -71,7 +71,7 @@ lib/services/         Admin service layer for future business rules
 lib/supabase/         Supabase client, server, and generated type placeholders
 lib/                  Helpers and admin utilities
 types/                Product TypeScript models
-public/images/        Local boutique and product imagery
+public/images/        Local marketplace and product imagery
 ```
 
 ## Product Data
@@ -81,3 +81,4 @@ The public storefront reads published products and categories from Supabase thro
 ## Notes
 
 The site intentionally avoids dark mode, bright gradients, heavy animation, and decorative clutter to preserve the premium minimal design direction.
+

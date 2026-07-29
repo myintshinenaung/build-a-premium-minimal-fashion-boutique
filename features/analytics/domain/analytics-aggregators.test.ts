@@ -74,7 +74,7 @@ const snapshot: AnalyticsSnapshot = {
     {
       id: "PROD-1",
       name: "Silk Dress",
-      brand: "Atelier Lune",
+      brand: "Daily Outfit",
       categoryId: "CAT-1",
       categoryName: "Dresses",
       stockQuantity: 2,
@@ -84,7 +84,7 @@ const snapshot: AnalyticsSnapshot = {
     {
       id: "PROD-2",
       name: "Wool Blazer",
-      brand: "Maison Noir",
+      brand: "Luxe Lane",
       categoryId: "CAT-2",
       categoryName: "Outerwear",
       stockQuantity: 12,
@@ -133,7 +133,7 @@ describe("analytics aggregators", () => {
 
     expect(sales.series.some((entry) => entry.revenueMmk === 120000)).toBe(true);
     expect(revenue.byCategory[0]?.label).toBe("Dresses");
-    expect(revenue.byBrand[0]?.label).toBe("Atelier Lune");
+    expect(revenue.byBrand[0]?.label).toBe("Daily Outfit");
   });
 
   it("builds product, customer, order, and review analytics", () => {
@@ -151,3 +151,4 @@ describe("analytics aggregators", () => {
     expect(reviews.pendingReviews).toBe(1);
   });
 });
+

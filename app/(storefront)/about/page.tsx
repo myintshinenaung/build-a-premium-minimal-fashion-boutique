@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
+import { STOREFRONT_DISPLAY_NAME } from "@/lib/storefront/brand";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getStoreSettings();
 
-  return buildPageMetadata(settings, {
+  return buildPageMetadata({ ...settings, storeName: STOREFRONT_DISPLAY_NAME }, {
     title: "About",
-    description: `Learn about ${settings.storeName}, a premium minimal fashion boutique built around a quiet, edited wardrobe.`
+    description: `Learn about ${STOREFRONT_DISPLAY_NAME}, a curated fashion store on the NOVORA marketplace.`
   });
 }
 
@@ -20,16 +21,16 @@ export default async function AboutPage() {
       <section className="mx-auto grid max-w-[1440px] gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-end lg:px-8">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.24em] text-stone">Brand story</p>
-          <h1 className="mt-4 text-4xl font-medium leading-tight text-ink md:text-6xl">Quiet pieces. Precise intent.</h1>
+          <h1 className="mt-4 text-4xl font-medium leading-tight text-ink md:text-6xl">Style that moves with your day.</h1>
           <p className="mt-6 text-sm leading-7 text-stone md:text-base">
-            {settings.storeName} began as a small boutique for women who wanted fewer decisions and better proportions.
+            {STOREFRONT_DISPLAY_NAME} delivers modern wardrobe essentials with premium quality and everyday ease.
             Each collection is built around calm neutrals, disciplined silhouettes, and fabrics that feel considered up
             close.
           </p>
         </div>
-        <BoutiqueImage
+        <MarketplaceImage
           src="/images/store-interior.png"
-          alt={`${settings.storeName} boutique interior`}
+          alt={`${STOREFRONT_DISPLAY_NAME} store interior`}
           className="aspect-[16/9] rounded-[2px]"
           priority
           sizes="(min-width: 1024px) 60vw, 100vw"
@@ -59,15 +60,15 @@ export default async function AboutPage() {
           description="We source and style with longevity in mind: neutral shades, clear shapes, and repeatable combinations that hold up after the first impression."
         />
         <div className="mt-10 grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
-          <BoutiqueImage
+          <MarketplaceImage
             src="/images/new-collection.png"
-            alt={`${settings.storeName} tailored collection`}
+            alt={`${STOREFRONT_DISPLAY_NAME} tailored collection`}
             className="aspect-[16/10] rounded-[2px]"
             sizes="(min-width: 768px) 56vw, 100vw"
           />
-          <BoutiqueImage
-            src="/images/ivory-dress.png"
-            alt="Ivory midi dress in studio"
+          <MarketplaceImage
+            src="/images/hero-boutique.png"
+            alt="Linen wrap midi dress in studio"
             className="aspect-[4/5] rounded-[2px]"
             sizes="(min-width: 768px) 44vw, 100vw"
           />
@@ -76,3 +77,4 @@ export default async function AboutPage() {
     </>
   );
 }
+

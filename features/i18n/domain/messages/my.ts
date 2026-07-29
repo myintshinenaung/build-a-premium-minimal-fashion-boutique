@@ -38,7 +38,14 @@ export const myMessages: Messages = {
     shortcutHint: "Ctrl K",
     noResults: "သင့်ရှာဖွေမှုနှင့် ကိုက်ညီသော ပစ္စည်းမရှိပါ။",
     recent: "မကြာသေးမီ ရှာဖွေမှုများ",
-    popular: "လူကြိုက်များသော ရှာဖွေမှုများ",
+    trending: "ခေတ်စားနေသော ရှာဖွေမှုများ",
+    popularStores: "လူကြိုက်များသော စတိုးများ",
+    popularCategories: "လူကြိုက်များသော အမျိုးအစားများ",
+    recommendedKeywords: "အကြံပြု keyword များ",
+    products: "ပစ္စည်းများ",
+    stores: "စတိုးများ",
+    categories: "အမျိုးအစားများ",
+    brands: "Brand များ",
     clearRecent: "ရှင်းလင်းရန်",
     resultCount: "ရလဒ် {count} ခု",
     viewAll: "ရလဒ် {count} ခုလုံး ကြည့်ရန်"
@@ -301,7 +308,7 @@ export const myMessages: Messages = {
     hero: {
       browseCategories: "အမျိုးအစားများ ကြည့်ရန်",
       imageAlt: "Minimal fashion editorial",
-      fallbackPrimaryCta: "Shop Collection"
+      fallbackPrimaryCta: "Shop Now"
     },
     featuredCategories: {
       eyebrow: "Featured categories",
@@ -328,12 +335,13 @@ export const myMessages: Messages = {
       title: "Fitting room မှ"
     },
     gallery: {
-      ivoryDress: "Ivory midi dress editorial",
+      linenDress: "Linen wrap midi dress editorial",
       blackVest: "Black vest and tailored trouser editorial",
       satinBlouse: "Satin blouse with wide denim editorial",
       accessories: "Leather shoes and structured handbag",
-      storeInterior: "Minimal boutique interior",
+      storeInterior: "NOVORA marketplace store interior",
       newCollection: "Neutral tailored collection editorial"
     }
   }
 };
+

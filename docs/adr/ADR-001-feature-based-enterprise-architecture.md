@@ -2,7 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2026-07-23  
-**Context:** NOVORA enterprise platform; working Next.js + Supabase monolith (Atelier Lune Boutique).
+**Context:** NOVORA enterprise platform; working Next.js + Supabase monolith (NOVORA Platform).
 
 ## Decision
 
@@ -32,3 +32,4 @@ Adopt **Feature-Based Enterprise Architecture**:
 
 - [Migration blueprint](../architecture/NOVORA_FBEA_MIGRATION_BLUEPRINT.md)
 - [Module boundaries (ADR-002)](./ADR-002-module-import-boundaries.md)
+

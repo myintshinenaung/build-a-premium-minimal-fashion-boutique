@@ -17,14 +17,14 @@ const products: ProductSearchRecord[] = [
     name: "Silk Slip Dress",
     price: 120000,
     category: "Dresses",
-    brand: "Atelier Lune",
+    brand: "Daily Outfit",
     description: "Bias-cut silk dress with adjustable straps.",
     details: [],
     images: ["/images/dress.png"],
     sizes: ["S", "M"],
     colors: [{ name: "Champagne", hex: "#d9cdb8" }],
     sku: "SLP-001",
-    tags: ["Dresses", "Atelier Lune"],
+    tags: ["Dresses", "Daily Outfit"],
     variants: [],
     stockStatus: "In stock",
     newArrival: true,
@@ -38,14 +38,14 @@ const products: ProductSearchRecord[] = [
     name: "Tailored Wool Blazer",
     price: 185000,
     category: "Outerwear",
-    brand: "Maison Noir",
+    brand: "Luxe Lane",
     description: "Structured blazer in warm grey wool.",
     details: [],
     images: ["/images/blazer.png"],
     sizes: ["M", "L"],
     colors: [{ name: "Warm Grey", hex: "#9a9188" }],
     sku: "BLZ-014",
-    tags: ["Outerwear", "Maison Noir"],
+    tags: ["Outerwear", "Luxe Lane"],
     variants: [],
     stockStatus: "Sold out",
     newArrival: false,
@@ -59,14 +59,14 @@ const products: ProductSearchRecord[] = [
     name: "Cashmere Knit",
     price: 98000,
     category: "Knitwear",
-    brand: "Atelier Lune",
-    description: "Soft rib knit in ivory cashmere.",
+    brand: "Daily Outfit",
+    description: "Soft rib knit in natural-toned cashmere.",
     details: [],
     images: ["/images/knit.png"],
     sizes: ["S", "M", "L"],
-    colors: [{ name: "Ivory", hex: "#eee7dc" }],
+    colors: [{ name: "Natural", hex: "#eee7dc" }],
     sku: "KNT-008",
-    tags: ["Knitwear", "Atelier Lune"],
+    tags: ["Knitwear", "Daily Outfit"],
     variants: [],
     stockStatus: "In stock",
     newArrival: false,
@@ -81,7 +81,7 @@ describe("product search schemas", () => {
     const parsed = parseProductSearchParams({
       q: " silk ",
       category: "Dresses,Knitwear",
-      brand: "Atelier Lune",
+      brand: "Daily Outfit",
       minPrice: "90000",
       maxPrice: "150000",
       color: "Champagne",
@@ -95,7 +95,7 @@ describe("product search schemas", () => {
     expect(parsed).toMatchObject({
       q: "silk",
       category: ["Dresses", "Knitwear"],
-      brand: ["Atelier Lune"],
+      brand: ["Daily Outfit"],
       minPrice: 90000,
       maxPrice: 150000,
       color: "Champagne",
@@ -118,10 +118,10 @@ describe("product search engine", () => {
     const filtered = applyProductFilters(products, {
       q: "",
       category: ["Knitwear"],
-      brand: ["Atelier Lune"],
+      brand: ["Daily Outfit"],
       minPrice: 90000,
       maxPrice: 100000,
-      color: "Ivory",
+      color: "Natural",
       size: "L",
       minRating: 3,
       inStock: true,
@@ -147,7 +147,7 @@ describe("product search engine", () => {
 
   it("runs a full search with facets", () => {
     const result = runProductSearch(products, {
-      q: "atelier",
+      q: "daily",
       category: [],
       brand: [],
       inStock: true,
@@ -157,7 +157,7 @@ describe("product search engine", () => {
     });
 
     expect(result.items.map((product) => product.id)).toEqual(["prod-1", "prod-3"]);
-    expect(result.facets.brands).toEqual(["Atelier Lune", "Maison Noir"]);
+    expect(result.facets.brands).toEqual(["Daily Outfit", "Luxe Lane"]);
     expect(result.total).toBe(2);
   });
 
@@ -166,7 +166,7 @@ describe("product search engine", () => {
       buildProductSearchPath({
         q: "silk",
         category: ["Dresses"],
-        brand: ["Atelier Lune"],
+        brand: ["Daily Outfit"],
         minPrice: 100000,
         maxPrice: 200000,
         color: "Champagne",
@@ -178,7 +178,8 @@ describe("product search engine", () => {
         pageSize: 8
       })
     ).toBe(
-      "/shop?q=silk&category=Dresses&brand=Atelier+Lune&minPrice=100000&maxPrice=200000&color=Champagne&size=M&minRating=4&inStock=true&sort=rating&page=2"
+      "/shop?q=silk&category=Dresses&brand=Daily+Outfit&minPrice=100000&maxPrice=200000&color=Champagne&size=M&minRating=4&inStock=true&sort=rating&page=2"
     );
   });
 });
+

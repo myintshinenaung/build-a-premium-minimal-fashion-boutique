@@ -4,16 +4,20 @@ import { mapStoreSettingsToStorefront } from "@/features/settings/domain/map-set
 import { settingsService } from "@/features/settings/application/settings-service";
 import { CACHE_TAGS, CACHE_TTLS } from "@/features/performance/domain/cache-tags";
 import { createCachedLoader } from "@/features/performance/infrastructure/cache-store";
+import type { StoreSettings } from "@/types/admin";
 import type { StorefrontSettings } from "@/types/storefront";
 
 const loadStoreSettingsData = createCachedLoader(
   "store-settings",
   [CACHE_TAGS.settings, CACHE_TAGS.homepage],
   CACHE_TTLS.settings,
-  async (): Promise<StorefrontSettings> => {
-    const [settings, locale] = await Promise.all([settingsService.getSettings(), getRequestLocale()]);
-    return mapStoreSettingsToStorefront(settings, locale);
-  }
+  (): Promise<StoreSettings> => settingsService.getSettings()
 );
 
-export const getStoreSettings = cache(loadStoreSettingsData);
+const getCachedStoreSettings = cache(loadStoreSettingsData);
+
+export const getStoreSettings = cache(async (): Promise<StorefrontSettings> => {
+  const locale = await getRequestLocale();
+  const settings = await getCachedStoreSettings();
+  return mapStoreSettingsToStorefront(settings, locale);
+});

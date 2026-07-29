@@ -9,5 +9,5 @@ export function getResendApiKey() {
 }
 
 export function getEmailFromAddress() {
-  return process.env.EMAIL_FROM?.trim() || "Atelier Lune <onboarding@resend.dev>";
+  return process.env.EMAIL_FROM?.trim() || "Daily Outfit <onboarding@resend.dev>";
 }

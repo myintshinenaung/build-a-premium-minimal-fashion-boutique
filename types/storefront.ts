@@ -48,4 +48,12 @@ export type StorefrontBanner = {
   headline: string;
   ctaLabel: string;
   ctaHref: string;
+  storeName: string;
+  desktopImage: string;
+  mobileImage: string;
+  sortOrder: number;
+  active: boolean;
+  autoplay: boolean;
+  startsAt: string | null;
+  endsAt: string | null;
 };

@@ -18,6 +18,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/ivory-dress.png",
     productCount: 1,
     sortOrder: 1,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -28,6 +29,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/silk-blouse-jeans.png",
     productCount: 5,
     sortOrder: 2,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -38,6 +40,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/black-vest-trouser.png",
     productCount: 2,
     sortOrder: 3,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -48,6 +51,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/silk-blouse-jeans.png",
     productCount: 1,
     sortOrder: 4,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -58,6 +62,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/accessories.png",
     productCount: 1,
     sortOrder: 5,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -68,6 +73,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/accessories.png",
     productCount: 1,
     sortOrder: 6,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -78,24 +84,25 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/accessories.png",
     productCount: 2,
     sortOrder: 7,
+    storeId: "daily-outfit",
     status: "Published"
   }
 ];
 
 export const adminProducts: AdminProduct[] = [
   {
-    id: "prd-ivory-column",
-    name: "Ivory Column Midi Dress",
-    sku: "AL-DR-1001",
+    id: "prd-linen-wrap",
+    name: "Linen Wrap Midi Dress",
+    sku: "DO-DR-1001",
     barcode: "8850001001001",
     categoryId: "cat-dresses",
-    brand: "Atelier Lune",
+    brand: "Daily Outfit",
     priceMmk: 585000,
     salePriceMmk: 548000,
     costPriceMmk: 312000,
-    description: "Sleeveless midi dress with a softened column line and refined matte finish.",
+    description: "Breathable linen midi dress with a soft wrap silhouette for everyday wear.",
     images: ["/images/ivory-dress.png", "/images/hero-boutique.png"],
-    colors: ["Ivory", "Black"],
+    colors: ["Natural", "Black"],
     sizes: ["XS", "S", "M", "L", "XL"],
     stockQuantity: 18,
     lowStockWarning: 6,
@@ -109,10 +116,10 @@ export const adminProducts: AdminProduct[] = [
   {
     id: "prd-black-waistcoat",
     name: "Tailored Black Waistcoat",
-    sku: "AL-TP-2042",
+    sku: "DO-TP-2042",
     barcode: "8850002042002",
     categoryId: "cat-tops",
-    brand: "Atelier Lune",
+    brand: "Daily Outfit",
     priceMmk: 392000,
     costPriceMmk: 211000,
     description: "Sharply cut waistcoat with a clean V neckline and subtle waist shaping.",
@@ -131,10 +138,10 @@ export const adminProducts: AdminProduct[] = [
   {
     id: "prd-satin-blouse",
     name: "Satin Ease Blouse",
-    sku: "AL-TP-2037",
+    sku: "DO-TP-2037",
     barcode: "8850002037008",
     categoryId: "cat-tops",
-    brand: "Atelier Lune",
+    brand: "Daily Outfit",
     priceMmk: 329000,
     salePriceMmk: 299000,
     costPriceMmk: 176000,
@@ -153,11 +160,11 @@ export const adminProducts: AdminProduct[] = [
   },
   {
     id: "prd-wide-jean",
-    name: "Sculpted Wide Jean",
-    sku: "AL-JN-3008",
+    name: "High-Rise Wide Leg Jean",
+    sku: "DO-JN-3008",
     barcode: "8850003008007",
     categoryId: "cat-jeans",
-    brand: "Atelier Lune Denim",
+    brand: "Daily Outfit Denim",
     priceMmk: 413000,
     costPriceMmk: 235000,
     description: "Dark-rinse wide jean with a high rise and structured denim finish.",
@@ -176,10 +183,10 @@ export const adminProducts: AdminProduct[] = [
   {
     id: "prd-mini-tote",
     name: "Structured Mini Tote",
-    sku: "AL-BG-5104",
+    sku: "DO-BG-5104",
     barcode: "8850005104004",
     categoryId: "cat-bags",
-    brand: "Atelier Lune Leather",
+    brand: "Luxe Lane",
     priceMmk: 658000,
     costPriceMmk: 384000,
     description: "Compact structured tote in grained leather with a clean flap.",
@@ -200,24 +207,34 @@ export const adminProducts: AdminProduct[] = [
 export const adminBanners: AdminBanner[] = [
   {
     id: "bnr-home-hero",
-    title: "Spring Collection Hero",
+    title: "Daily Outfit New Season Hero",
     placement: "Homepage Hero",
     image: "/images/hero-boutique.png",
-    eyebrow: "Spring collection",
-    headline: "Atelier Lune",
-    ctaLabel: "Shop Collection",
+    mobileImage: "",
+    eyebrow: "New season",
+    headline: "Daily Outfit",
+    ctaLabel: "Shop Now",
     ctaHref: "/shop",
+    storeName: "Daily Outfit",
+    sortOrder: 0,
+    startsAt: null,
+    endsAt: null,
     status: "Published"
   },
   {
     id: "bnr-new-collection",
-    title: "Soft Tailoring Feature",
+    title: "Daily Outfit New Arrivals",
     placement: "New Collection",
     image: "/images/new-collection.png",
-    eyebrow: "New collection",
-    headline: "Soft tailoring, softened further.",
+    mobileImage: "",
+    eyebrow: "New arrivals",
+    headline: "Curated edits for the season ahead",
     ctaLabel: "View new arrivals",
     ctaHref: "/shop",
+    storeName: "",
+    sortOrder: 1,
+    startsAt: null,
+    endsAt: null,
     status: "Published"
   }
 ];
@@ -338,19 +355,19 @@ export const adminCustomers: AdminCustomer[] = [
 ];
 
 export const storeSettings: StoreSettings = {
-  storeName: "Atelier Lune",
+  storeName: "Daily Outfit",
   logo: "/app/icon.svg",
-  storeDescription: "Premium minimal pieces for a quiet, edited wardrobe.",
-  facebook: "https://facebook.com/atelierlune",
-  messenger: "https://m.me/atelierlune",
+  storeDescription: "Curated fashion for modern wardrobes across the NOVORA marketplace.",
+  facebook: "https://facebook.com/dailyoutfit",
+  messenger: "https://m.me/dailyoutfit",
   viber: "viber://chat?number=%2B959421000112",
-  telegram: "https://t.me/atelierlune",
-  tiktok: "https://tiktok.com/@atelierlune",
-  instagram: "https://instagram.com/atelierlune",
-  email: "hello@atelierlune.example",
+  telegram: "https://t.me/dailyoutfit",
+  tiktok: "https://tiktok.com/@dailyoutfit",
+  instagram: "https://instagram.com/dailyoutfit",
+  email: "hello@dailyoutfit.example",
   phone: "+95 9 421 000 112",
-  address: "24 Garosu-gil, Gangnam-gu, Seoul",
-  googleMap: "https://www.google.com/maps?q=Garosu-gil%2C%20Gangnam-gu%2C%20Seoul",
+  address: "Junction City, Yangon",
+  googleMap: "https://www.google.com/maps?q=Junction+City+Yangon",
   currency: "MMK",
   timezone: "Asia/Yangon",
   flatRateShippingMmk: 5000,
@@ -364,3 +381,4 @@ export function formatMmk(value: number) {
     maximumFractionDigits: 0
   }).format(value);
 }
+

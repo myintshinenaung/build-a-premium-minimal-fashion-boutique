@@ -2,7 +2,7 @@ import Link from "next/link";
 import { WishlistButton } from "@/features/wishlist/client";
 import type { Product } from "@/types/product";
 import { formatPrice } from "@/lib/utils";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 
 type ProductCardProps = {
   product: Product;
@@ -15,7 +15,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       <div className="relative">
         <WishlistButton productId={product.id} className="absolute right-3 top-3 z-10" compact />
         <Link href={`/product/${product.slug}`} className="block" aria-label={`View ${product.name}`}>
-          <BoutiqueImage
+          <MarketplaceImage
             src={product.images[0]}
             alt={product.name}
             className="aspect-[4/5] rounded-[2px]"

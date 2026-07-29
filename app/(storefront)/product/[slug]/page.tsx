@@ -8,8 +8,10 @@ import {
   getTrendingProducts
 } from "@/features/recommendations/server";
 import { ProductRecommendationsSection } from "@/features/recommendations/ui/storefront/ProductRecommendationsSection";
+import { RecentlyViewedTracker } from "@/features/search/client";
 import { getTranslator } from "@/features/i18n/server";
 import { buildPageMetadata, getStoreSettings } from "@/features/settings/server";
+import { STOREFRONT_DISPLAY_NAME } from "@/lib/storefront/brand";
 import { slugify } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -31,7 +33,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     };
   }
 
-  return buildPageMetadata(settings, {
+  return buildPageMetadata({ ...settings, storeName: STOREFRONT_DISPLAY_NAME }, {
     title: product.name,
     description: product.description,
     openGraphImage: product.images[0]
@@ -43,24 +45,32 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const [{ t }, product] = await Promise.all([getTranslator(), getProductBySlug(slug)]);
   if (!product) notFound();
 
-  const [relatedProducts, similarProducts, trendingProducts, category, settings] = await Promise.all([
+  const [relatedProducts, similarProducts, trendingProducts, category] = await Promise.all([
     getRelatedProducts(product.id),
     getSimilarProducts(product.id),
     getTrendingProducts(4, product.id),
-    getCategoryBySlug(slugify(product.category)),
-    getStoreSettings()
+    getCategoryBySlug(slugify(product.category))
   ]);
   const categoryHref = category ? `/categories/${category.slug}` : `/categories/${slugify(product.category)}`;
 
   return (
     <>
+      <RecentlyViewedTracker
+        id={product.id}
+        slug={product.slug}
+        name={product.name}
+        price={product.price}
+        image={product.images[0] ?? "/images/hero-boutique.png"}
+        brand={product.brand}
+        category={product.category}
+      />
       <section className="mx-auto grid max-w-[1440px] gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
         <ProductGallery product={product} />
 
         <div>
           <ProductPurchasePanel
             product={product}
-            storeName={settings.storeName}
+            storeName={STOREFRONT_DISPLAY_NAME}
             categoryHref={categoryHref}
           />
         </div>

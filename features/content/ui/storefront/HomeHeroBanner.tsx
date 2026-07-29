@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import type { StorefrontHero } from "@/types/storefront";
 
 type HomeHeroBannerProps = {
@@ -17,7 +17,7 @@ export function HomeHeroBanner({ storeName, hero }: HomeHeroBannerProps) {
   return (
     <section className="relative min-h-[78svh] overflow-hidden">
       <div className="absolute inset-0">
-        <BoutiqueImage
+        <MarketplaceImage
           src={hero.backgroundImage}
           alt={hero.imageAlt}
           priority

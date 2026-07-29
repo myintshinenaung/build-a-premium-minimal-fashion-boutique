@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getCategories } from "@/features/catalog/server";
 import { getTranslator } from "@/features/i18n/server";
@@ -31,7 +31,7 @@ export default async function CategoriesPage() {
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {categories.map((category) => (
           <Link key={category.slug} href={`/categories/${category.slug}`} className="group border border-line bg-white">
-            <BoutiqueImage
+            <MarketplaceImage
               src={category.image}
               alt={category.name}
               className="aspect-[4/5]"

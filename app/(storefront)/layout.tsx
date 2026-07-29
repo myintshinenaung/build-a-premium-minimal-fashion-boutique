@@ -9,12 +9,13 @@ import { StorefrontProviders } from "@/components/storefront/StorefrontProviders
 import { getSearchIndex } from "@/features/search/server";
 import { getRequestLocale } from "@/features/i18n/server";
 import { buildRootStorefrontMetadata, getStoreSettings } from "@/features/settings/server";
+import { STOREFRONT_DISPLAY_NAME } from "@/lib/storefront/brand";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getStoreSettings();
-  return buildRootStorefrontMetadata(settings);
+  return buildRootStorefrontMetadata({ ...settings, storeName: STOREFRONT_DISPLAY_NAME });
 }
 
 export default async function StorefrontLayout({ children }: { children: ReactNode }) {
@@ -28,7 +29,7 @@ export default async function StorefrontLayout({ children }: { children: ReactNo
     <StorefrontProviders initialLocale={initialLocale} searchIndex={searchIndex}>
       <StorefrontCartShell>
         <WishlistShell>
-          <StorefrontChrome header={<Header storeName={settings.storeName} />} footer={<Footer />}>
+          <StorefrontChrome header={<Header storeName={STOREFRONT_DISPLAY_NAME} />} footer={<Footer />}>
             {children}
           </StorefrontChrome>
         </WishlistShell>

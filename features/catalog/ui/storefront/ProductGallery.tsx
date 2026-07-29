@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { X, ZoomIn } from "lucide-react";
 import type { Product } from "@/types/product";
-import { BoutiqueImage } from "@/components/ui/BoutiqueImage";
+import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import { cn } from "@/lib/utils";
 
 type ProductGalleryProps = {
@@ -65,7 +65,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
           className="group relative block w-full overflow-hidden rounded-[2px] bg-mist"
         >
           <div className="aspect-[4/5] overflow-hidden">
-            <BoutiqueImage
+            <MarketplaceImage
               src={activeImage}
               alt={`${product.name} view ${activeIndex + 1}`}
               className="h-full w-full"
@@ -94,7 +94,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
               aria-label={`Show ${product.name} image ${index + 1}`}
               aria-current={activeIndex === index}
             >
-              <BoutiqueImage src={image} alt="" className="h-full w-full" sizes="120px" />
+              <MarketplaceImage src={image} alt="" className="h-full w-full" sizes="120px" />
             </button>
           ))}
         </div>
@@ -115,7 +115,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
             onMouseMove={handlePointerMove}
           >
             <div className="aspect-[4/5] max-h-[85vh] w-full overflow-hidden">
-              <BoutiqueImage
+              <MarketplaceImage
                 src={activeImage}
                 alt={`${product.name} zoomed view`}
                 className="h-full w-full"

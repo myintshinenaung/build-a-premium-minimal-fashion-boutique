@@ -9,11 +9,11 @@ export function buildRootStorefrontMetadata(settings: StorefrontSettings): Metad
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      default: `${storeName} | Premium Minimal Fashion Boutique`,
+      default: `${storeName} | NOVORA Marketplace`,
       template: `%s | ${storeName}`
     },
     description: storeDescription,
-    keywords: ["fashion boutique", "minimal fashion", "premium clothing", "dresses", "tailoring", "accessories"],
+    keywords: ["NOVORA", "marketplace", "fashion", "Daily Outfit", "online shopping", "Myanmar"],
     openGraph: {
       title: storeName,
       description: storeDescription,
@@ -24,7 +24,7 @@ export function buildRootStorefrontMetadata(settings: StorefrontSettings): Metad
           url: "/images/hero-boutique.png",
           width: 1920,
           height: 800,
-          alt: `${storeName} boutique editorial`
+          alt: `${storeName} on NOVORA`
         }
       ],
       locale: "en_US",
