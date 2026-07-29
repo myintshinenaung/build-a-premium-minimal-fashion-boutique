@@ -7,7 +7,6 @@ export { HeroBannerSlider, type HeroSlide } from "@/features/homepage/ui/HeroBan
 export { ProductRailsSection, ProductRailsSkeleton } from "@/features/homepage/ui/ProductRailsSection";
 export { HorizontalProductRail } from "@/features/homepage/ui/HorizontalProductRail";
 export { MarketplaceBottomNav } from "@/features/homepage/ui/MarketplaceBottomNav";
-export { StoreNavigation } from "@/features/homepage/ui/StoreNavigation";
 export { MarketplaceHeader } from "@/features/homepage/ui/MarketplaceHeader";
 export { MarketplaceProductCard } from "@/features/homepage/ui/MarketplaceProductCard";
 export { SectionHeading } from "@/features/homepage/ui/SectionHeading";

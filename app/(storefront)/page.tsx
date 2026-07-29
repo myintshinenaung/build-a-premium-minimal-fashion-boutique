@@ -14,6 +14,7 @@ import {
 import { FeaturedCollectionsServer } from "@/features/homepage/ui/FeaturedCollectionsServer";
 import { FlashSaleSectionServer } from "@/features/homepage/ui/FlashSaleSectionServer";
 import { ProductRailsServer } from "@/features/homepage/ui/ProductRailsServer";
+import { STOREFRONT_DISPLAY_NAME } from "@/lib/storefront/brand";
 
 export const revalidate = 300;
 
@@ -29,7 +30,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <MarketplaceHeader />
+      <MarketplaceHeader storeName={STOREFRONT_DISPLAY_NAME} />
       <main id="main-content" className="mx-auto max-w-7xl pb-24 md:pb-10">
         <HeroBannerSlider slides={heroSlides} />
         <CategoryIconRail categories={categoryRailItems} />
