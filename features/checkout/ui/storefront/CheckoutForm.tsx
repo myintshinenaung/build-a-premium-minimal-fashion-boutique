@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { CartLineItem } from "@/features/cart/client";
 import { selectCartSubtotal, useCartStore } from "@/features/cart/infrastructure/store";
 import { FLAT_RATE_SHIPPING_METHOD } from "@/features/checkout/domain/shipping";
@@ -42,7 +42,12 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
   const [notes, setNotes] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [appliedCouponCode, setAppliedCouponCode] = useState("");
-  const [summary, setSummary] = useState<OrderSummary>(() => buildInitialSummary(subtotal, flatRateShippingMmk));
+  const [couponSummary, setCouponSummary] = useState<OrderSummary | null>(null);
+  const baseSummary = useMemo(
+    () => buildInitialSummary(subtotal, flatRateShippingMmk),
+    [flatRateShippingMmk, subtotal]
+  );
+  const summary = appliedCouponCode && couponSummary ? couponSummary : baseSummary;
   const [error, setError] = useState("");
   const [couponError, setCouponError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,12 +73,6 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
     [cartPayload]
   );
 
-  useEffect(() => {
-    if (!appliedCouponCode) {
-      setSummary(buildInitialSummary(subtotal, flatRateShippingMmk));
-    }
-  }, [appliedCouponCode, flatRateShippingMmk, subtotal]);
-
   async function refreshSummaryWithoutCoupon() {
     const response = await fetch("/api/promotions/remove", {
       method: "DELETE",
@@ -85,11 +84,11 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
     const payload = (await response.json()) as { summary?: OrderSummary; message?: string };
 
     if (!response.ok || !payload.summary) {
-      setSummary(buildInitialSummary(subtotal, flatRateShippingMmk));
+      setCouponSummary(null);
       return;
     }
 
-    setSummary(payload.summary);
+    setCouponSummary(payload.summary);
   }
 
   async function handleApplyCoupon() {
@@ -114,7 +113,7 @@ export function CheckoutForm({ flatRateShippingMmk }: CheckoutFormProps) {
         return;
       }
 
-      setSummary(payload.summary);
+      setCouponSummary(payload.summary);
       setAppliedCouponCode(payload.summary.coupon?.code ?? couponCode.trim().toUpperCase());
     } catch {
       setCouponError(t("checkout.couponError"));

@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { X } from "lucide-react";
 import { CartLineItem } from "@/features/cart/ui/storefront/CartLineItem";
 import { selectCartSubtotal, useCartStore } from "@/features/cart/infrastructure/store";
 import { useTranslator } from "@/features/i18n/client";
+import { useHasHydrated } from "@/lib/hooks/use-has-hydrated";
 import { cn, formatPrice } from "@/lib/utils";
 
 export function MiniCartDrawer() {
@@ -13,11 +14,7 @@ export function MiniCartDrawer() {
   const items = useCartStore((state) => state.items);
   const isOpen = useCartStore((state) => state.isOpen);
   const closeCart = useCartStore((state) => state.closeCart);
-  const [hasHydrated, setHasHydrated] = useState(false);
-
-  useEffect(() => {
-    setHasHydrated(true);
-  }, []);
+  const hasHydrated = useHasHydrated();
 
   const displayItems = hasHydrated ? items : [];
   const displayOpen = hasHydrated ? isOpen : false;

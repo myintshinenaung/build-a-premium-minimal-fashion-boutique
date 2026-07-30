@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Heart, ShoppingBag } from "lucide-react";
 import { QuantitySelector } from "@/features/catalog/ui/storefront/QuantitySelector";
 import { ShareProduct } from "@/features/catalog/ui/storefront/ShareProduct";
@@ -44,20 +44,19 @@ export function ProductPurchasePanel({ product, storeName, categoryHref }: Produ
     () => findProductVariant(product, selectedSize, selectedColor),
     [product, selectedColor, selectedSize]
   );
+  const selectionKey = `${product.id}:${defaultSelection.size}:${defaultSelection.color}`;
+  const [prevSelectionKey, setPrevSelectionKey] = useState(selectionKey);
 
-  useEffect(() => {
+  if (selectionKey !== prevSelectionKey) {
+    setPrevSelectionKey(selectionKey);
     setSelectedSize(defaultSelection.size);
     setSelectedColor(defaultSelection.color);
     setQuantity(1);
-  }, [defaultSelection.color, defaultSelection.size, product.id]);
+  }
 
-  useEffect(() => {
-    if (!selectedVariant || selectedVariant.stockQuantity <= 0) {
-      return;
-    }
-
-    setQuantity((current) => Math.min(current, selectedVariant.stockQuantity));
-  }, [selectedVariant]);
+  if (selectedVariant && selectedVariant.stockQuantity > 0 && quantity > selectedVariant.stockQuantity) {
+    setQuantity(selectedVariant.stockQuantity);
+  }
 
   function handleSizeChange(size: string) {
     setSelectedSize(size);

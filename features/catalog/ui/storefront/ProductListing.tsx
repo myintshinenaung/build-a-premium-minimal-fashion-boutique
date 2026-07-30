@@ -34,12 +34,14 @@ export function ProductListing({ categories, initialResults }: ProductListingPro
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const categoryNames = useMemo(() => categories.map((category) => category.name), [categories]);
+  const [prevInitialResults, setPrevInitialResults] = useState(initialResults);
 
-  useEffect(() => {
+  if (initialResults !== prevInitialResults) {
+    setPrevInitialResults(initialResults);
     setResults(initialResults);
     setQuery(createDefaultQuery(initialResults));
     setSearchInput(initialResults.query.q);
-  }, [initialResults]);
+  }
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {

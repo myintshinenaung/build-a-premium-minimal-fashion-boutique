@@ -100,24 +100,24 @@ export function resolvePermissionForRoute(pathname: string, method: string): Per
     return null;
   }
 
-  const module = resolveModuleFromPath(pathname);
-  if (!module) {
+  const permissionModule = resolveModuleFromPath(pathname);
+  if (!permissionModule) {
     return "reports:read";
   }
 
   if (method === "GET" || method === "HEAD") {
-    return `${module}:read`;
+    return `${permissionModule}:read`;
   }
 
   if (method === "DELETE") {
-    return `${module}:delete`;
+    return `${permissionModule}:delete`;
   }
 
   if (pathname.includes("/approve") || pathname.includes("/reject")) {
-    return `${module}:approve`;
+    return `${permissionModule}:approve`;
   }
 
-  return `${module}:write`;
+  return `${permissionModule}:write`;
 }
 
 function resolveModuleFromPath(pathname: string): PermissionModule | null {

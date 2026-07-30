@@ -39,6 +39,15 @@ export function ProductReviewsSection({ productId }: ProductReviewsSectionProps)
   const [reportReason, setReportReason] = useState("");
   const [reportReviewId, setReportReviewId] = useState<string | null>(null);
   const [pendingReviewId, setPendingReviewId] = useState<string | null>(null);
+  const [prevProductId, setPrevProductId] = useState(productId);
+
+  if (productId !== prevProductId) {
+    setPrevProductId(productId);
+    setData(null);
+    setPage(1);
+    setIsLoading(true);
+    setError("");
+  }
 
   async function loadReviews(nextPage = page) {
     setIsLoading(true);
@@ -63,8 +72,41 @@ export function ProductReviewsSection({ productId }: ProductReviewsSectionProps)
   }
 
   useEffect(() => {
-    void loadReviews(1);
-  }, [productId]);
+    let cancelled = false;
+
+    async function fetchReviews() {
+      try {
+        const response = await fetch(`/api/reviews?productId=${encodeURIComponent(productId)}&page=1&pageSize=5`);
+        const payload = (await response.json()) as PaginatedReviews & { message?: string };
+
+        if (cancelled) {
+          return;
+        }
+
+        if (!response.ok) {
+          setError(payload.message ?? t("reviews.error"));
+          return;
+        }
+
+        setData(payload);
+        setPage(payload.page);
+      } catch {
+        if (!cancelled) {
+          setError(t("reviews.error"));
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void fetchReviews();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [productId, t]);
 
   async function handleSubmitReview(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

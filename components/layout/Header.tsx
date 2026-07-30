@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { selectCartCount, useCartStore } from "@/features/cart/client";
 import { selectWishlistCount, useWishlistStore } from "@/features/wishlist/client";
 import { LanguageSwitcher, useTranslator } from "@/features/i18n/client";
 import { useSearch } from "@/features/search/client";
+import { useHasHydrated } from "@/lib/hooks/use-has-hydrated";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -26,16 +27,12 @@ export function Header({ storeName }: HeaderProps) {
   const { t } = useTranslator();
   const { openSearch } = useSearch();
   const [isOpen, setIsOpen] = useState(false);
-  const [hasHydrated, setHasHydrated] = useState(false);
+  const hasHydrated = useHasHydrated();
   const items = useCartStore((state) => state.items);
   const openCart = useCartStore((state) => state.openCart);
   const wishlistProductIds = useWishlistStore((state) => state.productIds);
   const cartCount = hasHydrated ? selectCartCount(items) : 0;
   const wishlistCount = hasHydrated ? selectWishlistCount(wishlistProductIds) : 0;
-
-  useEffect(() => {
-    setHasHydrated(true);
-  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-white/95 backdrop-blur">

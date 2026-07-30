@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createElement, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -153,8 +153,6 @@ function CategoryCard({
   href: string;
   onNavigate: (label: string) => void;
 }) {
-  const Icon = getCategoryIcon(label);
-
   return (
     <Link
       href={href}
@@ -162,7 +160,7 @@ function CategoryCard({
       className="group flex min-w-[108px] flex-col items-center gap-3 rounded-[18px] bg-white p-4 shadow-[0_8px_24px_rgba(17,24,39,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_36px_rgba(17,24,39,0.10)]"
     >
       <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-50 to-indigo-50 text-violet-600 transition-colors group-hover:from-violet-100 group-hover:to-indigo-100">
-        <Icon size={22} strokeWidth={1.8} />
+        {createElement(getCategoryIcon(label), { size: 22, strokeWidth: 1.8 })}
       </div>
       <span className="text-center text-sm font-semibold text-novora-ink">{label}</span>
     </Link>
@@ -199,10 +197,20 @@ function ProductResultCard({
 }
 
 export function ProductSearchModal() {
+  const { isOpen, closeSearch } = useSearch();
+
+  if (!isOpen) {
+    return null;
+  }
+
+  return <ProductSearchModalContent onClose={closeSearch} />;
+}
+
+function ProductSearchModalContent({ onClose }: { onClose: () => void }) {
   const { t } = useTranslator();
-  const { index, isOpen, closeSearch } = useSearch();
+  const { index } = useSearch();
   const [query, setQuery] = useState("");
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [recentSearches, setRecentSearches] = useState(() => readRecentSearches());
   const inputRef = useRef<HTMLInputElement>(null);
 
   const trimmedQuery = query.trim();
@@ -219,20 +227,13 @@ export function ProductSearchModal() {
   const recommendedKeywords = useMemo(() => getRecommendedKeywords(), []);
 
   useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    setRecentSearches(readRecentSearches());
-    setQuery("");
-
     const focusTimer = window.setTimeout(() => {
       inputRef.current?.focus();
     }, 120);
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        closeSearch();
+        onClose();
       }
     }
 
@@ -244,7 +245,7 @@ export function ProductSearchModal() {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [closeSearch, isOpen]);
+  }, [onClose]);
 
   function handleSelectTerm(term: string) {
     setQuery(term);
@@ -254,7 +255,7 @@ export function ProductSearchModal() {
 
   function handleNavigate(term: string) {
     writeRecentSearch(term);
-    closeSearch();
+    onClose();
   }
 
   const viewAllHref = useMemo(() => {
@@ -272,16 +273,12 @@ export function ProductSearchModal() {
     });
   }, [hasQuery, trimmedQuery]);
 
-  if (!isOpen) {
-    return null;
-  }
-
   return (
     <div className="fixed inset-0 z-[80]">
       <button
         type="button"
         aria-label={t("common.close")}
-        onClick={closeSearch}
+        onClick={onClose}
         className="novora-search-backdrop-enter absolute inset-0 bg-black/60 backdrop-blur-xl"
       />
 
@@ -299,7 +296,7 @@ export function ProductSearchModal() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={closeSearch}
+                onClick={onClose}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-2xl text-novora-ink transition-colors hover:bg-novora-surface md:hidden"
                 aria-label={t("common.close")}
               >
@@ -330,7 +327,7 @@ export function ProductSearchModal() {
               <button
                 type="button"
                 aria-label={t("common.close")}
-                onClick={closeSearch}
+                onClick={onClose}
                 className="hidden h-11 w-11 items-center justify-center rounded-2xl text-novora-ink transition-colors hover:bg-novora-surface md:inline-flex"
               >
                 <X size={18} strokeWidth={1.8} />

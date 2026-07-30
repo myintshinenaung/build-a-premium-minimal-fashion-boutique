@@ -5,6 +5,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MarketplaceImage } from "@/components/ui/MarketplaceImage";
 import type { MarketplaceBannerSlide } from "@/features/content/domain/map-banner-slide";
+import { useHasHydrated } from "@/lib/hooks/use-has-hydrated";
 import { cn } from "@/lib/utils";
 
 export type HeroSlide = MarketplaceBannerSlide;
@@ -25,14 +26,10 @@ export function HeroBannerSlider({
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [progressKey, setProgressKey] = useState(0);
-  const [hasMounted, setHasMounted] = useState(false);
+  const hasMounted = useHasHydrated();
   const activeSlides = slides.filter((slide) => slide.active);
   const slideCount = activeSlides.length;
-  const displayIndex = hasMounted ? activeIndex : 0;
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+  const displayIndex = hasMounted ? (activeIndex >= slideCount ? 0 : activeIndex) : 0;
 
   const goTo = useCallback(
     (index: number) => {
@@ -59,16 +56,6 @@ export function HeroBannerSlider({
     const timer = window.setInterval(goNext, autoplayIntervalMs);
     return () => window.clearInterval(timer);
   }, [autoplayIntervalMs, goNext, shouldAutoplay, slideCount]);
-
-  useEffect(() => {
-    if (slideCount === 0) {
-      return;
-    }
-
-    if (activeIndex >= slideCount) {
-      setActiveIndex(0);
-    }
-  }, [activeIndex, slideCount]);
 
   if (slideCount === 0) {
     return null;

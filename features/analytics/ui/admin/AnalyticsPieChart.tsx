@@ -8,19 +8,22 @@ const colors = ["#111111", "#6b645c", "#9a9188", "#c8b49a", "#d9cdb8", "#eee7dc"
 
 export function AnalyticsPieChart({ items }: AnalyticsPieChartProps) {
   const total = items.reduce((sum, item) => sum + item.value, 0) || 1;
-  let cursor = 0;
 
-  const segments = items.map((item, index) => {
-    const start = cursor;
+  const segments = items.reduce<
+    Array<{ label: string; value: number; start: number; end: number; color: string }>
+  >((accumulator, item, index) => {
+    const start = accumulator.length > 0 ? accumulator[accumulator.length - 1].end : 0;
     const slice = (item.value / total) * 100;
-    cursor += slice;
-    return {
+
+    accumulator.push({
       ...item,
       start,
-      end: cursor,
+      end: start + slice,
       color: colors[index % colors.length]
-    };
-  });
+    });
+
+    return accumulator;
+  }, []);
 
   const gradient = segments.map((segment) => `${segment.color} ${segment.start}% ${segment.end}%`).join(", ");
 
