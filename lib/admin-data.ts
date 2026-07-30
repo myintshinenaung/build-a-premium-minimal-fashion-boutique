@@ -18,6 +18,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/ivory-dress.png",
     productCount: 1,
     sortOrder: 1,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -28,6 +29,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/silk-blouse-jeans.png",
     productCount: 5,
     sortOrder: 2,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -38,6 +40,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/black-vest-trouser.png",
     productCount: 2,
     sortOrder: 3,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -48,6 +51,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/silk-blouse-jeans.png",
     productCount: 1,
     sortOrder: 4,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -58,6 +62,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/accessories.png",
     productCount: 1,
     sortOrder: 5,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -68,6 +73,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/accessories.png",
     productCount: 1,
     sortOrder: 6,
+    storeId: "daily-outfit",
     status: "Published"
   },
   {
@@ -78,6 +84,7 @@ export const adminCategories: AdminCategory[] = [
     image: "/images/accessories.png",
     productCount: 2,
     sortOrder: 7,
+    storeId: "daily-outfit",
     status: "Published"
   }
 ];
@@ -203,10 +210,15 @@ export const adminBanners: AdminBanner[] = [
     title: "Spring Collection Hero",
     placement: "Homepage Hero",
     image: "/images/hero-boutique.png",
+    mobileImage: "",
     eyebrow: "Spring collection",
     headline: "Atelier Lune",
     ctaLabel: "Shop Collection",
     ctaHref: "/shop",
+    storeName: "Atelier Lune",
+    sortOrder: 0,
+    startsAt: null,
+    endsAt: null,
     status: "Published"
   },
   {
@@ -214,10 +226,15 @@ export const adminBanners: AdminBanner[] = [
     title: "Soft Tailoring Feature",
     placement: "New Collection",
     image: "/images/new-collection.png",
+    mobileImage: "",
     eyebrow: "New collection",
     headline: "Soft tailoring, softened further.",
     ctaLabel: "View new arrivals",
     ctaHref: "/shop",
+    storeName: "",
+    sortOrder: 1,
+    startsAt: null,
+    endsAt: null,
     status: "Published"
   }
 ];
