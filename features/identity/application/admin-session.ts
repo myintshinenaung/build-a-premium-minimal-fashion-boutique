@@ -2,6 +2,7 @@ import type { User } from "@supabase/supabase-js";
 import type { AdminUser } from "@/features/identity/domain/admin-user";
 import { isAuthorizedAdmin } from "@/features/identity/domain/authorization";
 import { createSupabaseAuthServerClient } from "@/features/identity/infrastructure/supabase-auth-server";
+import { hasSupabaseEnv } from "@/lib/supabase/client";
 
 export type { AdminUser };
 
@@ -17,6 +18,10 @@ export function mapSupabaseUserToAdminUser(user: User): AdminUser {
 }
 
 export async function getAdminUser() {
+  if (!hasSupabaseEnv()) {
+    return null;
+  }
+
   const supabase = await createSupabaseAuthServerClient();
   const {
     data: { user }
