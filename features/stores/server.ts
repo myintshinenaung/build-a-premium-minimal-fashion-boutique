@@ -19,3 +19,4 @@ export {
   withStoreStatus
 } from "@/features/stores/domain/store-relationships";
 export { buildStoreHref, deriveMonogram, slugifyStoreName } from "@/features/stores/domain/store-schemas";
+export type { Store, StoreCreateInput, StoreUpdateInput, PlatformCategory, StoreStatus } from "@/types/store";
