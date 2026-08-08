@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { MarketplaceBottomNav } from "@/features/homepage/client";
 
 type StorefrontChromeProps = {
   header: ReactNode;
@@ -9,19 +10,29 @@ type StorefrontChromeProps = {
   children: ReactNode;
 };
 
+const MARKETPLACE_SHELL_PATHS = ["/", "/stores", "/discover", "/account"];
+
+function usesMarketplaceShell(pathname: string) {
+  return MARKETPLACE_SHELL_PATHS.some((path) => pathname === path || (path !== "/" && pathname.startsWith(path)));
+}
+
 export function StorefrontChrome({ header, footer, children }: StorefrontChromeProps) {
   const pathname = usePathname();
-  const isMarketplaceHome = pathname === "/";
+  const isMarketplaceShell = usesMarketplaceShell(pathname);
+  const showMarketplaceTabNav = pathname.startsWith("/wishlist") || isMarketplaceShell;
 
-  if (isMarketplaceHome) {
-    return <div className="min-h-screen bg-white">{children}</div>;
+  if (isMarketplaceShell) {
+    return <div className="min-h-screen overflow-x-hidden bg-white">{children}</div>;
   }
 
   return (
     <>
       {header}
-      <main id="main-content">{children}</main>
-      {footer}
+      <main id="main-content" className={showMarketplaceTabNav ? "pb-24 md:pb-0" : undefined}>
+        {children}
+      </main>
+      <div className={showMarketplaceTabNav ? "hidden md:block" : undefined}>{footer}</div>
+      {showMarketplaceTabNav ? <MarketplaceBottomNav /> : null}
     </>
   );
 }
