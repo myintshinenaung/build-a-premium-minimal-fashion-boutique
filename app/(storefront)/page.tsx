@@ -1,51 +1,77 @@
 import { Suspense } from "react";
-import { getCategoryRailItems, getProducts } from "@/features/catalog/server";
+import { getProducts } from "@/features/catalog/server";
 import { getHeroBannerSlides } from "@/features/content/server";
+import { getHomepageV1ProductSections } from "@/features/homepage/application/homepage-sections";
 import {
-  BrandShowcase,
-  CategoryIconRail,
-  FeaturedCollectionsSkeleton,
-  FlashSaleSectionSkeleton,
+  FeaturedStores,
   HeroBannerSlider,
+  JustForYouSection,
   MarketplaceBottomNav,
   MarketplaceHeader,
+  MarketplaceProductFeed,
   ProductRailsSkeleton
 } from "@/features/homepage/client";
-import { FeaturedCollectionsServer } from "@/features/homepage/ui/FeaturedCollectionsServer";
-import { FlashSaleSectionServer } from "@/features/homepage/ui/FlashSaleSectionServer";
-import { ProductRailsServer } from "@/features/homepage/ui/ProductRailsServer";
-import { STOREFRONT_DISPLAY_NAME } from "@/lib/storefront/brand";
+import { HorizontalProductRail } from "@/features/homepage/ui/HorizontalProductRail";
+import type { HomepageProductSection } from "@/features/homepage/application/homepage-sections";
 
 export const revalidate = 300;
 
-export default async function HomePage() {
-  const [heroSlides, categoryRailItems, products] = await Promise.all([
-    getHeroBannerSlides(),
-    getCategoryRailItems(),
+function HomepageRail({ section }: { section: HomepageProductSection | null }) {
+  if (!section) {
+    return null;
+  }
+
+  return (
+    <HorizontalProductRail
+      title={section.title}
+      subtitle={section.subtitle}
+      products={section.products}
+      badge={section.badge}
+      actionHref={section.actionHref}
+      actionLabel={section.actionLabel}
+    />
+  );
+}
+
+async function HomepageMerchandising() {
+  const [{ newArrivals, recommended, trending }, products] = await Promise.all([
+    getHomepageV1ProductSections(),
     getProducts()
   ]);
-  const brands = Array.from(new Set(products.map((product) => product.brand).filter(Boolean))).sort((a, b) =>
-    a.localeCompare(b)
+
+  const featuredIds = new Set(
+    [...(newArrivals?.products ?? []), ...(recommended?.products ?? []), ...(trending?.products ?? [])].map(
+      (product) => product.id
+    )
   );
+
+  const justForYou = products.filter((product) => !featuredIds.has(product.id)).slice(0, 12);
+  const justForYouProducts = justForYou.length >= 4 ? justForYou : products.slice(0, 12);
+  const feedProducts = products;
 
   return (
     <>
-      <MarketplaceHeader storeName={STOREFRONT_DISPLAY_NAME} />
-      <main id="main-content" className="mx-auto max-w-7xl pb-24 md:pb-10">
+      <HomepageRail section={newArrivals} />
+      <HomepageRail section={recommended} />
+      <HomepageRail section={trending} />
+      <FeaturedStores />
+      <JustForYouSection products={justForYouProducts} />
+      <MarketplaceProductFeed products={feedProducts} />
+    </>
+  );
+}
+
+export default async function HomePage() {
+  const heroSlides = await getHeroBannerSlides();
+
+  return (
+    <>
+      <MarketplaceHeader />
+      <main id="main-content" className="mx-auto max-w-7xl overflow-x-hidden pb-24 md:pb-10">
         <HeroBannerSlider slides={heroSlides} />
-        <CategoryIconRail categories={categoryRailItems} />
-        <div className="px-0 sm:px-0">
-          <Suspense fallback={<FlashSaleSectionSkeleton />}>
-            <FlashSaleSectionServer />
-          </Suspense>
-        </div>
-        <Suspense fallback={<FeaturedCollectionsSkeleton />}>
-          <FeaturedCollectionsServer />
-        </Suspense>
         <Suspense fallback={<ProductRailsSkeleton />}>
-          <ProductRailsServer />
+          <HomepageMerchandising />
         </Suspense>
-        <BrandShowcase brands={brands} />
       </main>
       <MarketplaceBottomNav />
     </>

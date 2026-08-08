@@ -8,8 +8,9 @@ type MarketplaceProductCardProps = {
   product: Product;
   priority?: boolean;
   compact?: boolean;
-  size?: "compact" | "default" | "large";
+  size?: "compact" | "default" | "large" | "fluid";
   badge?: string;
+  className?: string;
 };
 
 export function MarketplaceProductCard({
@@ -17,7 +18,8 @@ export function MarketplaceProductCard({
   priority = false,
   compact = false,
   size = compact ? "compact" : "default",
-  badge
+  badge,
+  className
 }: MarketplaceProductCardProps) {
   const discount =
     product.compareAtPrice && product.compareAtPrice > product.price
@@ -28,11 +30,14 @@ export function MarketplaceProductCard({
     <article
       className={cn(
         "group shrink-0",
-        size === "large"
-          ? "w-[180px] sm:w-[220px] md:w-[240px]"
-          : size === "compact"
-            ? "w-[140px] sm:w-[160px]"
-            : "w-[152px] sm:w-[180px]"
+        size === "fluid"
+          ? "w-full"
+          : size === "large"
+            ? "w-[180px] sm:w-[220px] md:w-[240px]"
+            : size === "compact"
+              ? "w-[140px] sm:w-[160px]"
+              : "w-[152px] sm:w-[180px]",
+        className
       )}
     >
       <div

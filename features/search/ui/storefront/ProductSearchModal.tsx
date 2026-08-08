@@ -75,10 +75,24 @@ export function ProductSearchModal() {
 
   return (
     <>
-      <button type="button" aria-label={t("common.close")} onClick={closeSearch} className="fixed inset-0 z-[70] bg-ink/25 backdrop-blur-sm" />
+      <button
+        type="button"
+        aria-label={t("common.close")}
+        onClick={closeSearch}
+        className="fixed inset-0 z-[70] bg-novora-ink/30 backdrop-blur-sm md:bg-ink/25"
+      />
 
-      <div className="fixed inset-x-4 top-4 z-[71] mx-auto max-w-2xl rounded-[2px] border border-line bg-white shadow-soft md:inset-x-auto md:top-16">
-        <div className="flex items-center gap-3 border-b border-line px-4 py-4">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("search.title")}
+        className={cn(
+          "fixed inset-0 z-[71] flex flex-col bg-white",
+          "md:inset-x-auto md:left-1/2 md:top-16 md:h-auto md:max-h-[min(80vh,720px)] md:w-full md:max-w-2xl md:-translate-x-1/2",
+          "md:rounded-[2px] md:border md:border-line md:shadow-soft"
+        )}
+      >
+        <div className="flex items-center gap-3 border-b border-line px-4 py-4 pt-[max(1rem,env(safe-area-inset-top))] md:pt-4">
           <Search size={18} strokeWidth={1.7} className="text-stone" />
           <input
             ref={inputRef}
@@ -101,7 +115,7 @@ export function ProductSearchModal() {
           </button>
         </div>
 
-        <div className="max-h-[min(70vh,640px)] overflow-y-auto px-4 py-4">
+        <div className="flex-1 overflow-y-auto px-4 py-4 md:max-h-[min(70vh,640px)] md:flex-none">
           {query.trim() ? (
             <>
               <p className="text-xs uppercase tracking-[0.18em] text-stone">{t("search.resultCount", { count: results.length })}</p>

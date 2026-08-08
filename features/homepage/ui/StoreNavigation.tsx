@@ -22,10 +22,10 @@ export function StoreNavigation() {
   }, []);
 
   return (
-    <nav aria-label="NOVORA platform stores" className="border-t border-novora-border/60 bg-white/95">
+    <nav aria-label="NOVORA platform stores" className="bg-transparent">
       <div
         ref={scrollRef}
-        className="flex gap-2 overflow-x-auto pb-3 pt-2.5 scrollbar-none scroll-smooth snap-x snap-mandatory"
+        className="flex gap-2 overflow-x-auto pb-2 pt-2.5 scrollbar-none scroll-smooth snap-x snap-mandatory"
       >
         {PLATFORM_STORES.map((store) => {
           const isActive = store.id === ACTIVE_PLATFORM_STORE_ID;
@@ -40,8 +40,8 @@ export function StoreNavigation() {
                   "shrink-0 snap-start rounded-full px-4 py-2 text-sm font-medium transition-all duration-200",
                   "hover:-translate-y-0.5 hover:shadow-sm active:scale-[0.98]",
                   isActive
-                    ? "bg-novora-accent text-white shadow-md shadow-novora-accent/20"
-                    : "text-novora-muted hover:bg-novora-surface hover:text-novora-ink"
+                    ? "bg-novora-ink text-white shadow-md shadow-novora-ink/15"
+                    : "bg-novora-surface text-novora-muted hover:bg-novora-surface hover:text-novora-ink"
                 )}
                 aria-current={isActive ? "page" : undefined}
               >
