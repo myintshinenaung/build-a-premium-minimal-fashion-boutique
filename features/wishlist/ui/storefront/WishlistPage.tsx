@@ -21,6 +21,7 @@ export function WishlistPage() {
   const [entries, setEntries] = useState<WishlistEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [requiresAuth, setRequiresAuth] = useState(false);
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export function WishlistPage() {
     async function loadWishlist() {
       setIsLoading(true);
       setError("");
+      setRequiresAuth(false);
 
       try {
         const response = await fetch("/api/wishlist");
@@ -40,8 +42,13 @@ export function WishlistPage() {
 
         if (!response.ok) {
           setEntries([]);
-          setError(payload.message ?? t("wishlist.loginRequired"));
           setProductIds([]);
+          if (response.status === 401) {
+            setRequiresAuth(true);
+            setError(payload.message ?? t("wishlist.loginRequired"));
+          } else {
+            setError(payload.message ?? t("wishlist.error"));
+          }
           return;
         }
 
@@ -138,8 +145,24 @@ export function WishlistPage() {
       {isLoading ? <p className="mt-10 text-sm text-stone">{t("wishlist.loading")}</p> : null}
 
       {!isLoading && error ? (
-        <div className="mt-10 border border-line bg-white p-8 text-center">
-          <p className="text-sm text-stone">{error}</p>
+        <div className="mt-10 rounded-3xl border border-novora-border bg-white p-8 text-center">
+          <p className="text-sm text-novora-muted">{error}</p>
+          {requiresAuth ? (
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href="/account?next=/wishlist"
+                className="inline-flex h-12 items-center justify-center rounded-2xl bg-novora-ink px-6 text-sm font-medium text-white transition-colors hover:bg-novora-ink/90"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/account?next=/wishlist&mode=signup"
+                className="inline-flex h-12 items-center justify-center rounded-2xl border border-novora-border px-6 text-sm font-medium text-novora-ink transition-colors hover:bg-novora-surface"
+              >
+                Create Account
+              </Link>
+            </div>
+          ) : null}
         </div>
       ) : null}
 
