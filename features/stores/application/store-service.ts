@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 import { storeInputSchema, storeUpdateSchema } from "@/features/stores/domain/store-schemas";
 import { storeRepository } from "@/features/stores/infrastructure/store-repository";
-import type { Store, StoreUpdateInput } from "@/types/store";
+import type { Store, StoreCreateInput, StoreUpdateInput } from "@/types/store";
 
 export class StoreValidationError extends Error {
   constructor(message: string) {

@@ -4,6 +4,7 @@ import type { Database } from "@/lib/supabase/types";
 import type { PlatformCategory, Store, StoreCreateInput, StoreStatus, StoreUpdateInput } from "@/types/store";
 
 type StoreRow = Database["public"]["Tables"]["stores"]["Row"];
+type StoreUpdate = Database["public"]["Tables"]["stores"]["Update"];
 type PlatformCategoryRow = Database["public"]["Tables"]["platform_categories"]["Row"];
 type StorePlatformCategoryRow = Database["public"]["Tables"]["store_platform_categories"]["Row"];
 
@@ -82,7 +83,7 @@ export const storeRepository = {
     const id = input.id ?? input.slug;
     const now = new Date().toISOString();
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("stores")
       .insert({
         id,
@@ -115,7 +116,7 @@ export const storeRepository = {
 
   async update(id: string, input: StoreUpdateInput): Promise<Store | null> {
     const supabase = createSupabaseServerClient();
-    const update: Record<string, unknown> = {
+    const update: StoreUpdate = {
       updated_at: new Date().toISOString()
     };
 
