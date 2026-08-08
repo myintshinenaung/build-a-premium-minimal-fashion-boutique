@@ -1,6 +1,7 @@
 "use client";
 
 import { Heart } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { isWishlisted, useWishlistStore } from "@/features/wishlist/infrastructure/store";
 import { useTranslator } from "@/features/i18n/client";
@@ -14,6 +15,8 @@ type WishlistButtonProps = {
 
 export function WishlistButton({ productId, className, compact = false }: WishlistButtonProps) {
   const { t } = useTranslator();
+  const router = useRouter();
+  const pathname = usePathname();
   const productIds = useWishlistStore((state) => state.productIds);
   const addProductId = useWishlistStore((state) => state.addProductId);
   const removeProductId = useWishlistStore((state) => state.removeProductId);
@@ -43,6 +46,12 @@ export function WishlistButton({ productId, className, compact = false }: Wishli
       const payload = (await response.json()) as { inWishlist?: boolean; message?: string };
 
       if (!response.ok) {
+        if (response.status === 401) {
+          const next = pathname.startsWith("/") ? pathname : "/wishlist";
+          router.push(`/account?next=${encodeURIComponent(next)}`);
+          return;
+        }
+
         setFeedback(payload.message ?? t("wishlist.loginRequired"));
         window.setTimeout(() => setFeedback(null), 2200);
         return;
