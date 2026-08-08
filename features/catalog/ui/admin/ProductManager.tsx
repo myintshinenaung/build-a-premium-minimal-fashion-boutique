@@ -181,12 +181,14 @@ export function ProductManager({ initialProducts, categories }: ProductManagerPr
   }
 
   async function saveProduct() {
+    const category = categories.find((entry) => entry.id === form.categoryId);
     const product: AdminProduct = {
       id: form.id ?? `prd-${Date.now()}`,
       name: form.name.trim() || "Untitled Product",
       sku: form.sku.trim() || "SKU-DRAFT",
       barcode: form.barcode.trim() || "BARCODE-PENDING",
       categoryId: form.categoryId,
+      storeId: category?.storeId ?? "daily-outfit",
       brand: form.brand.trim() || "Atelier Lune",
       priceMmk: Number(form.priceMmk) || 0,
       salePriceMmk: form.salePriceMmk ? Number(form.salePriceMmk) || 0 : undefined,

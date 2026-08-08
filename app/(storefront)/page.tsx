@@ -13,6 +13,7 @@ import {
 } from "@/features/homepage/client";
 import { HorizontalProductRail } from "@/features/homepage/ui/HorizontalProductRail";
 import type { HomepageProductSection } from "@/features/homepage/application/homepage-sections";
+import { getFeaturedStoreCards } from "@/features/stores/server";
 
 export const revalidate = 300;
 
@@ -33,7 +34,7 @@ function HomepageRail({ section }: { section: HomepageProductSection | null }) {
   );
 }
 
-async function HomepageMerchandising() {
+async function HomepageMerchandising({ storeCards }: { storeCards: Awaited<ReturnType<typeof getFeaturedStoreCards>> }) {
   const [{ newArrivals, recommended, trending }, products] = await Promise.all([
     getHomepageV1ProductSections(),
     getProducts()
@@ -54,7 +55,7 @@ async function HomepageMerchandising() {
       <HomepageRail section={newArrivals} />
       <HomepageRail section={recommended} />
       <HomepageRail section={trending} />
-      <FeaturedStores />
+      <FeaturedStores stores={storeCards} />
       <JustForYouSection products={justForYouProducts} />
       <MarketplaceProductFeed products={feedProducts} />
     </>
@@ -62,15 +63,15 @@ async function HomepageMerchandising() {
 }
 
 export default async function HomePage() {
-  const heroSlides = await getHeroBannerSlides();
+  const [heroSlides, storeCards] = await Promise.all([getHeroBannerSlides(), getFeaturedStoreCards()]);
 
   return (
     <>
-      <MarketplaceHeader />
+      <MarketplaceHeader stores={storeCards} />
       <main id="main-content" className="mx-auto max-w-7xl overflow-x-hidden pb-24 md:pb-10">
         <HeroBannerSlider slides={heroSlides} />
         <Suspense fallback={<ProductRailsSkeleton />}>
-          <HomepageMerchandising />
+          <HomepageMerchandising storeCards={storeCards} />
         </Suspense>
       </main>
       <MarketplaceBottomNav />

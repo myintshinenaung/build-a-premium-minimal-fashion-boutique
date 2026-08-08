@@ -16,7 +16,7 @@ describe("mapPlatformStoresToFeaturedCards", () => {
     const comingSoon = cards.filter((card) => card.href === null);
 
     expect(active?.isActive).toBe(true);
-    expect(active?.href).toBe("/");
+    expect(active?.href).toBe("/stores/daily-outfit");
     expect(comingSoon.length).toBeGreaterThan(0);
     expect(cards.filter((card) => card.isActive)).toHaveLength(1);
   });

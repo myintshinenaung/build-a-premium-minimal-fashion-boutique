@@ -5,6 +5,7 @@ import { Bell, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { selectCartCount, useCartStore } from "@/features/cart/client";
 import { useSearch } from "@/features/search/client";
+import type { FeaturedStoreCard } from "@/features/homepage/domain/featured-stores";
 import { StoreNavigation } from "@/features/homepage/ui/StoreNavigation";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +17,10 @@ const menuLinks = [
   { href: "/account", label: "Account" },
   { href: "/shop", label: "Shop all" }
 ];
+
+type MarketplaceHeaderProps = {
+  stores?: FeaturedStoreCard[];
+};
 
 function subscribeToHydration() {
   return () => undefined;
@@ -29,7 +34,7 @@ function getServerHydrationSnapshot() {
   return false;
 }
 
-export function MarketplaceHeader() {
+export function MarketplaceHeader({ stores = [] }: MarketplaceHeaderProps) {
   const { openSearch } = useSearch();
   const openCart = useCartStore((state) => state.openCart);
   const items = useCartStore((state) => state.items);
@@ -119,7 +124,7 @@ export function MarketplaceHeader() {
 
         <div className="-mx-4 mt-1 sm:-mx-6 lg:-mx-8">
           <div className="px-4 sm:px-6 lg:px-8">
-            <StoreNavigation />
+            <StoreNavigation stores={stores} />
           </div>
         </div>
       </div>

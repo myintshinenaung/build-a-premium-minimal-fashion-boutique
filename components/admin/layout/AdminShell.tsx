@@ -20,6 +20,7 @@ import {
   Settings,
   ShieldCheck,
   ShoppingBag,
+  Store,
   Sun,
   Tags,
   UserCircle,
@@ -40,6 +41,7 @@ type AdminNavItem = {
 
 const navItems: AdminNavItem[] = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
+  { href: "/admin/stores", label: "Stores", icon: Store },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/inventory", label: "Inventory", icon: Boxes },
@@ -59,6 +61,7 @@ const navItems: AdminNavItem[] = [
 
 const pageTitles: Record<string, string> = {
   "/admin": "Dashboard Overview",
+  "/admin/stores": "Stores",
   "/admin/analytics": "Analytics Overview",
   "/admin/analytics/sales": "Sales Analytics",
   "/admin/analytics/revenue": "Revenue Analytics",

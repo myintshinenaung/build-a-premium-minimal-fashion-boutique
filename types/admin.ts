@@ -20,6 +20,7 @@ export type AdminProduct = {
   sku: string;
   barcode: string;
   categoryId: string;
+  storeId: string;
   brand: string;
   priceMmk: number;
   salePriceMmk?: number;
