@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { MarketplaceBottomNav } from "@/features/homepage/ui/MarketplaceBottomNav";
 import { MarketplaceHeader } from "@/features/homepage/ui/MarketplaceHeader";
+import { getFeaturedStoreCards } from "@/features/stores/server";
 
 type MarketplaceTabPageProps = {
   title: string;
@@ -9,10 +10,12 @@ type MarketplaceTabPageProps = {
 };
 
 /** Shared chrome for marketplace tab destinations (Stores / Discover / Account). */
-export function MarketplaceTabPage({ title, description, children }: MarketplaceTabPageProps) {
+export async function MarketplaceTabPage({ title, description, children }: MarketplaceTabPageProps) {
+  const stores = await getFeaturedStoreCards();
+
   return (
     <>
-      <MarketplaceHeader />
+      <MarketplaceHeader stores={stores} />
       <main id="main-content" className="mx-auto max-w-7xl px-4 pb-28 pt-8 sm:px-6 md:pb-12 lg:px-8">
         <header className="max-w-2xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-novora-muted">NOVORA</p>

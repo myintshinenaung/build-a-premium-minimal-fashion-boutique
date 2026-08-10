@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { MarketplaceBottomNav } from "@/features/homepage/ui/MarketplaceBottomNav";
 import { MarketplaceHeader } from "@/features/homepage/ui/MarketplaceHeader";
+import { getFeaturedStoreCards } from "@/features/stores/server";
 
 type AccountShellProps = {
   title: string;
@@ -12,16 +13,18 @@ type AccountShellProps = {
   children: ReactNode;
 };
 
-export function AccountShell({
+export async function AccountShell({
   title,
   description,
   backHref = "/account",
   backLabel = "Account",
   children
 }: AccountShellProps) {
+  const stores = await getFeaturedStoreCards();
+
   return (
     <>
-      <MarketplaceHeader />
+      <MarketplaceHeader stores={stores} />
       <main id="main-content" className="mx-auto max-w-3xl px-4 pb-28 pt-6 sm:px-6 md:pb-12 lg:px-8">
         {backHref ? (
           <Link

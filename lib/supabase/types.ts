@@ -16,6 +16,7 @@ export type ProductRow = {
   sku: string;
   barcode: string;
   category_id: string;
+  store_id: string;
   brand: string;
   price_mmk: number;
   sale_price_mmk: number | null;
@@ -44,6 +45,40 @@ export type CategoryRow = {
   sort_order: number;
   store_id: string;
   status: AdminStatus;
+};
+
+export type StoreStatus = "active" | "inactive";
+
+export type StoreRow = {
+  id: string;
+  name: string;
+  slug: string;
+  logo: string;
+  cover_image: string;
+  description: string;
+  monogram: string;
+  status: StoreStatus;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PlatformCategoryRow = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  sort_order: number;
+  status: StoreStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type StorePlatformCategoryRow = {
+  store_id: string;
+  platform_category_id: string;
+  sort_order: number;
 };
 
 export type BannerRow = {
@@ -473,6 +508,25 @@ export type Database = {
         Row: CategoryRow;
         Insert: Omit<CategoryRow, "id"> & Partial<Pick<CategoryRow, "id">>;
         Update: Partial<Omit<CategoryRow, "id">>;
+        Relationships: [];
+      };
+      stores: {
+        Row: StoreRow;
+        Insert: Omit<StoreRow, "created_at" | "updated_at"> & Partial<Pick<StoreRow, "created_at" | "updated_at">>;
+        Update: Partial<Omit<StoreRow, "id">>;
+        Relationships: [];
+      };
+      platform_categories: {
+        Row: PlatformCategoryRow;
+        Insert: Omit<PlatformCategoryRow, "created_at" | "updated_at"> &
+          Partial<Pick<PlatformCategoryRow, "created_at" | "updated_at">>;
+        Update: Partial<Omit<PlatformCategoryRow, "id">>;
+        Relationships: [];
+      };
+      store_platform_categories: {
+        Row: StorePlatformCategoryRow;
+        Insert: StorePlatformCategoryRow;
+        Update: Partial<StorePlatformCategoryRow>;
         Relationships: [];
       };
       banners: {

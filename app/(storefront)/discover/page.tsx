@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MarketplaceTabPage } from "@/features/homepage/client";
+import { MarketplaceTabPage } from "@/features/homepage/ui/MarketplaceTabPage";
 
 export const metadata: Metadata = {
   title: "Discover"

@@ -13,6 +13,7 @@ import {
 } from "@/features/homepage/client";
 import { HorizontalProductRail } from "@/features/homepage/ui/HorizontalProductRail";
 import type { HomepageProductSection } from "@/features/homepage/application/homepage-sections";
+import { getFeaturedStoreCards } from "@/features/stores/server";
 
 export const revalidate = 300;
 
@@ -33,28 +34,30 @@ function HomepageRail({ section }: { section: HomepageProductSection | null }) {
   );
 }
 
-async function HomepageMerchandising() {
+async function HomepageMerchandising({ storeCards }: { storeCards: Awaited<ReturnType<typeof getFeaturedStoreCards>> }) {
   const [{ newArrivals, recommended, trending }, products] = await Promise.all([
     getHomepageV1ProductSections(),
     getProducts()
   ]);
 
+  // Products already shown in the three primary DB-backed rails (or their fallbacks).
   const featuredIds = new Set(
     [...(newArrivals?.products ?? []), ...(recommended?.products ?? []), ...(trending?.products ?? [])].map(
       (product) => product.id
     )
   );
 
-  const justForYou = products.filter((product) => !featuredIds.has(product.id)).slice(0, 12);
-  const justForYouProducts = justForYou.length >= 4 ? justForYou : products.slice(0, 12);
-  const feedProducts = products;
+  // Composition-only dedupe: do not reintroduce rail products into Just For You / feed.
+  const remainingProducts = products.filter((product) => !featuredIds.has(product.id));
+  const justForYouProducts = remainingProducts.slice(0, 12);
+  const feedProducts = remainingProducts;
 
   return (
     <>
       <HomepageRail section={newArrivals} />
       <HomepageRail section={recommended} />
       <HomepageRail section={trending} />
-      <FeaturedStores />
+      <FeaturedStores stores={storeCards} />
       <JustForYouSection products={justForYouProducts} />
       <MarketplaceProductFeed products={feedProducts} />
     </>
@@ -62,15 +65,15 @@ async function HomepageMerchandising() {
 }
 
 export default async function HomePage() {
-  const heroSlides = await getHeroBannerSlides();
+  const [heroSlides, storeCards] = await Promise.all([getHeroBannerSlides(), getFeaturedStoreCards()]);
 
   return (
     <>
-      <MarketplaceHeader />
+      <MarketplaceHeader stores={storeCards} />
       <main id="main-content" className="mx-auto max-w-7xl overflow-x-hidden pb-24 md:pb-10">
         <HeroBannerSlider slides={heroSlides} />
         <Suspense fallback={<ProductRailsSkeleton />}>
-          <HomepageMerchandising />
+          <HomepageMerchandising storeCards={storeCards} />
         </Suspense>
       </main>
       <MarketplaceBottomNav />

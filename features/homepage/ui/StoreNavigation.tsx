@@ -1,13 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
-import { ACTIVE_PLATFORM_STORE_ID, PLATFORM_STORES } from "@/lib/storefront/brand";
+import { useEffect, useRef, useState } from "react";
+import type { FeaturedStoreCard } from "@/features/homepage/domain/featured-stores";
+import { ACTIVE_PLATFORM_STORE_ID } from "@/lib/storefront/brand";
 import { cn } from "@/lib/utils";
 
-export function StoreNavigation() {
+type StoreNavigationProps = {
+  stores: FeaturedStoreCard[];
+};
+
+export function StoreNavigation({ stores }: StoreNavigationProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const activeTabRef = useRef<HTMLAnchorElement>(null);
+  const [items] = useState(stores);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -19,7 +25,11 @@ export function StoreNavigation() {
 
     const offset = activeTab.offsetLeft - container.clientWidth / 2 + activeTab.clientWidth / 2;
     container.scrollTo({ left: Math.max(0, offset), behavior: "smooth" });
-  }, []);
+  }, [items]);
+
+  if (items.length === 0) {
+    return null;
+  }
 
   return (
     <nav aria-label="NOVORA platform stores" className="bg-transparent">
@@ -27,8 +37,8 @@ export function StoreNavigation() {
         ref={scrollRef}
         className="flex gap-2 overflow-x-auto pb-2 pt-2.5 scrollbar-none scroll-smooth snap-x snap-mandatory"
       >
-        {PLATFORM_STORES.map((store) => {
-          const isActive = store.id === ACTIVE_PLATFORM_STORE_ID;
+        {items.map((store) => {
+          const isActive = store.id === ACTIVE_PLATFORM_STORE_ID || store.isActive;
 
           if (store.href) {
             return (

@@ -9,6 +9,7 @@ type ProductUpdate = Database["public"]["Tables"]["products"]["Update"];
 export type ProductListParams = {
   search?: string;
   categoryId?: string;
+  storeId?: string;
   status?: AdminStatus | "All";
   sortBy?: "updatedAt" | "name" | "priceMmk" | "stockQuantity";
   sortDirection?: "asc" | "desc";
@@ -150,9 +151,10 @@ function filterAndSortProducts(products: AdminProduct[], params: ProductListPara
     .filter((product) => {
       const matchesSearch = !search || [product.name, product.sku, product.brand].some((value) => value.toLowerCase().includes(search));
       const matchesCategory = !params.categoryId || product.categoryId === params.categoryId;
+      const matchesStore = !params.storeId || product.storeId === params.storeId;
       const matchesStatus = !params.status || params.status === "All" || product.status === params.status;
 
-      return matchesSearch && matchesCategory && matchesStatus;
+      return matchesSearch && matchesCategory && matchesStore && matchesStatus;
     })
     .sort((first, second) => compareProducts(first, second, params.sortBy ?? "updatedAt", direction));
 }
@@ -176,6 +178,7 @@ function productFromRow(row: ProductRow): AdminProduct {
     sku: row.sku,
     barcode: row.barcode,
     categoryId: row.category_id,
+    storeId: row.store_id ?? "daily-outfit",
     brand: row.brand,
     priceMmk: row.price_mmk,
     salePriceMmk: row.sale_price_mmk ?? undefined,
@@ -202,6 +205,7 @@ function productToInsert(input: ProductCreateInput): ProductInsert {
     sku: input.sku,
     barcode: input.barcode,
     category_id: input.categoryId,
+    store_id: input.storeId,
     brand: input.brand,
     price_mmk: input.priceMmk,
     sale_price_mmk: input.salePriceMmk ?? null,
@@ -230,6 +234,7 @@ function productToUpdate(input: ProductUpdateInput): ProductUpdate {
   if (input.sku !== undefined) update.sku = input.sku;
   if (input.barcode !== undefined) update.barcode = input.barcode;
   if (input.categoryId !== undefined) update.category_id = input.categoryId;
+  if (input.storeId !== undefined) update.store_id = input.storeId;
   if (input.brand !== undefined) update.brand = input.brand;
   if (input.priceMmk !== undefined) update.price_mmk = input.priceMmk;
   if (input.salePriceMmk !== undefined) update.sale_price_mmk = input.salePriceMmk;

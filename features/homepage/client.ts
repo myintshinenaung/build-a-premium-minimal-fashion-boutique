@@ -7,7 +7,6 @@ export { MarketplaceBottomNav } from "@/features/homepage/ui/MarketplaceBottomNa
 export { MarketplaceHeader } from "@/features/homepage/ui/MarketplaceHeader";
 export { MarketplaceProductCard } from "@/features/homepage/ui/MarketplaceProductCard";
 export { MarketplaceProductFeed } from "@/features/homepage/ui/MarketplaceProductFeed";
-export { MarketplaceTabPage } from "@/features/homepage/ui/MarketplaceTabPage";
 export { ProductRailsSection, ProductRailsSkeleton } from "@/features/homepage/ui/ProductRailsSection";
 export { SectionHeading } from "@/features/homepage/ui/SectionHeading";
 export { StoreNavigation } from "@/features/homepage/ui/StoreNavigation";

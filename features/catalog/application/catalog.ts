@@ -20,35 +20,52 @@ type Catalog = {
   products: Product[];
 };
 
-const loadCatalogData = createCachedLoader(
+async function loadCatalogForStore(storeId: string): Promise<Catalog> {
+  const [adminCategories, adminProducts] = await timedQuery(`catalog.load.${storeId}`, () =>
+    Promise.all([
+      categoryService.getCategories(),
+      productService.getProducts({ status: "Published", storeId })
+    ])
+  );
+
+  const publishedCategories = adminCategories
+    .filter((category) => category.status === "Published")
+    .filter((category) => (category.storeId ?? ACTIVE_PLATFORM_STORE_ID) === storeId);
+  const categoryById = new Map(publishedCategories.map((category) => [category.id, category]));
+
+  const products = assignUniqueProductSlugs(
+    adminProducts
+      .filter((product) => product.status === "Published")
+      .filter((product) => (product.storeId ?? ACTIVE_PLATFORM_STORE_ID) === storeId)
+      .filter((product) => categoryById.has(product.categoryId))
+      .map((product) => mapAdminProductToProduct(product, categoryById.get(product.categoryId)!.name))
+  );
+
+  return {
+    categories: publishedCategories.map(mapAdminCategoryToCategory),
+    products
+  };
+}
+
+const loadDefaultCatalogData = createCachedLoader(
   "storefront-catalog",
   [CACHE_TAGS.catalog, CACHE_TAGS.products, CACHE_TAGS.categories, CACHE_TAGS.homepage],
   CACHE_TTLS.catalog,
-  async (): Promise<Catalog> => {
-    const [adminCategories, adminProducts] = await timedQuery("catalog.load", () =>
-      Promise.all([categoryService.getCategories(), productService.getProducts({ status: "Published" })])
-    );
-
-    const publishedCategories = adminCategories.filter((category) => category.status === "Published");
-    const categoryById = new Map(publishedCategories.map((category) => [category.id, category]));
-
-    const products = assignUniqueProductSlugs(
-      adminProducts
-        .filter((product) => product.status === "Published" && categoryById.has(product.categoryId))
-        .map((product) => mapAdminProductToProduct(product, categoryById.get(product.categoryId)!.name))
-    );
-
-    return {
-      categories: publishedCategories.map(mapAdminCategoryToCategory),
-      products
-    };
-  }
+  async () => loadCatalogForStore(ACTIVE_PLATFORM_STORE_ID)
 );
 
-const getCatalog = cache(loadCatalogData);
+const getDefaultCatalog = cache(loadDefaultCatalogData);
 
-export async function getCategories() {
-  const { categories } = await getCatalog();
+export async function getCatalogByStoreId(storeId: string) {
+  if (storeId === ACTIVE_PLATFORM_STORE_ID) {
+    return getDefaultCatalog();
+  }
+
+  return loadCatalogForStore(storeId);
+}
+
+export async function getCategories(storeId = ACTIVE_PLATFORM_STORE_ID) {
+  const { categories } = await getCatalogByStoreId(storeId);
   return categories;
 }
 
@@ -70,23 +87,23 @@ const loadCategoryRailData = createCachedLoader(
 
 export const getCategoryRailItems = cache(loadCategoryRailData);
 
-export async function getProducts() {
-  const { products } = await getCatalog();
+export async function getProducts(storeId = ACTIVE_PLATFORM_STORE_ID) {
+  const { products } = await getCatalogByStoreId(storeId);
   return products;
 }
 
-export async function getProductBySlug(slug: string) {
-  const products = await getProducts();
+export async function getProductBySlug(slug: string, storeId = ACTIVE_PLATFORM_STORE_ID) {
+  const products = await getProducts(storeId);
   return products.find((product) => product.slug === slug) ?? null;
 }
 
-export async function getCategoryBySlug(slug: string) {
-  const categories = await getCategories();
+export async function getCategoryBySlug(slug: string, storeId = ACTIVE_PLATFORM_STORE_ID) {
+  const categories = await getCategories(storeId);
   return categories.find((category) => category.slug === slug) ?? null;
 }
 
-export async function getProductsByCategory(categoryName: string) {
-  const products = await getProducts();
+export async function getProductsByCategory(categoryName: string, storeId = ACTIVE_PLATFORM_STORE_ID) {
+  const products = await getProducts(storeId);
   return products.filter((product) => product.category === categoryName);
 }
 
@@ -105,13 +122,13 @@ export async function getNewArrivals(limit = 4) {
   return runRecommendationEngine(catalog, "new-arrivals", { limit });
 }
 
-export async function getProductSlugs() {
-  const products = await getProducts();
+export async function getProductSlugs(storeId = ACTIVE_PLATFORM_STORE_ID) {
+  const products = await getProducts(storeId);
   return products.map((product) => product.slug);
 }
 
-export async function getCategorySlugs() {
-  const categories = await getCategories();
+export async function getCategorySlugs(storeId = ACTIVE_PLATFORM_STORE_ID) {
+  const categories = await getCategories(storeId);
   return categories.map((category) => category.slug);
 }
 

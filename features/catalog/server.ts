@@ -1,6 +1,7 @@
 /** Server-only catalog exports. Import from Server Components, route handlers, and server actions. */
 export {
   getBestSellers,
+  getCatalogByStoreId,
   getCategories,
   getCategoryRailItems,
   getCategoryBySlug,

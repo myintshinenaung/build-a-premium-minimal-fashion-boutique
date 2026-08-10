@@ -22,7 +22,7 @@ export const PLATFORM_STORES: PlatformStore[] = [
     label: "Daily Outfit",
     description: "Premium Fashion",
     monogram: "DO",
-    href: "/"
+    href: "/stores/daily-outfit"
   },
   {
     id: "myanmar-vibe",
