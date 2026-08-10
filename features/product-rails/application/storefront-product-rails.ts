@@ -7,6 +7,12 @@ import { createCachedLoader } from "@/features/performance/infrastructure/cache-
 import { ACTIVE_PLATFORM_STORE_ID } from "@/lib/storefront/brand";
 import type { ProductRailsSectionData } from "@/types/product-rail";
 
+/**
+ * Storefront product rails from Supabase `product_rails` / `product_rail_items`.
+ * Filters published rails by product_rails.store_id (daily-outfit).
+ * Resolves items through the catalog product list (no products.store_id required).
+ * Unresolved product ids are skipped; rails that end up empty are omitted.
+ */
 const loadProductRailsSectionData = createCachedLoader(
   "storefront-product-rails",
   [CACHE_TAGS.productRails, CACHE_TAGS.homepage],

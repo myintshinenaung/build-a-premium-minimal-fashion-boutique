@@ -17,8 +17,19 @@ export type HomepageProductSection = {
   actionLabel?: string;
 };
 
-function findRailByTitle(rails: ProductRailCard[], pattern: RegExp): ProductRailCard | undefined {
-  return rails.find((rail) => pattern.test(rail.title));
+/** Stable DB rail ids from Sprint 5 seed / live data. */
+export const HOMEPAGE_DB_RAIL_IDS = {
+  newArrivals: "pr-daily-new-arrivals",
+  recommended: "pr-daily-best-sellers",
+  trending: "pr-daily-trending"
+} as const;
+
+export function findHomepageRail(
+  rails: ProductRailCard[],
+  railId: string,
+  titlePattern: RegExp
+): ProductRailCard | undefined {
+  return rails.find((rail) => rail.id === railId) ?? rails.find((rail) => titlePattern.test(rail.title));
 }
 
 function toSection(
@@ -44,61 +55,96 @@ function toSection(
 }
 
 /**
- * Resolves V1 homepage rails in fixed order:
+ * Builds one homepage section from a DB rail when it has products.
+ * Falls back to heuristic products only when the rail is missing or empty.
+ */
+export function buildHomepageSectionFromRail(options: {
+  rail: ProductRailCard | undefined;
+  displayTitle: string;
+  defaultSubtitle: string;
+  fallbackId: string;
+  fallbackProducts: Product[];
+  badge?: string;
+  actionHref?: string;
+  actionLabel?: string;
+}): HomepageProductSection | null {
+  const { rail, displayTitle, defaultSubtitle, fallbackId, fallbackProducts, badge, actionHref, actionLabel } =
+    options;
+
+  if (rail && rail.products.length > 0) {
+    return toSection(rail.id, displayTitle, rail.subtitle || defaultSubtitle, rail.products, {
+      badge: badge ?? (rail.badge || undefined),
+      actionHref,
+      actionLabel
+    });
+  }
+
+  return toSection(fallbackId, displayTitle, defaultSubtitle, fallbackProducts, {
+    badge,
+    actionHref,
+    actionLabel
+  });
+}
+
+/**
+ * Resolves V1 homepage rails in fixed marketing order:
  * New Arrivals → Recommended → Trending.
- * Prefers admin product rails when titles match; falls back to heuristic recommendations.
+ *
+ * Source of truth: published product_rails for daily-outfit (via getProductRailsSectionData).
+ * Heuristic recommendations are used only when the matching DB rail is missing or empty.
  */
 export async function getHomepageV1ProductSections(): Promise<{
   newArrivals: HomepageProductSection | null;
   recommended: HomepageProductSection | null;
   trending: HomepageProductSection | null;
 }> {
-  const [railsData, newArrivalRecs, bestSellerRecs, trendingRecs] = await Promise.all([
-    getProductRailsSectionData(),
-    getNewArrivalRecommendations(12),
-    getBestSellerRecommendations(12),
-    getTrendingProducts(12)
+  const railsData = await getProductRailsSectionData();
+  const rails = railsData?.rails ?? [];
+
+  const newArrivalsRail = findHomepageRail(rails, HOMEPAGE_DB_RAIL_IDS.newArrivals, /new\s*arrival/i);
+  const recommendedRail = findHomepageRail(rails, HOMEPAGE_DB_RAIL_IDS.recommended, /best\s*seller/i);
+  const trendingRail = findHomepageRail(rails, HOMEPAGE_DB_RAIL_IDS.trending, /trend/i);
+
+  const needsNewArrivalFallback = !(newArrivalsRail && newArrivalsRail.products.length > 0);
+  const needsRecommendedFallback = !(recommendedRail && recommendedRail.products.length > 0);
+  const needsTrendingFallback = !(trendingRail && trendingRail.products.length > 0);
+
+  const [newArrivalRecs, bestSellerRecs, trendingRecs] = await Promise.all([
+    needsNewArrivalFallback ? getNewArrivalRecommendations(12) : Promise.resolve({ items: [] as Product[] }),
+    needsRecommendedFallback ? getBestSellerRecommendations(12) : Promise.resolve({ items: [] as Product[] }),
+    needsTrendingFallback ? getTrendingProducts(12) : Promise.resolve({ items: [] as Product[] })
   ]);
 
-  const rails = railsData?.rails ?? [];
-  const newArrivalsRail = findRailByTitle(rails, /new\s*arrival/i);
-  const trendingRail = findRailByTitle(rails, /trend/i);
-  const bestSellersRail = findRailByTitle(rails, /best\s*seller/i);
+  const newArrivals = buildHomepageSectionFromRail({
+    rail: newArrivalsRail,
+    displayTitle: "New Arrivals",
+    defaultSubtitle: "Fresh styles on NOVORA",
+    fallbackId: "homepage-new-arrivals",
+    fallbackProducts: newArrivalRecs.items,
+    badge: "New",
+    actionHref: "/shop?sort=newest",
+    actionLabel: "See all"
+  });
 
-  const newArrivals = toSection(
-    newArrivalsRail?.id ?? "homepage-new-arrivals",
-    "New Arrivals",
-    newArrivalsRail?.subtitle || "Fresh styles on NOVORA",
-    newArrivalsRail?.products ?? newArrivalRecs.items,
-    {
-      badge: newArrivalsRail?.badge || "New",
-      actionHref: "/shop?sort=newest",
-      actionLabel: "See all"
-    }
-  );
+  const recommended = buildHomepageSectionFromRail({
+    rail: recommendedRail,
+    displayTitle: "Recommended",
+    defaultSubtitle: "Popular picks based on what shoppers love",
+    fallbackId: "homepage-recommended",
+    fallbackProducts: bestSellerRecs.items,
+    actionHref: "/shop?sort=popularity",
+    actionLabel: "See all"
+  });
 
-  const recommendedProducts = bestSellersRail?.products ?? bestSellerRecs.items;
-  const recommended = toSection(
-    bestSellersRail?.id ?? "homepage-recommended",
-    "Recommended",
-    bestSellersRail?.subtitle || "Popular picks based on what shoppers love",
-    recommendedProducts.length > 0 ? recommendedProducts : trendingRecs.items,
-    {
-      actionHref: "/shop?sort=popularity",
-      actionLabel: "See all"
-    }
-  );
-
-  const trending = toSection(
-    trendingRail?.id ?? "homepage-trending",
-    "Trending",
-    trendingRail?.subtitle || "What’s catching attention right now",
-    trendingRail?.products ?? trendingRecs.items,
-    {
-      actionHref: "/shop?sort=popularity",
-      actionLabel: "See all"
-    }
-  );
+  const trending = buildHomepageSectionFromRail({
+    rail: trendingRail,
+    displayTitle: "Trending",
+    defaultSubtitle: "What’s catching attention right now",
+    fallbackId: "homepage-trending",
+    fallbackProducts: trendingRecs.items,
+    actionHref: "/shop?sort=popularity",
+    actionLabel: "See all"
+  });
 
   return { newArrivals, recommended, trending };
 }

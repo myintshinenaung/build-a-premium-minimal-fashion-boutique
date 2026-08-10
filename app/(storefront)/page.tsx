@@ -40,15 +40,17 @@ async function HomepageMerchandising({ storeCards }: { storeCards: Awaited<Retur
     getProducts()
   ]);
 
+  // Products already shown in the three primary DB-backed rails (or their fallbacks).
   const featuredIds = new Set(
     [...(newArrivals?.products ?? []), ...(recommended?.products ?? []), ...(trending?.products ?? [])].map(
       (product) => product.id
     )
   );
 
-  const justForYou = products.filter((product) => !featuredIds.has(product.id)).slice(0, 12);
-  const justForYouProducts = justForYou.length >= 4 ? justForYou : products.slice(0, 12);
-  const feedProducts = products;
+  // Composition-only dedupe: do not reintroduce rail products into Just For You / feed.
+  const remainingProducts = products.filter((product) => !featuredIds.has(product.id));
+  const justForYouProducts = remainingProducts.slice(0, 12);
+  const feedProducts = remainingProducts;
 
   return (
     <>
